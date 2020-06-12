@@ -11,8 +11,7 @@ import { ROLES } from './components/security/ERules'
 import {proxy} from './components/Conf'
 
 import GrantAccess from './components/security/GrantAccess'
-
-import StructTable from './components/tsx/tables/StructTable'
+import Main from './components/Main'
 
 export const defaultUser = {
     id: null,
@@ -155,7 +154,7 @@ class App extends Component {
                 <Route exact path="/signup" component={SignUp} />
                
                
-                <Route exact path="/" component={StructTable} />
+                <Route exact path="/" component={Main} />
             </div>
 
 

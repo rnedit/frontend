@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link as LinkRoute } from 'react-router-dom';
 
 class Main extends Component {
 
@@ -13,9 +14,18 @@ class Main extends Component {
     };
 
     render() {
-        return {
-
-        }
+        return (
+            <>
+            <div>Главная страница </div>
+            <div><LinkRoute to="/signin">Вход</LinkRoute></div>
+            <div><LinkRoute to="/signup">Регистрация</LinkRoute></div>
+            <div><LinkRoute to="/workflow">СЭД</LinkRoute></div>
+            
+            </>
+            
+        )
+           
+       
     }
 
 }
