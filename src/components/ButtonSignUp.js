@@ -48,7 +48,7 @@ export default function ButtonSignUp() {
                             onMouseLeave={handlePopoverClose}
                             onClick={handleOnClick}
                 >
-                    <PersonAddTwoToneIcon style={{ color: grey[50] }}  />
+                    <PersonAddTwoToneIcon  />
                 </IconButton>
                 <Popover
                     id="mouse-over-popover"

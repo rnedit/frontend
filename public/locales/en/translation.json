@@ -1,0 +1,59 @@
+{
+    "АвторскиеПрава": {
+        "1": "Copyright © "
+    },
+
+    "Вход": {
+        "1": "Input"
+    },
+    "ИмяПользователя": {
+        "1": "User Name"
+    },
+    "Пароль": {
+        "1": "Password"
+    },
+    "ЗапомнитьМеня": {
+        "1": "Remember me"
+    },
+    "Войти": {
+        "1": "Sign in"
+    },
+    "ЗабылиПароль": {
+        "1": "Forgot password?"
+    },
+    "НетАккаунтаРегистрация": {
+        "1": "Don't have an account? Sign Up"
+    },
+    
+    "ВыборЯзыка": {
+        "1":"Select",
+        "2":"Select your language"
+    },
+
+
+    "ОшибкаВход": {
+        "1": "Failed to authenticate!",
+        "2": "An error has occurred, try again later!"
+    },
+
+    "Регистрация": {
+        "1":"Registration",
+        "2":"First Name",
+        "3":"Last Name",
+        "4":"User Name",
+        "5":"Email Address",
+        "6":"Password",
+        "7":"Confirm password",
+        "8":"Already have an account? Sign in"
+        
+    },
+    "СообщенияРегистрация": {
+        "1":"Congratulations user registered! Redirecting ...",
+        "2":" user exists!",
+        "3":" Email exists!",
+        "4":"An error has occurred, try again later!",
+        "5":"Fill in please",
+        "6":"Fine!",
+        "7":"Password mismatch!"
+    }
+}
