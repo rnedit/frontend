@@ -55,5 +55,54 @@
         "5":"Fill in please",
         "6":"Fine!",
         "7":"Password mismatch!"
+    },
+    
+    
+    "Таблица": {
+        "1":"Login",
+        "2":"First Name",
+        "3":"Last Name",
+        "4":"Email",
+        "5":"Role",
+        "6":"Users",
+        "7":"Refresh",
+
+        "8":"{from}-{to} of {count}",
+        "9":"rows",
+        "10":"Rows per page:",
+        "11": "First Page",
+          "12": "First Page",
+          "13": "Previous Page",
+          "14": "Previous Page",
+          "15": "Next Page",
+          "16": "Next Page",
+          "17": "Last Page",
+          "18": "Last Page",
+
+          "19": "{0} row(s) selected",
+          "20": "Search",
+          "21": "Search",
+          "22": "Export",
+          "23": "Export",
+          "24": "Export as CSV",
+          "25": "Show Columns",
+          "26": "Show Columns",
+          "27": "Add or remove columns",
+
+          "28": "Actions",
+
+          "29": "Drag headers ...",
+          "30": "Grouped By:",
+
+          "31": "No records to display",
+          "32": "Add",
+          "33": "Delete",
+          "34": "Edit",
+          
+           "35": "Filter",
+
+          "36": "Are you sure delete this row?",
+          "37": "Cancel",
+          "38": "Save"
     }
 }

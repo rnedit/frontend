@@ -87,7 +87,7 @@ function SignIn(props) {
 
     const { t } = useTranslation();
 
-    const SignIn = () => {
+    const SignIn = () => {     
         const headers = {
             'Content-Type': 'application/json; charset=UTF-8',
         }
@@ -112,6 +112,7 @@ function SignIn(props) {
                 setOpen(true);
                 setStart(true);
             })
+            
     }
     const handleSubmit = (event) => {
         event.preventDefault();

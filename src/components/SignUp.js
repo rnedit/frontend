@@ -91,7 +91,7 @@ export default function SignUp() {
     const errorText41 = form.passwordConf.length - 1 < minLength || !validarePassword();
     
 function validarePassword(){
-    if (form.passwordConf===form.password)
+    if (form.passwordConf===form.password && form.password!=="")
         return true
     else
         return false

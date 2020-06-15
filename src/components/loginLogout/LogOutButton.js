@@ -2,7 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import ExitToAppTwoToneIcon from '@material-ui/icons/ExitToAppTwoTone';
-import { grey } from '@material-ui/core/colors/';
 import Typography from "@material-ui/core/Typography";
 import Popover from "@material-ui/core/Popover";
 import {useHistory} from "react-router-dom";
