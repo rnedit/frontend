@@ -4,7 +4,6 @@ import { useHistory } from "react-router-dom";
 import MaterialTable from 'material-table';
 import { TableState } from './ITableState';
 import axios from "axios";
-import { Row } from "./Row";
 import { useWindowResize } from "../UseWindowResize";
 import { connect } from 'react-redux';
 import { ROLES } from '../../security/ERules'
@@ -79,8 +78,6 @@ function MaterialTableStruct(props: any) {
     const [openMsg, setOpenMsg] = React.useState(false);
     const [newUser, setNewUser] = React.useState<NewUser>();
     const [qquery, setQuery] = React.useState(true);
-    const [text, setTextAlert] = React.useState('null');
-    const [typeSeverity, setTypeSeverity] = React.useState('error');
 
     const [alertMSG,setAlertMSG] = React.useState<AlertMSG>( {
         text:"",
