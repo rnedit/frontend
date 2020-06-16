@@ -48,6 +48,7 @@
         
     },
     "СообщенияРегистрация": {
+        "0":"User registered!",
         "1":"Congratulations user registered! Redirecting ...",
         "2":" user exists!",
         "3":" Email exists!",
@@ -59,6 +60,7 @@
     
     
     "Таблица": {
+        "0":"Created by",
         "1":"Login",
         "2":"First Name",
         "3":"Last Name",

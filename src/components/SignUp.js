@@ -89,13 +89,13 @@ export default function SignUp() {
     const errorText3 = (form.email.length - 1 < minLength) || !validateEmail(form.email);
     const errorText4 = form.password.length - 1 < minLength;
     const errorText41 = form.passwordConf.length - 1 < minLength || !validarePassword();
-    
-function validarePassword(){
-    if (form.passwordConf===form.password && form.password!=="")
-        return true
-    else
-        return false
-}
+
+    function validarePassword() {
+        if (form.passwordConf === form.password && form.password !== "")
+            return true
+        else
+            return false
+    }
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -145,15 +145,15 @@ function validarePassword(){
                     else
                         if (Number(error.response.data.code) === 1)
                             setTextAlert(form.email + t("СообщенияРегистрация.3"))
-
+                    console.log(error)
+                    console.log(error.response.data)
                 } else {
                     setTextAlert(t("СообщенияРегистрация.4"))
                 }
                 setOpen(true);
                 setTypeSeverity("error")
                 setStart(true);
-                console.log(error)
-                console.log(error.response.data)
+
             })
     }
 
@@ -279,7 +279,7 @@ function validarePassword(){
                                     label={t('Регистрация.6')}
                                     type="password"
                                     id="password"
-                            
+
                                     value={form.password}
                                     inputProps={{ minLength: { minLength }, maxLength: { maxLength } }}
                                     onChange={updateField}
@@ -296,13 +296,13 @@ function validarePassword(){
                                     label={t('Регистрация.7')}
                                     type="password"
                                     id="passwordConf"
-                            
+
                                     value={form.passwordConf}
                                     inputProps={{ minLength: { minLength }, maxLength: { maxLength } }}
                                     onChange={updateField}
                                 />
                             </Grid>
-                        
+
                         </Grid>
                         <Button
                             type="submit"
@@ -312,12 +312,12 @@ function validarePassword(){
                             className={classes.submit}
                             disabled={submitDisabled}
                         >
-                           {t('Регистрация.1')}
+                            {t('Регистрация.1')}
                         </Button>
                         <Grid container justify="flex-end">
                             <Grid item>
                                 <LinkRoute to="/signin">
-                                {t('Регистрация.8')}
+                                    {t('Регистрация.8')}
                                 </LinkRoute>
                             </Grid>
                         </Grid>

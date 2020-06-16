@@ -20,6 +20,7 @@
     "i18next-xhr-backend": "^3.2.2",
     "material-components-web": "^6.0.0",
     "material-table": "^1.60.0",
+    "moment": "^2.26.0",
     "muicss": "^0.10.2",
     "npm": "^6.14.5",
     "prop-types": "^15.7.2",

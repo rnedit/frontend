@@ -3,6 +3,6 @@ export interface NewUser {
     firstName: string | undefined;
     lastName: string | undefined;
     email: string | undefined;
-    roles: string | undefined;
+    roles: Array<string> | undefined;
     password: string | undefined;
 }
