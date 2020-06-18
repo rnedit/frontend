@@ -1,4 +1,5 @@
 export interface NewUser {
+    id: string | undefined;
     username: string | undefined;
     firstName: string | undefined;
     lastName: string | undefined;

@@ -53,6 +53,7 @@ class App extends Component {
             refreshJwt:
                 (store.getState().currentUser.user.refreshJwt !== undefined) ? store.getState().currentUser.user.refreshJwt : null
         };
+
         //
     };
 
@@ -75,12 +76,12 @@ class App extends Component {
         }
     }
 
-
     updateStateFromStore = () => {
         const currentState = this.getCurrentStateFromStore();
         if (this.state !== currentState) {
             this.setState(currentState);
         }
+
     }
 
     async updateJwtToken() {

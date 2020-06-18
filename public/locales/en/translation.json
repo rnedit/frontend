@@ -55,7 +55,8 @@
         "4":"An error has occurred, try again later!",
         "5":"Fill in please",
         "6":"Fine!",
-        "7":"Password mismatch!"
+        "7":"Password mismatch!",
+        "8":"Please fill in all the fields that are marked * !"
     },
     
     
@@ -106,5 +107,9 @@
           "36": "Are you sure delete this row?",
           "37": "Cancel",
           "38": "Save"
+    },
+    "ТаблицаПрофайлы": {
+        "0":"Title",
+        "1":"Profiles"
     }
 }

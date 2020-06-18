@@ -4,9 +4,9 @@ import { useHistory } from "react-router-dom";
 import MaterialTable from 'material-table';
 import { TableState } from './ITableState';
 import axios from "axios";
-import { useWindowResize } from "../UseWindowResize";
+import { useWindowResize } from "../../../UseWindowResize";
 import { connect } from 'react-redux';
-import { ROLES } from '../../security/ERules'
+import { ROLES } from '../../../../security/ERules'
 import { useTranslation } from 'react-i18next';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
@@ -24,6 +24,8 @@ import { NewUser } from './NewUser';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Moment from 'moment';
+import { setUsers } from '../../../../../reduxactions/actions';
+import { store } from "../../../../../init";
 
 function Alert(props: any) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -77,7 +79,7 @@ function MaterialTableStruct(props: any) {
     const [open, setOpen] = React.useState(false);
     const [openMsg, setOpenMsg] = React.useState(false);
     const [newUser, setNewUser] = React.useState<NewUser>();
-    const [qquery, setQuery] = React.useState(true);
+    const [qquery, setQuery] = React.useState(false);
 
     const [alertMSG,setAlertMSG] = React.useState<AlertMSG>( {
         text:"",
@@ -95,14 +97,12 @@ function MaterialTableStruct(props: any) {
         password: '',
         passwordConf: ''
     });
-
-    const updateField = (e: any) => {
+    const updateField = (e: React.ChangeEvent<{ name:string , value: unknown }>) => {
         setFormState({
             ...form,
             [e.target.name]: e.target.value
         });
     };
-
     const errorText = !validarePassword();
     function validarePassword() {
         if (form.passwordConf === form.password && form.password !== "")
@@ -129,12 +129,36 @@ function MaterialTableStruct(props: any) {
                 email: newUser?.email,
                 firstName: newUser?.firstName,
                 lastName: newUser?.lastName,
-                username: newUser?.username
+                username: newUser?.username,
+                id: newUser?.id,
             }
         );
         setOpen(false);
     };
 
+    const setStoreUsers = (data:any) => store.dispatch(
+        setUsers(data)
+    );
+/*
+    const [formNewUser, setFormNewUser] = React.useState({
+        id: '',
+        username: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        roles: '',
+        password: '',
+    });
+
+    const updateField = (e: React.ChangeEvent<{ name:string , value: unknown }>) => {
+       
+        setFormNewUser({
+            ...formNewUser,
+            [e.target.name]: e.target.value
+        });
+        console.log(formNewUser)
+    };
+*/
     const [selectedRow, setSelectedRow] = React.useState("null");
     const [state, setState] = React.useState<TableState>(
 
@@ -166,13 +190,48 @@ function MaterialTableStruct(props: any) {
                         },
                     },
 
-                    { title: t("Таблица.1"), field: 'username' },
-                    { title: t("Таблица.2"), field: 'firstName' },
-                    { title: t("Таблица.3"), field: 'lastName' },
-                    { title: t("Таблица.4"), field: 'email' },
+                    { title: t("Таблица.1")+" *", field: 'username',
+                    editComponent: props => (
+                        <TextField required name="username" id="username-required" label={t("Таблица.1")}
+                        defaultValue={props.value} 
+                        onChange={(event => {
+                            props.onChange(event.target.value)
+                        })} />
+                      ), 
+                    },
+                    { title: t("Таблица.2")+" *", field: 'firstName',
+                    editComponent: props => (
+                        <TextField required id="firstName-required" label={t("Таблица.2")}
+                        name="firstName" defaultValue={props.value} 
+                        onChange={(event => {
+                            props.onChange(event.target.value)
+                        })}
+                        />
+                      ), 
+                },
+                    { title: t("Таблица.3")+" *", field: 'lastName',
+                    editComponent: props => (
+                        <TextField required id="lastName-required" label={t("Таблица.3")}
+                        name="lastName" defaultValue={props.value} 
+                        onChange={(event => {
+                            props.onChange(event.target.value)
+                        })}
+                         />
+                      ),  
+                    },
+                    { title: t("Таблица.4")+" *", field: 'email',
+                    editComponent: props => (
+                        <TextField required id="email-required" label={t("Таблица.4")} 
+                        name="email" defaultValue={props.value} 
+                        onChange={(event => {
+                            props.onChange(event.target.value)
+                        })}
+                         />
+                      ),
+                },
 
                     {
-                        title: t("Таблица.5"),
+                        title: t("Таблица.5")+" *",
                         field: 'roles',
                         editable: "never",
                         render: rowData => {
@@ -182,7 +241,7 @@ function MaterialTableStruct(props: any) {
                                 const { roles } = rowData;
                                 roles.forEach(role => {
                                     const { name } = role;
-                                    stringRole = stringRole !== "" ? +", /n" + name : name;
+                                    stringRole +=  name +", " ;
                                 })
                             }
                             return (
@@ -197,11 +256,58 @@ function MaterialTableStruct(props: any) {
             :
             {
                 columns: [
-                    { title: t("Таблица.0"), field: 'creationDate' },
-                    { title: t("Таблица.1"), field: 'username' },
-                    { title: t("Таблица.2"), field: 'firstName' },
-                    { title: t("Таблица.3"), field: 'lastName' },
-                    { title: t("Таблица.4"), field: 'email' },
+                    { title: t("Таблица.0"),
+                     field: 'creationDate',
+                     editable: "never",
+                     defaultSort: "desc",
+                     sorting: true,
+                     render: rowData => {
+                         let stringDate: string = "";
+                         if (rowData !== null && rowData !== undefined) {
+                             const { creationDate } = rowData;
+                             Moment.locale('ru');
+                             stringDate = Moment(creationDate).format('hh:mm DD/MM/YYYY')
+                         }
+                         return (
+                             stringDate
+                         )
+                     }, },
+                    { title: t("Таблица.1")+" *", field: 'username',
+                    editComponent: props => (
+                        <TextField required id="username-required" label={t("Таблица.1")} defaultValue={props.value} 
+                        onChange={(event => {
+                            props.onChange(event.target.value)
+                        })}
+                        />
+                      ), 
+                    },
+                    { title: t("Таблица.2")+" *", field: 'firstName',
+                    editComponent: props => (
+                        <TextField required id="firstName-required" label={t("Таблица.2")} defaultValue={props.value} 
+                        onChange={(event => {
+                            props.onChange(event.target.value)
+                        })}
+                        />
+                      ), 
+                },
+                    { title: t("Таблица.3")+" *", field: 'lastName',
+                    editComponent: props => (
+                        <TextField required id="lastName-required" label={t("Таблица.3")} defaultValue={props.value} 
+                        onChange={(event => {
+                            props.onChange(event.target.value)
+                        })}
+                        />
+                      ),  
+                    },
+                    { title: t("Таблица.4")+" *", field: 'email',
+                    editComponent: props => (
+                        <TextField required id="email-required" label={t("Таблица.4")} defaultValue={props.value} 
+                        onChange={(event => {
+                            props.onChange(event.target.value)
+                        })}
+                        />
+                      ),
+                },
 
                 ],
                 data: [],
@@ -216,19 +322,18 @@ function MaterialTableStruct(props: any) {
             const headers = {
                 'Content-Type': 'application/json; charset=UTF-8',
             }
-            const url = proxy + '/users?'
+            const url = proxy + '/api/users?'
             const req = {
                 perpage: queryPage.pageSize,
                 page: queryPage.page
             }
-            console.log("dataPost req", req)
+           // console.log("dataPost req", req)
             axios.post(url, req, { headers: headers, withCredentials: true })
                 .then(res => {
                     resolve();
                     setState((prevState) => {
                         const data = res.data.users;
                         return { ...prevState, data };
-
                     });
                 })
                 .catch(error => {
@@ -245,6 +350,14 @@ function MaterialTableStruct(props: any) {
             setQuery(false);
         })
     }
+    React.useEffect(() => {
+        
+        console.log('Users mount it!');
+        setTimeout(() => {
+            setQuery(true);
+        }, 1000);
+       
+    }, []);
 
     React.useEffect(() => {
         if (newUser !== null && newUser !== undefined && newUser?.password !== "") {
@@ -260,6 +373,16 @@ function MaterialTableStruct(props: any) {
     React.useEffect(() => {
         if (qquery) dataPost()
     }, [qquery]);
+
+    React.useEffect(() => {
+        if (props.storeUsers!==null && props.storeUsers!==undefined) {
+            const ud:Array<any> = props.storeUsers;
+            const sd:Array<any> = state.data;
+            if (JSON.stringify(ud)!==JSON.stringify(sd)) {
+                setStoreUsers(sd);
+            }
+        }   
+    }, [state]);    
 
     const signUp = () => {
         new Promise((resolve) => {
@@ -311,6 +434,15 @@ function MaterialTableStruct(props: any) {
                                     }   
                                 })
                             }
+                        else
+                            if (Number(error.response.data.code) === 2) {
+                                setAlertMSG((prevState)=>{
+                                    return{
+                                        ...prevState,
+                                        text: t("СообщенияРегистрация.8")
+                                    }   
+                                })
+                            }
                         
                         console.log(error)
                         console.log(error.response.data)
@@ -355,7 +487,7 @@ function MaterialTableStruct(props: any) {
             const headers = {
                 'Content-Type': 'application/json; charset=UTF-8',
             }
-            axios.post(proxy + '/users/delete/' + id, null, { headers: headers, withCredentials: true })
+            axios.post(proxy + '/api/users/delete/' + id, null, { headers: headers, withCredentials: true })
                 .then(res => {
                     resolve()
                     console.log("deleteUser success")     
@@ -369,12 +501,12 @@ function MaterialTableStruct(props: any) {
 
     const editUser = (id: string, updateUser: NewUser) => {
         new Promise((resolve) => {
-            console.log("editUser")
+           // console.log("editUser",id,updateUser)
             const { proxy } = props;
             const headers = {
                 'Content-Type': 'application/json; charset=UTF-8',
             }
-            axios.post(proxy + '/users/edit/' + id, updateUser, { headers: headers, withCredentials: true })
+            axios.post(proxy + '/api/users/edit/' + id, updateUser, { headers: headers, withCredentials: true })
                 .then(res => {
                     resolve()
             
@@ -382,6 +514,7 @@ function MaterialTableStruct(props: any) {
                 })
                 .catch(error => {
                     console.log(error)
+                    console.log(error.response.data)
                 })
         })
 
@@ -396,7 +529,7 @@ function MaterialTableStruct(props: any) {
                 tableRef={tableRef}
                 columns={state.columns}
                 data={state.data}
-                isLoading={qquery}
+                isLoading={state.data.length===0}
                 onChangeRowsPerPage={(pageSize: number) => {
                     setQueryPage((prevState) => {
                         return { ...prevState, pageSize };
@@ -527,9 +660,11 @@ function MaterialTableStruct(props: any) {
                     onRowAdd: (newData) =>
                         new Promise((resolve) => {
                             if (newData) {
+                             
                                 const arr: Array<string> = [];
                                 arr.push(ROLES.USER);
                                 const newData1: NewUser = {
+                                    id: newData.id,
                                     username: newData.username,
                                     firstName: newData.firstName,
                                     lastName: newData.lastName,
@@ -537,17 +672,20 @@ function MaterialTableStruct(props: any) {
                                     roles: arr,
                                     password: "",
                                 }
+                               
                                 resolve();
                                 setNewUser(newData1)
                                 setOpen(true);
-                               
+                                console.log(newData1)
                             }
                         })
                     ,
                     onRowUpdate: (newData, oldData) =>
                         new Promise((resolve) => {
+                            setTimeout(() => {
                             if (newData) {
                                 const uu: NewUser = {
+                                    id: newData.id,
                                     username: newData.username,
                                     firstName: newData.firstName,
                                     lastName: newData.lastName,
@@ -555,23 +693,21 @@ function MaterialTableStruct(props: any) {
                                     roles: [],
                                     password: "",
                                 }
-                                const id: any = oldData?.id;
-                                editUser(id, uu)
-                                setTimeout(() => {
+                               
                                     resolve();
                                     if (oldData) {
+                                        const id: any = oldData?.id;
+                                        editUser(id, uu)
                                         setState((prevState) => {
-
                                             const data = [...prevState.data];
                                             data[data.indexOf(oldData)] = newData;
-
                                             return { ...prevState, data };
                                         });
                                     }
 
-                                }, 600);
+                              
                             }
-
+                        }, 600);
                         }),
                     onRowDelete: (oldData) =>
                         new Promise((resolve) => {
@@ -696,7 +832,8 @@ function MaterialTableStruct(props: any) {
 }
 const mapStateToProps = function (state: any) {
     return {
-        roles: state.currentUser.user.roles
+        roles: state.currentUser.user.roles,
+        storeUsers: state.users.data
     }
 }
 export default connect(mapStateToProps)(MaterialTableStruct);

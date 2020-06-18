@@ -3,7 +3,8 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import StructTable from '../tables/StructTable'
+import StructTable from '../tables/Struct/Users/StructTable'
+import ProfileTable from '../tables/Struct/Profiles/ProfileTable'
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -39,31 +40,37 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default function ScrollableTabsButtonAuto(props:any) {
+export default function ScrollableTabsButtonAuto(props: any) {
   const { value } = props;
   const { proxy } = props;
   const classes = useStyles();
   //const [value, setValue] = React.useState(0);
 
- // const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
- //   setValue(newValue);
- // };
+  // const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+  //   setValue(newValue);
+  // };
 
   return (
     <div className={classes.root}>
-    
+
       <TabPanel value={value} index={0}>
         <div style={{ width: '100%' }}>
 
           <Box >
-            <StructTable proxy={proxy}/>
+            <StructTable proxy={proxy} />
           </Box>
 
         </div>
 
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Профайлы
+        <div style={{ width: '100%' }}>
+
+          <Box >
+            <ProfileTable proxy={proxy} />
+          </Box>
+
+        </div>
       </TabPanel>
       <TabPanel value={value} index={2}>
         Организационная единица
