@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/styles';
+import React from 'react';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -29,13 +29,13 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const ITEM_HEIGHT = 48;
+const ITEM_HEIGHT = 60;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
+      width: 300,
     },
   },
 };
@@ -45,23 +45,26 @@ ACCESS.forEach(access => {
 })
 
 
-export default function MultipleSelect() {
+export default function MultipleSelect(props:any) {
+  const {callBackSetMultipleSelectAccess} = props;
   const classes = useStyles();
   const [personName, setPersonName] = React.useState<string[]>([]);
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setPersonName(event.target.value as string[]);
-    localStorage.setItem("MultipleSelect", JSON.stringify(event.target.value as string[]))
+   // localStorage.setItem("MultipleSelect", JSON.stringify(event.target.value as string[]))
+   callBackSetMultipleSelectAccess(event.target.value as string[])
   };
 
   return (
    <>
       <FormControl className={classes.formControl}>
-        <InputLabel id="mutiple-checkbox-label">Name</InputLabel>
+        <InputLabel id="mutiple-checkbox-label" required>Доступ</InputLabel>
         <Select
           labelId="mutiple-checkbox-label"
           id="mutiple-checkbox"
           multiple
+          
           value={personName}
           onChange={handleChange}
           input={<Input />}

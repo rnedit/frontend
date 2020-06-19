@@ -4,6 +4,7 @@ export interface Row {
     creationDate: string;
     parentId: string;
     userId: string;
+    user: any;
     access: [
         {
             id:string,

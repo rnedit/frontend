@@ -6,6 +6,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Tab from '@material-ui/core/Tab';
 import Tabs from "@material-ui/core/Tabs";
 import { makeStyles } from '@material-ui/core/styles';
+import {  useLocation } from "react-router-dom";
+import { NavTab } from "react-router-tabs";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -59,6 +61,11 @@ export default function TabsTopMenu(props) {
      setValue(newValue);
      callback(newValue);
     };
+    const location = useLocation();
+    const query = new URLSearchParams(location.search);
+    const stab = query.get('stab')
+
+    const NavTabRef = React.forwardRef((props, ref) =><NavTab {...props} innerRef={ref} />)
     return (
         <>
             <TabPanel value={value} index={0}>
@@ -77,21 +84,20 @@ export default function TabsTopMenu(props) {
 
                 <div className={classes.root}>
 
-                   
                         <AppBar position="static" color="default">
                             <Tabs
-                                value={valueOut}
                                 onChange={handleChange}
                                 indicatorColor="primary"
                                 textColor="primary"
                                 variant="scrollable"
                                 scrollButtons="auto"
                                 aria-label="scrollable auto tabs example"
+                                value={stab?Number(stab):valueOut} 
                             >
-                                <Tab label="Пользователи" {...a11yProps(0)} />
-                                <Tab label="Профайлы" {...a11yProps(1)} />
-                                <Tab label="Организационная единица" {...a11yProps(2)} />
-                                <Tab label="Структура" {...a11yProps(3)} />
+                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=0"} label="Пользователи" {...a11yProps(0)} />
+                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=1"} label="Профайлы" {...a11yProps(1)} />
+                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=2"} label="Организационная единица" {...a11yProps(2)} />
+                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=3"} label="Структура" {...a11yProps(3)} />
 
                             </Tabs>
                         </AppBar>

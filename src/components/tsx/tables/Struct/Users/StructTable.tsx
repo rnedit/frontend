@@ -14,11 +14,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import { NewUser } from './NewUser';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -26,6 +22,8 @@ import MuiAlert from '@material-ui/lab/Alert';
 import Moment from 'moment';
 import { setUsers } from '../../../../../reduxactions/actions';
 import { store } from "../../../../../init";
+
+import SelectRole from "./SelectRole"
 
 function Alert(props: any) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -111,8 +109,8 @@ function MaterialTableStruct(props: any) {
             return false
     }
 
-    const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setRole(event.target.value as string);
+     const callBackSetRole = (role:string) => {
+         setRole(role);
     };
 
     const handleClose = () => {
@@ -159,6 +157,7 @@ function MaterialTableStruct(props: any) {
         console.log(formNewUser)
     };
 */
+
     const [selectedRow, setSelectedRow] = React.useState("null");
     const [state, setState] = React.useState<TableState>(
 
@@ -190,7 +189,8 @@ function MaterialTableStruct(props: any) {
                         },
                     },
 
-                    { title: t("Таблица.1")+" *", field: 'username',
+                    { title: t("Таблица.1")+" *", 
+                    field: 'username',
                     editComponent: props => (
                         <TextField required name="username" id="username-required" label={t("Таблица.1")}
                         defaultValue={props.value} 
@@ -233,9 +233,20 @@ function MaterialTableStruct(props: any) {
                     {
                         title: t("Таблица.5")+" *",
                         field: 'roles',
-                        editable: "never",
+
+                          editComponent: props => (
+
+                            <SelectRole value={props.value} onChange={props.onChange} 
+                            Roles={ROLES}/>
+
+                         ),
+                   
                         render: rowData => {
                             let stringRole: string = "";
+                          //  if (rowData.email==="loh2"){
+                          //      console.log(rowData.roles)
+                           // }
+                            
                             if (rowData !== null && rowData !== undefined) {
 
                                 const { roles } = rowData;
@@ -247,6 +258,7 @@ function MaterialTableStruct(props: any) {
                             return (
                                 stringRole
                             )
+                            
                         },
                     },
                 ],
@@ -382,7 +394,7 @@ function MaterialTableStruct(props: any) {
                 setStoreUsers(sd);
             }
         }   
-    }, [state]);    
+    }, [state,props]);    
 
     const signUp = () => {
         new Promise((resolve) => {
@@ -676,7 +688,7 @@ function MaterialTableStruct(props: any) {
                                 resolve();
                                 setNewUser(newData1)
                                 setOpen(true);
-                                console.log(newData1)
+                              //  console.log(newData1)
                             }
                         })
                     ,
@@ -690,7 +702,7 @@ function MaterialTableStruct(props: any) {
                                     firstName: newData.firstName,
                                     lastName: newData.lastName,
                                     email: newData.email,
-                                    roles: [],
+                                    roles: newData.roles,
                                     password: "",
                                 }
                                
@@ -759,32 +771,15 @@ function MaterialTableStruct(props: any) {
                 onClose={handleClose}
                 aria-labelledby="responsive-dialog-title"
             >
-                <DialogTitle id="responsive-dialog-title">{"Укажите Роль и пароль!"}</DialogTitle>
+                <DialogTitle id="responsive-dialog-title">{"Укажите пароль!"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Выберите роль для пользователя и укажите пароль для пользователя:
+                        Укажите пароль для пользователя:
                         {" " + newUser?.username}
                     </DialogContentText>
 
                     <form className={classes.form} >
-                        <FormControl className={classes.formControl}>
-                            <InputLabel htmlFor="age-native">Роль</InputLabel>
-                            <Select
-                                autoFocus
-                                value={role}
-                                onChange={handleChange}
-                                inputProps={{
-                                    name: 'role',
-                                    id: 'age-native',
-                                }}
-                            >
-
-                                <MenuItem value={ROLES.USER}>USER</MenuItem>
-                                <MenuItem value={ROLES.MODERATOR}>MODERATOR</MenuItem>
-                                <MenuItem value={ROLES.ADMIN}>ADMIN</MenuItem>
-
-                            </Select>
-                        </FormControl>
+                    
                         <TextField
                             autoFocus
                             margin="dense"

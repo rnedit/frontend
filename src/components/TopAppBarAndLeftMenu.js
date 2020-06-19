@@ -14,15 +14,13 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import classNames from 'classnames'
 import LoginLogout from "./loginLogout/LoginLogout";
 import { connect } from 'react-redux';
 import LetterAvatars from "./LetterAvatars/la";
-import { useHistory } from "react-router-dom";
+import { useLocation} from "react-router-dom";
 import ButtonSignUp from "./ButtonSignUp";
 
 import TabPanelTabs from '../components/Tabs/TabPanelTabs'
@@ -30,6 +28,8 @@ import TabPanelTabsOnTopMenu from '../components/Tabs/TabPanelTabsOnTopMenu'
 
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+
+import { NavTab } from "react-router-tabs";
 
 const drawerWidth = 240;
 
@@ -111,12 +111,16 @@ function TopAppBarAndLeftMenu(props) {
     };
 
     const myCallback = (dataFromChild) => {
-      //  console.log("myCallback",dataFromChild)
         setValueTopMenu(dataFromChild);
     };
 
     const AppBar1 = classNames(classes.appBar, classes.appBar2);
-    let history = useHistory();
+    const location = useLocation();
+    const query = new URLSearchParams(location.search);
+    const tab = query.get('tab')
+    const stab = query.get('stab')
+    const NavTabRef = React.forwardRef((props, ref) =><NavTab {...props} innerRef={ref} />)
+
     const drawer = (
         <div>
             <div className={classes.toolbar}>
@@ -126,6 +130,7 @@ function TopAppBarAndLeftMenu(props) {
                             <LetterAvatars username={props.username} />
                         </Box>
                         <Box mt={1.5} >
+                            {/*
                             <Fab size="small" variant="extended"  color="primary"
                                  onClick={() => {
                                      history.push('/workflow/createmaindocument')
@@ -133,6 +138,7 @@ function TopAppBarAndLeftMenu(props) {
                                 <AddIcon className={classes.extendedIcon} />
                                 Создать
                             </Fab>
+                                */}
                         </Box>
                     </Box>
 
@@ -141,22 +147,22 @@ function TopAppBarAndLeftMenu(props) {
             <Divider />
             <AppBar position="static" color="default">
                 <Tabs
-                    value={value}
                     orientation="vertical"
                     onChange={handleChange}
                     indicatorColor="primary"
                     textColor="primary"
                     variant="scrollable"
                     scrollButtons="auto"
-
+                    value={tab?Number(tab):value} 
                     aria-label="scrollable auto tabs example"
                 >
-                    <Tab classes={{ wrapper: classes.wrapper }} label="Внутренние документы" {...a11yProps(0)} />
-                    <Tab classes={{ wrapper: classes.wrapper }} label="Приказы и ОРД" {...a11yProps(1)} />
-                    <Tab classes={{ wrapper: classes.wrapper }} label="Входящие документы" {...a11yProps(2)} />
-                    <Tab classes={{ wrapper: classes.wrapper }} label="Исходящие документы" {...a11yProps(3)} />
-                    <Tab classes={{ wrapper: classes.wrapper }} label="Структура" {...a11yProps(4)} />
-                    <Tab classes={{
+                   
+                    <Tab component={NavTabRef} to="/workflow?tab=0" classes={{ wrapper: classes.wrapper }} label="Внутренние документы" {...a11yProps(0)} />) 
+                    <Tab component={NavTabRef} to="/workflow?tab=1" classes={{ wrapper: classes.wrapper }} label="Приказы и ОРД" {...a11yProps(1)} />
+                    <Tab component={NavTabRef} to="/workflow?tab=2" classes={{ wrapper: classes.wrapper }} label="Входящие документы" {...a11yProps(2)} />
+                    <Tab component={NavTabRef} to="/workflow?tab=3" classes={{ wrapper: classes.wrapper }} label="Исходящие документы" {...a11yProps(3)} />
+                    <Tab component={NavTabRef} to="/workflow?tab=4" classes={{ wrapper: classes.wrapper }} label="Структура" {...a11yProps(4)} />
+                    <Tab component={NavTabRef} to="/workflow?tab=5" classes={{
                         wrapper: classes.wrapper,
 
                     }} label="Справочник" {...a11yProps(5)} />
@@ -180,7 +186,8 @@ function TopAppBarAndLeftMenu(props) {
                 ))}
             </List>
 
-
+       
+        
         </div>
     );
 
@@ -191,11 +198,11 @@ function TopAppBarAndLeftMenu(props) {
     );
 
     const container = window !== undefined ? () => window().document.body : undefined;
-
+   
     return (
 
         <div className={classes.root}>
-
+   
             <CssBaseline />
 
             <AppBar position="fixed" color="default" className={AppBar1}>
@@ -214,7 +221,7 @@ function TopAppBarAndLeftMenu(props) {
                     <div style={{ width: '100%' }}>
                         <Box display="flex" >
                             <Box flexGrow={1} >
-                                 <TabPanelTabsOnTopMenu value={value} callback={myCallback} />
+                                 <TabPanelTabsOnTopMenu value={tab?Number(tab):value} callback={myCallback} />
                             </Box>
                             <Box >
                                 <LoginLogout />
@@ -262,7 +269,9 @@ function TopAppBarAndLeftMenu(props) {
                 <div className={classes.toolbar} />
 
                 {/* props.children */}
-                <TabPanelTabs value={value} valueTopMenu={valueTopMenu}/>
+
+                <TabPanelTabs value={tab?Number(tab):value} valueTopMenu={stab?Number(stab):valueTopMenu}/>
+               
             </main>
 
         </div>

@@ -8,7 +8,6 @@ import { useWindowResize } from "../../../UseWindowResize";
 import { connect } from 'react-redux';
 import { ROLES } from '../../../../security/ERules'
 import { useTranslation } from 'react-i18next';
-import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { NewProfile } from './NewProfile';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -17,7 +16,8 @@ import SelectAccessMultiple from './SelectAccessMultiple'
 
 import { setProfiles } from '../../../../../reduxactions/actions';
 import { store } from "../../../../../init";
-import SelectUser from "./SelectUser"
+
+import AsyncUserSelect from "./AsyncUserSelect"
 import TextField from '@material-ui/core/TextField';
 
 import { setUserToProfile } from '../../../../../reduxactions/actions';
@@ -28,30 +28,6 @@ function Alert(props: any) {
 
 export const setAP = (data:string | null) => store.dispatch(
     setUserToProfile(data)
-);
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        form: {
-            display: 'flex',
-            flexDirection: 'column',
-            margin: 'auto',
-            width: 'fit-content',
-        },
-        formControl: {
-            marginTop: theme.spacing(2),
-            minWidth: 120,
-        },
-        formControlLabel: {
-            marginTop: theme.spacing(1),
-        },
-        progress: {
-            display: 'flex',
-            '& > * + *': {
-                marginLeft: theme.spacing(2),
-            },
-        },
-    }),
 );
 
 interface QueryPage {
@@ -66,8 +42,7 @@ interface AlertMSG {
 }
 
 function MaterialTableStruct(props0: any) {
-    // const {storeUsers} = props.storeUsers;
-    const classes = useStyles();
+
     const { height } = useWindowResize();
     const history = useHistory();
     const roles:string[] = props0.roles;
@@ -80,6 +55,9 @@ function MaterialTableStruct(props0: any) {
     const [openMsg, setOpenMsg] = React.useState(false);
     const [newProfile, setNewProfile] = React.useState<NewProfile>();
     const [qquery, setQuery] = React.useState(false);
+
+    const [userSelect,setUserSelect] = React.useState<string>();
+    const [multipleSelectAccess,setMultipleSelectAccess] = React.useState<string[]>();
 
     const [alertMSG, setAlertMSG] = React.useState<AlertMSG>({
         text: "",
@@ -96,6 +74,14 @@ function MaterialTableStruct(props0: any) {
         // setOpen(false);
     };
 
+    const callBackSetUser = (user:string) => {
+        setUserSelect(user);
+    };
+
+    const callBackSetMultipleSelectAccess = (arr:string[]) => {
+        setMultipleSelectAccess(arr);
+    };
+    
     const setStoreProfiles = (data: any) => store.dispatch(
         setProfiles(data)
     );
@@ -132,7 +118,7 @@ function MaterialTableStruct(props0: any) {
                     },
 
                     {
-                        title: t("ТаблицаПрофайлы.0") + " *",
+                        title: t("ТаблицаПрофайлы.0") + ' *',
                         field: 'name',
                         editComponent: props => (
                             <TextField required id="name-required" label={t("ТаблицаПрофайлы.0")} defaultValue={props.value} 
@@ -143,10 +129,10 @@ function MaterialTableStruct(props0: any) {
                         ),
                     },
                     {
-                        title: "parentId",
+                        title: 'Орг. единица'+' *',
                         field: 'parentId',
                         editComponent: props => (
-                            <TextField id="parentId" label="parentId" defaultValue={props.value} 
+                            <TextField required id="parentId" label="Орг. единица" defaultValue={props.value} 
                             onChange={(event => {
                                 props.onChange(event.target.value)
                             })}
@@ -154,12 +140,12 @@ function MaterialTableStruct(props0: any) {
                         ),
                     },
                     {
-                        title: "userId",
+                        title: 'Пользователь'+' *',
                         field: 'userId',
                         editComponent: props => (
-                            <SelectUser storeUsers={props0.storeUsers} defaultValue={props.value}
-                            
-                            />
+
+                            <AsyncUserSelect proxy={props0.proxy} callBackSetUser={callBackSetUser}/>
+                          
                             
                         ),
                         
@@ -168,6 +154,7 @@ function MaterialTableStruct(props0: any) {
                             if (rowData !== null && rowData !== undefined) {
                                 const data: any = rowData;
                                 user = data.user;
+                                
                             }
                             return (
                                 user?.username
@@ -177,10 +164,10 @@ function MaterialTableStruct(props0: any) {
                     },
 
                     {
-                        title: "access",
+                        title: 'Доступ'+' *',
                         field: 'access',
                         editComponent: props => (
-                            <SelectAccessMultiple />
+                            <SelectAccessMultiple callBackSetMultipleSelectAccess={callBackSetMultipleSelectAccess}/>
                         ),
                         
                         render: rowData => {
@@ -233,14 +220,15 @@ function MaterialTableStruct(props0: any) {
                     },
 
                     {
-                        title: t("ТаблицаПрофайлы.0") + " *",
+                        title: t("ТаблицаПрофайлы.0") + ' *',
                         field: 'name',
                         editComponent: props => (
                             <TextField required id="name-required" label={t("ТаблицаПрофайлы.0")} defaultValue={props.value} />
                         ),
                     },
                     {
-                        title: "parentId", field: 'parentId',
+                        title: 'Орг. единица'+' *', 
+                        field: 'parentId',
                         editComponent: props => (
                             <TextField id="parentId" label="parentId" defaultValue={props.value} 
                             onChange={(event => {
@@ -250,9 +238,10 @@ function MaterialTableStruct(props0: any) {
                         ),
                     },
                     {
-                        title: "userId", field: 'userId',
+                        title: 'Пользователь'+' *',
+                         field: 'userId',
                         editComponent: props => (
-                            <SelectUser storeUsers={props0.storeUsers} defaultValue={props.value} />
+                            <AsyncUserSelect proxy={props0.proxy}/>
                         ),
                         render: rowData => {
                             let user = null;
@@ -281,7 +270,7 @@ function MaterialTableStruct(props0: any) {
                 setStoreProfiles(sd);
             }
         }
-    }, [state]);
+    }, [state,props0]);
 
     const dataPost = () => {
         //  console.log("dataPost")
@@ -352,10 +341,11 @@ function MaterialTableStruct(props0: any) {
             const headers = {
                 'Content-Type': 'application/json; charset=UTF-8',
             }
-            console.log("addProfile", newProfile)
+           // console.log("addProfile", newProfile)
             axios.post(proxy + '/api/profiles/add', newProfile, { headers: headers, withCredentials: true })
                 .then(res => {
-                    console.log(res.data)
+                    resolve()
+                   // console.log(res.data)
                     setAlertMSG((prevState) => {
                         return {
                             ...prevState,
@@ -621,22 +611,17 @@ function MaterialTableStruct(props0: any) {
                         new Promise((resolve) => {
                             setTimeout(() => {
                                 if (newData) {
-                                    const a: any = props0.accessProfile;
-                                    const arr: Array<string> = a.data;
-                                    const lSU:any =  localStorage.getItem("SelectUser");
-                                    const uid:any = JSON.parse(lSU);
-                                    const lMS:any =  localStorage.getItem("MultipleSelect");
-                                    const acc:any = JSON.parse(lMS);
                                     const newData1: NewProfile = {
                                     
                                         name: newData.name,
                                         parentId: newData.parentId,
-                                        userId: uid,
-                                        access: acc,
+                                        userId: userSelect,
+                                        oldUserId:"",
+                                        access: multipleSelectAccess,
                                     }
                                     resolve();
                                     setNewProfile(newData1)
-                                    console.log(newData1)
+                                  //  console.log(newData1)
                                 }
                             }, 600);
 
@@ -645,29 +630,26 @@ function MaterialTableStruct(props0: any) {
                     onRowUpdate: (newData, oldData) =>
                         new Promise((resolve) => {
                             setTimeout(() => {
-                                if (newData) {
-                                    const lSU:any =  localStorage.getItem("SelectUser");
-                                    const uid:any = JSON.parse(lSU);
-                                    const lMS:any =  localStorage.getItem("MultipleSelect");
-                                    const acc:any = JSON.parse(lMS);
-                                    const uu: NewProfile = {
+                                if (newData) {                           
+                                    resolve();
+                                    if (oldData) {
+                                        const idProfile: any = oldData?.id;
+                                        const oldUser:any = oldData?.user; 
+                                        const oldUserId:string = oldUser?oldUser.id:undefined;
+
+                                        const uu: NewProfile = {
                                        
                                         name: newData.name,
                                         parentId: newData.parentId,
-                                        userId: uid,
-                                        access: acc,
+                                        userId: userSelect,
+                                        oldUserId:oldUserId,
+                                        access: multipleSelectAccess,
                                     }
-                                    
-                                    resolve();
-                                    if (oldData) {
-                                        const id: any = oldData?.id;
-                                        editProfile(id, uu)
+
+                                        editProfile(idProfile, uu)
                                         setState((prevState) => {
                                             const data = [...prevState.data];
-                                            console.log("onRowUpdate oldData",oldData )
                                             data[data.indexOf(oldData)] = newData;
-                                            
-                                            console.log("onRowUpdate newData",newData )
                                             return { ...prevState, data };
                                         });
                                        

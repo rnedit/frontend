@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import TopAppBarAndLeftMenu from "./components/TopAppBarAndLeftMenu";
 import SignIn from "./components/SignIn";
 import { updateCurrentUser, updateValueUser } from './reduxactions/actions';
@@ -8,15 +8,14 @@ import SignUp from './components/SignUp';
 import MainDocument from "./workflowForm/MainDocument"
 import axios from "axios";
 import { ROLES } from './components/security/ERules'
-import {proxy} from './components/Conf'
-
+import { proxy } from './components/Conf'
 import GrantAccess from './components/security/GrantAccess'
 import Main from './components/Main'
 
 export const defaultUser = {
     id: null,
     username: 'Гость',
-    parentId:"0",
+    parentId: "0",
     firstName: null,
     lastName: null,
     name: null,
@@ -89,7 +88,7 @@ class App extends Component {
         if (this.state.id !== null) {
             if (this.state.refreshJwtMaxAge === this.state.updateCount ||
                 this.state.refreshJwtMaxAge < this.state.updateCount
-                ) {
+            ) {
                 console.log("updateToken!")
                 const headers = {
                     'Content-Type': 'application/json; charset=UTF-8',
@@ -133,32 +132,35 @@ class App extends Component {
 
         return (
             <div>
+                <Switch>
+                    <Route path="/workflow">
+                        <GrantAccess>
+                            <TopAppBarAndLeftMenu>
 
-                <Route exact path="/workflow">
-                    <GrantAccess>
-                        <TopAppBarAndLeftMenu>
+                            </TopAppBarAndLeftMenu>
+                        </GrantAccess>
+                    </Route>
 
-                        </TopAppBarAndLeftMenu>
-                    </GrantAccess>
-                </Route>
-                <Route exact path="/workflow/createmaindocument">
-                    <GrantAccess>
-                        <TopAppBarAndLeftMenu>
-                            <MainDocument />
-                        </TopAppBarAndLeftMenu>
-                    </GrantAccess>
-                </Route>
+                    <Route path="/signin">
+                        <SignIn />
+                    </Route>
+                    <Route path="/signup" component={SignUp} />
 
-                <Route exact path="/signin">
-                    <SignIn />
-                </Route>
-                <Route exact path="/signup" component={SignUp} />
-               
-               
-                <Route exact path="/" component={Main} />
+
+                    <Route path="/" component={Main} />
+                </Switch>
+
             </div>
 
-
+            /*
+                            <Route exact path="/workflow/createmaindocument">
+                                <GrantAccess>
+                                    <TopAppBarAndLeftMenu>
+                                        <MainDocument />
+                                    </TopAppBarAndLeftMenu>
+                                </GrantAccess>
+                            </Route>
+                            */
             /*
             <Switch>
                 <Route path="/signin" component={SignIn} />
