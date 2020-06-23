@@ -1,4 +1,4 @@
-export interface NewProfile {
+export interface NewOrgUnits {
    
     name: string | undefined;
     parentId: string | undefined;

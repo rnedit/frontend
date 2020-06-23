@@ -59,21 +59,25 @@ export default function ScrollableTabsButtonAuto(props: any) {
 
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <div style={{ width: '100%' }}>
-
-          <Box >
-            <ProfileTable proxy={proxy} />
-          </Box>
-
-        </div>
+         Группы
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Организационная единица
+      <div style={{ width: '100%' }}>
+
+<Box >
+  <ProfileTable proxy={proxy} />
+</Box>
+
+</div>
+        
       </TabPanel>
       <TabPanel value={value} index={3}>
+      Организационная единица
+       
+      </TabPanel>
+      <TabPanel value={value} index={4}>
         Структура
       </TabPanel>
-
     </div>
   );
 }

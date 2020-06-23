@@ -6,9 +6,7 @@ import { updateCurrentUser, updateValueUser } from './reduxactions/actions';
 import { store } from "./init";
 import SignUp from './components/SignUp';
 import MainDocument from "./workflowForm/MainDocument"
-import axios from "axios";
 import { ROLES } from './components/security/ERules'
-import { proxy } from './components/Conf'
 import GrantAccess from './components/security/GrantAccess'
 import Main from './components/Main'
 
@@ -56,12 +54,6 @@ class App extends Component {
         //
     };
 
-    /*
-        shouldComponentUpdate(nextProps, nextState) {
-         
-        }
-    */
-
     state = this.getCurrentStateFromStore()
 
     getCurrentStateFromStore() {
@@ -83,57 +75,21 @@ class App extends Component {
 
     }
 
-    async updateJwtToken() {
-
-        if (this.state.id !== null) {
-            if (this.state.refreshJwtMaxAge === this.state.updateCount ||
-                this.state.refreshJwtMaxAge < this.state.updateCount
-            ) {
-                console.log("updateToken!")
-                const headers = {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                }
-                await axios.post(proxy + '/api/auth/refreshjwt', { "refreshJwt": this.state.refreshJwt },
-                    { headers: headers, withCredentials: true })
-                    .then(res => {
-                        editCurrentUser(res.data)
-                        this.setState({ updateCount: 0 })
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    })
-            }
-            this.setState({ updateCount: this.state.updateCount + 1 })
-            updateValueUserS({ updateCount: this.state.updateCount })
-        }
-    }
-
     componentDidMount() {
 
         this.unsubscribeStore = store.subscribe(this.updateStateFromStore);
 
-        //Проверка есть ли авторизованный пользователь, если есть то обновит токен
-        //console.log(this.state)
-        //this.updateCount = setInterval(() => this.updateJwtToken(),
-        // this.state.refreshJwtMaxAge!==null?this.state.refreshJwtMaxAge:1800000);
-        this.updateCount = setInterval(() => this.updateJwtToken(),
-            1000);
-
-
-        //this.setState({
-        //   updateCount: this.state.updateCount += 1   
-        //        })
     }
     componentWillUnmount() {
         this.unsubscribeStore();
-        clearInterval(this.updateCount);
     }
     render() {
 
         return (
             <div>
                 <Switch>
-                    <Route path="/workflow">
+
+                    <Route exact path="/workflow">
                         <GrantAccess>
                             <TopAppBarAndLeftMenu>
 
@@ -141,12 +97,11 @@ class App extends Component {
                         </GrantAccess>
                     </Route>
 
-                    <Route path="/signin">
+                    
+                    <Route exact path="/signin">
                         <SignIn />
                     </Route>
-                    <Route path="/signup" component={SignUp} />
-
-
+                    <Route exact path="/signup" component={SignUp} />
                     <Route path="/" component={Main} />
                 </Switch>
 

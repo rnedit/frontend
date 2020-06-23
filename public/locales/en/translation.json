@@ -58,7 +58,11 @@
         "7":"Password mismatch!",
         "8":"Please fill in all the fields that are marked * !"
     },
-    
+
+    "СообщенияПрофайл": {
+        "0":"Profile registered!"
+        
+    },
     
     "Таблица": {
         "0":"Created by",
@@ -110,6 +114,11 @@
     },
     "ТаблицаПрофайлы": {
         "0":"Title",
-        "1":"Profiles"
+        "1":"Posts",
+        "2":"Org unit",
+        "3":"User",
+        "4":"Access",
+        "5":"Loading...",
+        "6":"Not found!"
     }
 }

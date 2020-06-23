@@ -3,7 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import axios, { AxiosRequestConfig } from "axios";
-import {User} from "./InterfaceUser"
+import {User} from "./InterfaceProfile"
 import { useTranslation } from 'react-i18next';
 
 function sleep(delay = 0) {

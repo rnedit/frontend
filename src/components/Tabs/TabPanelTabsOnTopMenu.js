@@ -8,6 +8,7 @@ import Tabs from "@material-ui/core/Tabs";
 import { makeStyles } from '@material-ui/core/styles';
 import {  useLocation } from "react-router-dom";
 import { NavTab } from "react-router-tabs";
+import { createMuiTheme } from "@material-ui/core/styles";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -41,16 +42,17 @@ function a11yProps(index: any) {
       'aria-controls': `scrollable-auto-tabpanel-${index}`,
     };
   }
-
+ 
   const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
-        maxWidth: 800,
+        width: "100%",
         marginTop:8,
         backgroundColor: theme.palette.background.paper,
     },
 }));
-export default function TabsTopMenu(props) {
+const TabsTopMenu = React.memo(function TabsTopMenu(props) {
+    console.log("Render TabsTopMenu")
     const { value } = props;
     const { callback } = props;
 
@@ -95,9 +97,10 @@ export default function TabsTopMenu(props) {
                                 value={stab?Number(stab):valueOut} 
                             >
                                 <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=0"} label="Пользователи" {...a11yProps(0)} />
-                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=1"} label="Профайлы" {...a11yProps(1)} />
-                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=2"} label="Организационная единица" {...a11yProps(2)} />
-                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=3"} label="Структура" {...a11yProps(3)} />
+                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=1"} label="Группы" {...a11yProps(1)} />
+                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=2"} label="Должности" {...a11yProps(2)} />
+                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=3"} label="Организационная единица" {...a11yProps(3)} />
+                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=4"} label="Структура" {...a11yProps(4)} />
 
                             </Tabs>
                         </AppBar>
@@ -111,4 +114,5 @@ export default function TabsTopMenu(props) {
         </>
 
     )
-}
+});
+export default TabsTopMenu

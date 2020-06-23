@@ -5,6 +5,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+
 interface roles {
   [index: number]:
   {
@@ -24,11 +25,18 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 );
-export default function SelectRole(props: any) {
+function SelectRole(props: any) {
+  console.log("Render SelectRole")
   const { Roles } = props;
   const { value, onChange } = props;
+  const defaultRole:roles = {
+    [0]: {
+      id:"0",
+      name: "ROLE_USER",
+    }
+  }
 
-  const [name, setName] = React.useState<roles>(value);
+  const [name, setName] = React.useState<roles>(value?value:defaultRole);
  
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setName((prevState) => {
@@ -63,3 +71,5 @@ return (
   </div>
 );
 }
+
+export default SelectRole

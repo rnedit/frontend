@@ -8,22 +8,20 @@ import { useWindowResize } from "../../../UseWindowResize";
 import { connect } from 'react-redux';
 import { ROLES } from '../../../../security/ERules'
 import { useTranslation } from 'react-i18next';
-import { NewProfile } from './NewProfile';
+import { NewOrgUnits } from './NewOrgUnits';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Moment from 'moment';
-import SelectAccessMultiple from './SelectAccessMultiple'
 
 import { setProfiles } from '../../../../../reduxactions/actions';
 import { store } from "../../../../../init";
 
-import AsyncUserSelect from "./AsyncUserSelect"
+import AsyncProfileSelect from "./AsyncProfileSelect"
 import TextField from '@material-ui/core/TextField';
 
 import { setUserToProfile } from '../../../../../reduxactions/actions';
 import {ACCESS} from '../../../../security/EAccess'
-import { interfaceACCESS } from './InterfaceAccess';
-import {User} from "./InterfaceUser"
+import {Profile} from "./InterfaceProfile"
 
 function Alert(props: any) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -46,7 +44,6 @@ interface AlertMSG {
 
 const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any) {
 
-    const access: interfaceACCESS[] = ACCESS;
     const { height } = useWindowResize();
     const history = useHistory();
     const roles:string[] = props0.roles;
@@ -57,7 +54,7 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
 
     // const [open, setOpen] = React.useState(false);
     const [openMsg, setOpenMsg] = React.useState(false);
-    const [newProfile, setNewProfile] = React.useState<NewProfile>();
+    const [newProfile, setNewProfile] = React.useState<NewOrgUnits>();
     const [qquery, setQuery] = React.useState(false);
 
     const [alertMSG, setAlertMSG] = React.useState<AlertMSG>({

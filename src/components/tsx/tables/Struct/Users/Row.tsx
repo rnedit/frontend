@@ -5,6 +5,7 @@ export interface Row {
     firstName: string;
     lastName: string;
     email: string;
+    editable:Boolean;
     roles: [
         {
             id:string,

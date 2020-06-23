@@ -8,6 +8,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import {ACCESS} from '../../../../security/EAccess'
+import { interfaceACCESS } from './InterfaceAccess';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,42 +41,62 @@ const MenuProps = {
     },
   },
 };
-const names: string[] = [];
-ACCESS.forEach(access => {
-  names.push(access.name)
-})
+
+const access: interfaceACCESS[] = ACCESS
 
 
 export default function MultipleSelect(props:any) {
-  const {callBackSetMultipleSelectAccess} = props;
+  const { t } = useTranslation();
+  const { value, onChange } = props;
   const classes = useStyles();
-  const [personName, setPersonName] = React.useState<string[]>([]);
+  const [accessName, setAccessName] = React.useState<string[]>([]);
+  const arrObj: Array<interfaceACCESS> = value;
+  let arr:string[] = [];
+  if (arrObj!==null && arrObj!==undefined)
+  arrObj.forEach(element=>{
+    arr.push(element.info);
+  })
+
+  React.useEffect(() => {
+    setAccessName(arr)
+  }, []);
+
+  //console.log(value)
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setPersonName(event.target.value as string[]);
-   // localStorage.setItem("MultipleSelect", JSON.stringify(event.target.value as string[]))
-   callBackSetMultipleSelectAccess(event.target.value as string[])
+   
+   setAccessName(event.target.value as string[]);
+   let callonChange:Array<interfaceACCESS> = [];
+   const tmp:string[] = event.target.value as string[];
+   tmp.forEach(element=>{
+      access.forEach(a=>{
+        if (a.info===element) {
+          callonChange.push({name:a.name, id:a.id, info:a.info});
+        }
+      })
+   })
+   onChange(callonChange)
   };
-
   return (
    <>
       <FormControl className={classes.formControl}>
-        <InputLabel id="mutiple-checkbox-label" required>Доступ</InputLabel>
+        <InputLabel id="mutiple-checkbox-label" required>{t("ТаблицаПрофайлы.4")}</InputLabel>
         <Select
           labelId="mutiple-checkbox-label"
           id="mutiple-checkbox"
           multiple
           
-          value={personName}
+          value={accessName.length>0?accessName:arr}
           onChange={handleChange}
           input={<Input />}
           renderValue={(selected) => (selected as string[]).join(', ')}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
-            <MenuItem key={name} value={name}>
-              <Checkbox checked={personName.indexOf(name) > -1} />
-              <ListItemText primary={name} />
+          {
+          access.map((a) => (
+            <MenuItem key={a.name} value={a.info} >
+              <Checkbox color='primary' checked={accessName.indexOf(a.info) > -1} />
+              <ListItemText primary={a.info} />
             </MenuItem>
           ))}
         </Select>

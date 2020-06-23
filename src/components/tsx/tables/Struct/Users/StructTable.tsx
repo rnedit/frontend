@@ -1,5 +1,5 @@
 // @ts-ignore
-import React from 'react';
+import React,{useCallback} from 'react';
 import { useHistory } from "react-router-dom";
 import MaterialTable from 'material-table';
 import { TableState } from './ITableState';
@@ -63,8 +63,8 @@ interface AlertMSG {
     typeSeverity:String,
     openMsg:boolean,
 }
-
-function MaterialTableStruct(props: any) {
+const MaterialTableStruct = React.memo(function MaterialTableStruct(props: any) {
+    console.log("Render MaterialTableStruct")
     const classes = useStyles();
     const { height } = useWindowResize();
     const history = useHistory();
@@ -77,7 +77,7 @@ function MaterialTableStruct(props: any) {
     const [open, setOpen] = React.useState(false);
     const [openMsg, setOpenMsg] = React.useState(false);
     const [newUser, setNewUser] = React.useState<NewUser>();
-    const [qquery, setQuery] = React.useState(false);
+    const [qquery, setQuery] = React.useState(true);
 
     const [alertMSG,setAlertMSG] = React.useState<AlertMSG>( {
         text:"",
@@ -108,10 +108,6 @@ function MaterialTableStruct(props: any) {
         else
             return false
     }
-
-     const callBackSetRole = (role:string) => {
-         setRole(role);
-    };
 
     const handleClose = () => {
         setOpen(false);
@@ -327,8 +323,9 @@ function MaterialTableStruct(props: any) {
 
     );
 
-    const dataPost = () => {
-        //  console.log("dataPost")
+    const dataPost = useCallback(
+        () => {
+             // console.log("dataPost")
         new Promise((resolve, reject) => {
             const { proxy } = props;
             const headers = {
@@ -361,21 +358,20 @@ function MaterialTableStruct(props: any) {
                 })
             setQuery(false);
         })
-    }
+        },
+        [history,props,queryPage],
+    )
+   /*    
     React.useEffect(() => {
         
         console.log('Users mount it!');
         setTimeout(() => {
             setQuery(true);
-        }, 1000);
+        }, 500);
        
     }, []);
-
-    React.useEffect(() => {
-        if (newUser !== null && newUser !== undefined && newUser?.password !== "") {
-            signUp()
-        }
-    }, [newUser]);
+*/
+   
     React.useEffect(() => {
         if (alertMSG.text!=="")
          setOpenMsg(alertMSG.openMsg)
@@ -384,7 +380,7 @@ function MaterialTableStruct(props: any) {
     
     React.useEffect(() => {
         if (qquery) dataPost()
-    }, [qquery]);
+    }, [qquery,dataPost]);
 
     React.useEffect(() => {
         if (props.storeUsers!==null && props.storeUsers!==undefined) {
@@ -396,101 +392,110 @@ function MaterialTableStruct(props: any) {
         }   
     }, [state,props]);    
 
-    const signUp = () => {
-        new Promise((resolve) => {
-            const { proxy } = props;
-            const headers = {
-                'Content-Type': 'application/json; charset=UTF-8',
-            }
-            axios.post(proxy + '/api/auth/signup', newUser, { headers: headers, withCredentials: true })
-                .then(res => {
-                   
-                        setAlertMSG((prevState)=>{
-                            return{
-                                ...prevState,
-                                text:t("СообщенияРегистрация.0"),
-                                typeSeverity:"success"
-                            }   
-                        })
-      
-                    setState((prevState) => {
-                        const data = [...prevState.data];
-                        const ae: any = {
-                            username: newUser?.username,
-                            firstName: newUser?.firstName,
-                            lastName: newUser?.lastName,
-                            email: newUser?.email,
-                            roles: newUser?.roles
-                        }
-                        data.push(ae);
-                        return { ...prevState, data };
-                    })
-                    setQuery(true);
-                })
-                .catch(error => {
-                    if (error.response !== undefined) {
-                        if (Number(error.response.data.code) === 0) {
+    const signUp = useCallback(
+        () => {
+            new Promise((resolve) => {
+                const { proxy } = props;
+                const headers = {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                }
+                axios.post(proxy + '/api/auth/signup', newUser, { headers: headers, withCredentials: true })
+                    .then(res => {
+                        resolve()
                             setAlertMSG((prevState)=>{
                                 return{
                                     ...prevState,
-                                    text: newUser?.email + t("СообщенияРегистрация.2")
+                                    text:t("СообщенияРегистрация.0"),
+                                    typeSeverity:"success"
+                                }   
+                            })
+          
+                        setState((prevState) => {
+                            const data = [...prevState.data];
+                            const ae: any = {
+                                username: newUser?.username,
+                                firstName: newUser?.firstName,
+                                lastName: newUser?.lastName,
+                                email: newUser?.email,
+                                roles: newUser?.roles
+                            }
+                            data.push(ae);
+                            return { ...prevState, data };
+                        })
+                        setQuery(true);
+                    })
+                    .catch(error => {
+                        if (error.response !== undefined) {
+                            if (Number(error.response.data.code) === 0) {
+                                setAlertMSG((prevState)=>{
+                                    return{
+                                        ...prevState,
+                                        text: newUser?.email + t("СообщенияРегистрация.2")
+                                    }   
+                                })
+                            }
+                            else
+                                if (Number(error.response.data.code) === 1) {
+                                    setAlertMSG((prevState)=>{
+                                        return{
+                                            ...prevState,
+                                            text: newUser?.email + t("СообщенияРегистрация.3")
+                                        }   
+                                    })
+                                }
+                            else
+                                if (Number(error.response.data.code) === 2) {
+                                    setAlertMSG((prevState)=>{
+                                        return{
+                                            ...prevState,
+                                            text: t("СообщенияРегистрация.8")
+                                        }   
+                                    })
+                                }
+                            
+                            console.log(error)
+                            console.log(error.response.data)
+                        } else {
+                            setAlertMSG((prevState)=>{
+                                return{
+                                    ...prevState,
+                                    text:t("СообщенияРегистрация.4")
                                 }   
                             })
                         }
-                        else
-                            if (Number(error.response.data.code) === 1) {
-                                setAlertMSG((prevState)=>{
-                                    return{
-                                        ...prevState,
-                                        text: newUser?.email + t("СообщенияРегистрация.3")
-                                    }   
-                                })
-                            }
-                        else
-                            if (Number(error.response.data.code) === 2) {
-                                setAlertMSG((prevState)=>{
-                                    return{
-                                        ...prevState,
-                                        text: t("СообщенияРегистрация.8")
-                                    }   
-                                })
-                            }
-                        
-                        console.log(error)
-                        console.log(error.response.data)
-                    } else {
                         setAlertMSG((prevState)=>{
                             return{
                                 ...prevState,
-                                text:t("СообщенияРегистрация.4")
+                                typeSeverity:"error"
                             }   
                         })
-                    }
+    
+                    })
                     setAlertMSG((prevState)=>{
                         return{
                             ...prevState,
-                            typeSeverity:"error"
+                            openMsg:true
                         }   
                     })
+                setTimeout(() => {
+    
+                    setAlertMSG((prevState)=>{
+                        return{
+                            ...prevState,
+                            openMsg:false
+                        }   
+                    })
+                }, 3000);
+            })
+        },
+        [newUser,props,t],
+    )
 
-                })
-                setAlertMSG((prevState)=>{
-                    return{
-                        ...prevState,
-                        openMsg:true
-                    }   
-                })
-            setTimeout(() => {
-
-                setAlertMSG((prevState)=>{
-                    return{
-                        ...prevState,
-                        openMsg:false
-                    }   
-                })
-            }, 3000);
-        })
-    }
+    React.useEffect(() => {
+        if (newUser !== null && newUser !== undefined && newUser?.password !== "") {
+            signUp()
+        }
+    }, [newUser,signUp]);
 
     const deleteUser = (id: string) => {
         //console.log("deleteUser",id)
@@ -537,6 +542,7 @@ function MaterialTableStruct(props: any) {
     return (
         <>
             <MaterialTable
+               
                 title={t("Таблица.6")}
                 tableRef={tableRef}
                 columns={state.columns}
@@ -824,7 +830,7 @@ function MaterialTableStruct(props: any) {
         </>
 
     );
-}
+})
 const mapStateToProps = function (state: any) {
     return {
         roles: state.currentUser.user.roles,

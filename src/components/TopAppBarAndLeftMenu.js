@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -93,7 +93,7 @@ function a11yProps(index) {
 }
 
 function TopAppBarAndLeftMenu(props) {
-
+console.log("Render TopAppBarAndLeftMenu")
     const { window } = props;
     const classes = useStyles();
     const theme = useTheme();
@@ -102,17 +102,27 @@ function TopAppBarAndLeftMenu(props) {
     const [value, setValue] = React.useState(0);
     const [valueTopMenu, setValueTopMenu] = React.useState(0);
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
+    const handleChange = useCallback(
+        (event, newValue) => {
+            setValue(newValue);
+        },
+        [],
+    )
+       
 
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
+    const handleDrawerToggle = useCallback(
+        () => {
+            setMobileOpen(!mobileOpen);
+        },
+        [mobileOpen],
+    ) 
 
-    const myCallback = (dataFromChild) => {
-        setValueTopMenu(dataFromChild);
-    };
+    const myCallback = useCallback(
+        (dataFromChild) => {
+            setValueTopMenu(dataFromChild);
+        },
+        [],
+    )
 
     const AppBar1 = classNames(classes.appBar, classes.appBar2);
     const location = useLocation();
@@ -292,4 +302,4 @@ const mapStateToProps = function (state) {
         loggedIn: state.currentUser.user.loggedIn
     }
 }
-export default connect(mapStateToProps)(TopAppBarAndLeftMenu);
+export default connect(mapStateToProps)(React.memo(TopAppBarAndLeftMenu));
