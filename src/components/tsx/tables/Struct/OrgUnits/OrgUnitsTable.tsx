@@ -1,5 +1,5 @@
 // @ts-ignore
-import React,{useCallback} from 'react';
+import React, { useCallback } from 'react';
 import { useHistory } from "react-router-dom";
 import MaterialTable from 'material-table';
 import { TableState } from './ITableState';
@@ -8,28 +8,23 @@ import { useWindowResize } from "../../../UseWindowResize";
 import { connect } from 'react-redux';
 import { ROLES } from '../../../../security/ERules'
 import { useTranslation } from 'react-i18next';
-import { NewOrgUnits } from './NewOrgUnits';
+import { NewOrgUnit } from './NewOrgUnit';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Moment from 'moment';
-
-import { setProfiles } from '../../../../../reduxactions/actions';
-import { store } from "../../../../../init";
-
-import AsyncProfileSelect from "./AsyncProfileSelect"
+import DialogListAddProfile from './DialogListAddProfile'
+import DialogListAddOrgUnit from './DialogListAddOrgUnit'
 import TextField from '@material-ui/core/TextField';
-
-import { setUserToProfile } from '../../../../../reduxactions/actions';
-import {ACCESS} from '../../../../security/EAccess'
-import {Profile} from "./InterfaceProfile"
+import ListProfiles from './ListProfiles';
+import ListOrgUnits from './ListOrgUnits';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import Grid from '@material-ui/core/Grid';
+import SwitcheHomeOrgUnit from './SwitcheHomeOrgUnit'
 
 function Alert(props: any) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
-
-export const setAP = (data:string | null) => store.dispatch(
-    setUserToProfile(data)
-);
 
 interface QueryPage {
     page: number,
@@ -46,15 +41,15 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
 
     const { height } = useWindowResize();
     const history = useHistory();
-    const roles:string[] = props0.roles;
+    const roles: string[] = props0.roles;
     const roleAccess: boolean = roles.includes(ROLES.ADMIN || ROLES.MODERATOR);
     const roleAccessAdmin: boolean = roles.includes(ROLES.ADMIN);
     const roleAccessModerator: boolean = roles.includes(ROLES.MODERATOR);
     const { t } = useTranslation();
 
-    // const [open, setOpen] = React.useState(false);
+    //const [open, setOpen] = React.useState(false);
     const [openMsg, setOpenMsg] = React.useState(false);
-    const [newProfile, setNewProfile] = React.useState<NewOrgUnits>();
+    const [newOrgUnit, setNewOrgUnit] = React.useState<NewOrgUnit>();
     const [qquery, setQuery] = React.useState(false);
 
     const [alertMSG, setAlertMSG] = React.useState<AlertMSG>({
@@ -71,10 +66,10 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
     const handleClose = () => {
         // setOpen(false);
     };
-    
-    const setStoreProfiles = (data: any) => store.dispatch(
-        setProfiles(data)
-    );
+
+    //   const setStoreProfiles = (data: any) => store.dispatch(
+    //       setProfiles(data)
+    //   );
 
     const [selectedRow, setSelectedRow] = React.useState("null");
     const [state, setState] = React.useState<TableState>(
@@ -111,87 +106,64 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                         title: t("ТаблицаПрофайлы.0") + ' *',
                         field: 'name',
                         editComponent: props => (
-                            <TextField required id="name-required" label={t("ТаблицаПрофайлы.0")} defaultValue={props.value} 
-                            onChange={(event => {
-                                props.onChange(event.target.value)
-                            })}
+                            <TextField required id="name-required" label={t("ТаблицаПрофайлы.0")} defaultValue={props.value}
+                                onChange={(event => {
+                                    props.onChange(event.target.value)
+                                })}
                             />
                         ),
-                    },
-                    {
-                        title: t("ТаблицаПрофайлы.2")+' *',
-                        field: 'parentId',
-                        editComponent: props => (
-                            <TextField required id="parentId" label="Орг. единица" defaultValue={props.value} 
-                            onChange={(event => {
-                                props.onChange(event.target.value)
-                            })}
-                            />
-                        ),
-                    },
-                    {
-                        title: t("ТаблицаПрофайлы.3")+' *',
-                        field: 'userId',
-                        editComponent: props => (
-
-                            <AsyncUserSelect proxy={props0.proxy} //callBackSetUser={callBackSetUser} 
-                            defValue={props.rowData.user?props.rowData.user.username:undefined} onChange={props.onChange} />
-                          
-                            
-                        ),
-                        
                         render: rowData => {
-                            if (rowData.userId !== null && rowData.userId !== undefined) {
-                                return (
-                                    rowData.userId
-                                    )
-                            } else {
-                                let user = null;
-                                if (rowData.user !== null && rowData.user !== undefined) {
-                                    const data: any = rowData;
-                                    user = data.user;
-                                
-                                return (
-                                    user?.username
-                                )
-                                } else {
-                                    return (
-                                    "null"
-                                    )
-                                }
-                            }                       
-
-                        },
-                        
-                    },
-
-                    {
-                        title: t("ТаблицаПрофайлы.4")+' *',
-                        field: 'access',
-                        editComponent: props => (
-                            <SelectAccessMultiple //callBackSetMultipleSelectAccess={callBackSetMultipleSelectAccess}
-                            value={props.value} onChange={props.onChange}
-                            />
-                        ),
-                        
-                        render: rowData => {
-                           
-                            let stringAccess: string = "";
-                            if (rowData !== null && rowData !== undefined) {
-
-                                const { access } = rowData;
-                                access.forEach(a => {
-                                    const { info } = a;
-                                    stringAccess += info + ", ";
-                                })
-                            }
                             return (
-                                stringAccess
+                                <Typography component="div">
+                                    <Box fontWeight="fontWeightMedium">
+                                        {rowData.name}
+                                    </Box>
+                                </Typography> 
+                               
+                               
                             )
                         },
-                       
                     },
                     
+                    {
+                        title: t("ТаблицаОргЕдиница.2"),
+                        field: 'parentName',
+                        editable: 'never',
+                        hidden: true,
+                        editComponent: props => (
+                            <>
+                            </>
+                        ),
+                        render: rowData => {
+
+                            return (
+                                rowData.parentName
+                            )
+
+                        },
+
+                    },
+
+                    {
+                        title: "",
+                        field: 'profiles',
+                        editComponent: props => (
+                            <>
+                            </>
+                        ),
+                        render: rowData => {
+
+                            return (
+                                <Box display="flex" justifyContent="right">
+                                    <DialogListAddProfile proxy={props0.proxy} id={rowData.id} />
+                                    <DialogListAddOrgUnit proxy={props0.proxy} id={rowData.id} />
+                                </Box>
+                            )
+
+                        },
+
+                    },
+
                 ],
 
                 data: [],
@@ -230,34 +202,55 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                         editComponent: props => (
                             <TextField required id="name-required" label={t("ТаблицаПрофайлы.0")} defaultValue={props.value} />
                         ),
+                        render: rowData => {
+                            return (
+                                <Typography component="div">
+                                    <Box fontWeight="fontWeightMedium">
+                                        {rowData.name}
+                                    </Box>
+                                </Typography> 
+                               
+                               
+                            )
+                        },
                     },
                     {
-                        title: t("ТаблицаПрофайлы.2")+' *', 
-                        field: 'parentId',
+                        title: t("ТаблицаОргЕдиница.2"),
+                        field: 'parentName',
+                        editable: 'never',
+                        hidden: true,
                         editComponent: props => (
-                            <TextField id="parentId" label="parentId" defaultValue={props.value} 
-                            onChange={(event => {
-                                props.onChange(event.target.value)
-                            })}
-                            />
-                        ),
-                    },
-                    {
-                        title: t("ТаблицаПрофайлы.3")+' *',
-                         field: 'userId',
-                        editComponent: props => (
-                            <AsyncUserSelect proxy={props0.proxy}/>
+                            <>
+                            </>
                         ),
                         render: rowData => {
-                            let user = null;
-                            if (rowData !== null && rowData !== undefined) {
-                                const data: any = rowData;
-                                user = data.user;
 
-                            }
                             return (
-                                user?.username
+                                rowData.parentName
                             )
+
+                        },
+
+                    },
+
+                    {
+                        title: "",
+                        field: 'profiles',
+                        editComponent: props => (
+                            <>
+                            </>
+                        ),
+                        render: rowData => {
+
+                            return (
+
+                                <Box display="flex" justifyContent="right">
+                                    <DialogListAddProfile proxy={props0.proxy} id={rowData.id} />
+                                    <DialogListAddOrgUnit proxy={props0.proxy} id={rowData.id} />
+                                </Box>
+
+                            )
+
                         },
                     },
 
@@ -267,64 +260,54 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
 
     );
 
-    React.useEffect(() => {
-        if (props0.storeProfiles !== null && props0.storeProfiles !== undefined) {
-            const ud: Array<any> = props0.storeProfiles;
-            const sd: Array<any> = state.data;
-            if (JSON.stringify(ud) !== JSON.stringify(sd)) {
-                setStoreProfiles(sd);
-            }
-        }
-    }, [state,props0]);
-
     const dataPost = useCallback(
         () => {
-             //  console.log("dataPost")
-        new Promise((resolve, reject) => {
-            const { proxy } = props0;
-            const headers = {
-                'Content-Type': 'application/json; charset=UTF-8',
-            }
-            const url = proxy + '/api/profiles?'
-            const req = {
-                perpage: queryPage.pageSize,
-                page: queryPage.page
-            }
-            //console.log("dataPostProfile req", req)
-            axios.post(url, req, { headers: headers, withCredentials: true })
-                .then(res => {
-                    resolve();
-                    setState((prevState) => {
-                        const data = res.data.profiles;
-                        return { ...prevState, data };
+            // console.log("dataPost")
+            new Promise((resolve, reject) => {
+                const { proxy } = props0;
+                const headers = {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                }
+                const url = proxy + '/api/orgunits?'
+                const req = {
+                    perpage: queryPage.pageSize,
+                    page: queryPage.page
+                }
+                //console.log("dataPostProfile req", req)
+                axios.post(url, req, { headers: headers, withCredentials: true })
+                    .then(res => {
+                        resolve();
+                        setState((prevState) => {
+                            const data = res.data.orgunits;
+                            return { ...prevState, data };
 
-                    });
-                })
-                .catch(error => {
-                    console.log(error)
-                    if (error.response !== undefined) {
-                        if (Number(error.response.status) === 401) {
-                            history.push("/signin")
-                        } else {
-                            console.log("Another error")
-                        }
-                    } else console.log("Network error")
+                        });
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        if (error.response !== undefined) {
+                            if (Number(error.response.status) === 401) {
+                                history.push("/signin")
+                            } else {
+                                console.log("Another error")
+                            }
+                        } else console.log("Network error")
 
-                })
-            setQuery(false);
-        })
+                    })
+                setQuery(false);
+            })
         },
-        [props0,queryPage,history],
+        [props0, queryPage, history],
     )
 
     React.useEffect(() => {
-        console.log('Profile mount it!');
+        console.log('OrgUnit mount it!');
         setTimeout(() => {
             setQuery(true);
         }, 500);
     }, []);
 
-  
+
     React.useEffect(() => {
         if (alertMSG.text !== "")
             setOpenMsg(alertMSG.openMsg)
@@ -333,20 +316,20 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
 
     React.useEffect(() => {
         if (qquery) dataPost()
-    }, [qquery,dataPost]);
+    }, [qquery, dataPost]);
 
-    const addProfile = useCallback(
+    const add = useCallback(
         () => {
             new Promise((resolve) => {
                 const { proxy } = props0;
                 const headers = {
                     'Content-Type': 'application/json; charset=UTF-8',
                 }
-               // console.log("addProfile", newProfile)
-                axios.post(proxy + '/api/profiles/add', newProfile, { headers: headers, withCredentials: true })
+                // console.log("addProfile", newProfile)
+                axios.post(proxy + '/api/orgunits/add', newOrgUnit, { headers: headers, withCredentials: true })
                     .then(res => {
                         resolve()
-                       // console.log(res.data)
+                        // console.log(res.data)
                         setAlertMSG((prevState) => {
                             return {
                                 ...prevState,
@@ -362,7 +345,7 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                                 setAlertMSG((prevState) => {
                                     return {
                                         ...prevState,
-                                        text: newProfile?.name + t("СообщенияРегистрация.2")
+                                        text: newOrgUnit?.name + t("СообщенияРегистрация.2")
                                     }
                                 })
                             }
@@ -371,7 +354,7 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                                     setAlertMSG((prevState) => {
                                         return {
                                             ...prevState,
-                                            text: newProfile?.name + t("СообщенияРегистрация.3")
+                                            text: newOrgUnit?.name + t("СообщенияРегистрация.3")
                                         }
                                     })
                                 }
@@ -384,7 +367,7 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                                             }
                                         })
                                     }
-    
+
                             console.log(error)
                             console.log(error.response.data)
                         } else {
@@ -401,7 +384,7 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                                 typeSeverity: "error"
                             }
                         })
-    
+
                     })
                 setAlertMSG((prevState) => {
                     return {
@@ -410,7 +393,7 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                     }
                 })
                 setTimeout(() => {
-    
+
                     setAlertMSG((prevState) => {
                         return {
                             ...prevState,
@@ -420,28 +403,28 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                 }, 3000);
             })
         },
-        [newProfile,props0,t],
+        [newOrgUnit, props0, t],
     )
 
     React.useEffect(() => {
-        if (newProfile !== null && newProfile !== undefined
-            && newProfile?.name !== ""
-            && newProfile?.access !== null && newProfile?.access !== undefined && newProfile?.access.length > 0) {
-            addProfile()
+        if (newOrgUnit !== null && newOrgUnit !== undefined
+            && newOrgUnit?.name !== ""
+        ) {
+            add()
         }
-    }, [newProfile,addProfile]);
+    }, [newOrgUnit, add]);
 
 
-    const deleteProfile = (id: string) => {
+    const del = (id: string) => {
         new Promise((resolve) => {
             const { proxy } = props0;
             const headers = {
                 'Content-Type': 'application/json; charset=UTF-8',
             }
-            axios.post(proxy + '/api/profiles/delete/' + id, null, { headers: headers, withCredentials: true })
+            axios.post(proxy + '/api/orgunits/delete/' + id, null, { headers: headers, withCredentials: true })
                 .then(res => {
                     resolve()
-                    console.log("deleteProfile success")
+                    console.log("delete orgunit success")
                 })
                 .catch(error => {
                     console.log(error)
@@ -450,18 +433,18 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
 
     }
 
-    const editProfile = (id: string, updateProfile: NewProfile) => {
+    const edit = (id: string, update: NewOrgUnit) => {
         new Promise((resolve) => {
             //console.log("editProfile",updateProfile)
             const { proxy } = props0;
             const headers = {
                 'Content-Type': 'application/json; charset=UTF-8',
             }
-            axios.post(proxy + '/api/profiles/edit/' + id, updateProfile, { headers: headers, withCredentials: true })
+            axios.post(proxy + '/api/orgunits/edit/' + id, update, { headers: headers, withCredentials: true })
                 .then(res => {
                     resolve()
                     //setQuery(true) //<----
-                    console.log("editProfile edit success")
+                    console.log("orgunit edit success")
                 })
                 .catch(error => {
                     console.log(error)
@@ -476,56 +459,69 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
     return (
         <>
             <MaterialTable
-                title={t("ТаблицаПрофайлы.1")}
+                title={t("ТаблицаПрофайлы.2")}
                 tableRef={tableRef}
                 columns={state.columns}
                 data={state.data}
-                isLoading={state.data.length===0}
+                isLoading={state.data.length === 0}
                 onChangeRowsPerPage={(pageSize: number) => {
                     setQueryPage((prevState) => {
                         return { ...prevState, pageSize };
                     });
 
                 }}
+                onChangePage={(page: number) => {
+                    setQueryPage((prevState) => {
+                        return { ...prevState, page };
+                    });
+
+                }}
+
                 detailPanel={[
                     {
-                        icon: 'account_circle',
-                        tooltip: 'Show Surname',
+                        icon: 'add',
+                        openIcon: 'remove',
+                        tooltip: 'Развернуть/Свернуть',
                         render: rowData => {
                             return (
-                                <div
-                                    style={{
-                                        fontSize: 100,
-                                        textAlign: 'center',
-                                        color: 'white',
-                                        backgroundColor: '#e53935',
-                                    }}
-                                >
-                                    {"asd"}
-                                </div>
+                                <Box>
+                                    <Box display="flex" justifyContent="left" m={1} p={1} bgcolor="background.paper">
+                                    <Grid container spacing={3}>
+                                            <Grid item xs={3}>
+                                                Является Главной:
+                                        </Grid>
+                                            <Grid item xs={9}>
+                                               <SwitcheHomeOrgUnit proxy={props0.proxy} id={rowData.id}
+                                                homeOrgUnit={rowData.homeOrgUnit} />
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Box display="flex" justifyContent="left" m={1} p={1} bgcolor="background.paper">
+                                        <Grid container spacing={3}>
+                                            <Grid item xs={3}>
+                                                Список прикрепленных должностей:
+                                        </Grid>
+                                            <Grid item xs={9}>
+                                                <ListProfiles proxy={props0.proxy} id={rowData.id} />
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Box display="flex" justifyContent="left" m={1} p={1} bgcolor="background.paper">
+                                        <Grid container spacing={3}>
+                                            <Grid item xs={3}>
+                                                Список прикрепленных Орг. единиц:
+                                        </Grid>
+                                            <Grid item xs={9}>
+                                                <ListOrgUnits proxy={props0.proxy} id={rowData.id} />
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                </Box>
+
                             );
                         },
                     },
-                    rowData => ({
 
-                        icon: 'favorite_border',
-                        openIcon: 'favorite',
-                        tooltip: 'Show Both',
-                        render: rowData => {
-                            return (
-                                <div
-                                    style={{
-                                        fontSize: 100,
-                                        textAlign: 'center',
-                                        color: 'white',
-                                        backgroundColor: '#FDD835',
-                                    }}
-                                >
-                                    {"rowData.name"} {"rowData.surname"}
-                                </div>
-                            );
-                        },
-                    }),
                 ]}
 
                 actions={[
@@ -612,37 +608,17 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                         new Promise((resolve) => {
                             setTimeout(() => {
                                 if (newData) {
-                                   
-                                    let arrAccess:string[] = [];
-                                    if (newData.access!==null && newData.access!==undefined)
-                                        newData.access.forEach(element=>{
-                                               arrAccess.push(element.name)
-                                        })
-                                    const user:User = {
-                                        username:newData.userId,
-                                    }    
-                                     
-                                    const newData1: NewProfile = {
-                                    
+                                    const newData1: NewOrgUnit = {
                                         name: newData.name,
-                                        parentId: newData.parentId,
-                                        user: user,
-                                        //userId: newData.userId,
-                                        oldUserId:"",
-                                        access: arrAccess,
                                     }
-                                    console.log(newData1,"newData1 add")
+                                    // console.log(newData1, "newData1 add")
                                     resolve();
-                                    setNewProfile(newData1)
+                                    setNewOrgUnit(newData1)
 
                                     setState((prevState) => {
                                         const data = [...prevState.data];
                                         const ae: any = {
                                             name: newData1?.name,
-                                            parentId: newData1?.parentId,
-                                            //userId: newData1?.userId,
-                                            user: newData1?.user,
-                                            access: newData.access,
                                         }
                                         data.push(ae);
                                         return { ...prevState, data };
@@ -655,48 +631,24 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                     onRowUpdate: (newData, oldData) =>
                         new Promise((resolve) => {
                             setTimeout(() => {
-                                if (newData) {                           
+                                if (newData) {
                                     resolve();
                                     if (oldData) {
-                                        const idProfile: any = oldData?.id;
-                                        const oldUser:any = oldData?.user; 
-                                        const oldUserId:string = oldUser?oldUser.id:undefined;
-                                        const userId = newData.userId!==undefined?newData.userId:newData.user.username
-                                        const user:User = {
-                                            username: userId,
-                                        }   
-                                        let access:string[] = [];
-                                        const tmp = newData.access;
-                                        tmp.forEach(element=>{
-                                            access.push(element.name);
-                                         })
-                                        const uu: NewProfile = {
-                                        name: newData.name,
-                                        parentId: newData.parentId,
-                                        user: user,
-                                        //userId: userId,
-                                        oldUserId: oldUserId,
-                                        access: access,
-                                    }
-                                    const dataUpdate: NewProfile = {
-                                        name: newData.name,
-                                        parentId: newData.parentId,
-                                        user: user,
-                                        //userId: userId,
-                                        oldUserId: oldUserId,
-                                        access: newData.access,
-                                    }                                 
-                                       
-                                        editProfile(idProfile, uu)
+                                        const id: any = oldData?.id;
+
+                                        const uu: NewOrgUnit = {
+                                            name: newData.name,
+                                        }
+                                        edit(id, uu)
                                         setState((prevState) => {
                                             const data = [...prevState.data];
-                                            data[data.indexOf(oldData)] = dataUpdate as any;
+                                            data[data.indexOf(oldData)] = uu as any;
                                             return { ...prevState, data };
                                         });
-                                       
-                                       
+
+
                                     }
-                                   
+
                                 }
                             }, 600);
 
@@ -704,26 +656,26 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
 
                     onRowDelete: (oldData) =>
                         new Promise((resolve) => {
-    
-                          if (!roleAccessAdmin){
-                              alert("Role Admin or Moderator not Deleted!")
-                              setTimeout(() => {
-                                resolve();
-                            }, 100);
-                          }else{
-                           
-                            setTimeout(() => {
-                                resolve();
-                                deleteProfile(oldData.id)
-                                setState((prevState) => {
-                                    const data = [...prevState.data];
-                                    data.splice(data.indexOf(oldData), 1);
-                                    return { ...prevState, data };
-                                });
+
+                            if (!roleAccessAdmin) {
+                                alert("Role Admin or Moderator not Deleted!")
+                                setTimeout(() => {
+                                    resolve();
+                                }, 100);
+                            } else {
+
+                                setTimeout(() => {
+                                    resolve();
+                                    del(oldData.id)
+                                    setState((prevState) => {
+                                        const data = [...prevState.data];
+                                        data.splice(data.indexOf(oldData), 1);
+                                        return { ...prevState, data };
+                                    });
 
 
-                            }, 600);
-                          }
+                                }, 600);
+                            }
                         }),
                 } : {
 
@@ -743,9 +695,6 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
 const mapStateToProps = function (state: any) {
     return {
         roles: state.currentUser.user.roles,
-        storeUsers: state.users.data,
-        accessProfile: state.accessProfile.data,
-        setUserToProfile: state.profiles.setUserToProfile
     }
 }
 export default connect(mapStateToProps)(MaterialTableStruct);

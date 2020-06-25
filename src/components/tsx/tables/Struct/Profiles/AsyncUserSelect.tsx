@@ -32,7 +32,7 @@ export default function Asynchronous(props:any) {
 
     const axiosOption: AxiosRequestConfig = {
         method: 'post',
-        url: proxy+'/api/users/parentidnotnull',
+        url: proxy+'/api/users/parentidisnull',
         headers:{'Content-Type': 'application/json; charset=UTF-8'},
         withCredentials: true,
        
@@ -54,7 +54,7 @@ export default function Asynchronous(props:any) {
     return () => {
       active = false;
     };
-  }, [loading,proxy]);
+  }, []);
 
   React.useEffect(() => {
     if (!open) {

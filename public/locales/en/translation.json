@@ -120,5 +120,12 @@
         "4":"Access",
         "5":"Loading...",
         "6":"Not found!"
+    },
+
+    "ТаблицаОргЕдиница": {
+        "0":"Profiles",
+        "1":"Positions/Organ.",
+        "2":"Refs to",
+        "3":"Home"
     }
 }

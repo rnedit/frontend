@@ -5,7 +5,8 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import StructTable from '../tables/Struct/Users/StructTable'
 import ProfileTable from '../tables/Struct/Profiles/ProfileTable'
-
+import OrgUnitsTable from '../tables/Struct/OrgUnits/OrgUnitsTable'
+import StructureTree from '../tables/Struct/Structure/StructureTree'
 interface TabPanelProps {
   children?: React.ReactNode;
   index: any;
@@ -72,11 +73,20 @@ export default function ScrollableTabsButtonAuto(props: any) {
         
       </TabPanel>
       <TabPanel value={value} index={3}>
-      Организационная единица
+      <div style={{ width: '100%' }}>
+
+<Box >
+  <OrgUnitsTable proxy={proxy} />
+</Box>
+
+      </div>
        
       </TabPanel>
       <TabPanel value={value} index={4}>
-        Структура
+      <Box >
+        <StructureTree proxy={proxy} />
+      </Box>
+
       </TabPanel>
     </div>
   );

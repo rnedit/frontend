@@ -1,15 +1,13 @@
 export interface Row {
     id: string;
-    name: string;
     creationDate: string;
-    parentId: string;
-    userId: string;
-    user: any;
-    access: [
+    name: string;
+    parentName: string;
+    homeOrgUnit: boolean;
+    profiles: [
         {
-            id:string,
-            name:string,
-            info:string,
+            id:string;
+            name:string;
         }
     ];
 }

@@ -3,7 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import axios, { AxiosRequestConfig } from "axios";
-import {User} from "./InterfaceProfile"
+import Profile from "./InterfaceProfile"
 import { useTranslation } from 'react-i18next';
 
 function sleep(delay = 0) {
@@ -16,7 +16,7 @@ export default function Asynchronous(props:any) {
   const {proxy} = props;
   const { defValue, onChange } = props;
   const [open, setOpen] = React.useState(false);
-  const [options, setOptions] = React.useState<User[]>([]);
+  const [options, setOptions] = React.useState<Profile[]>([]);
   const loading = open && options.length === 0;
   const { t } = useTranslation();
   let arr: any = [];
@@ -47,14 +47,14 @@ export default function Asynchronous(props:any) {
       arr.push(element)
       })
       if (active) {
-        setOptions(Object.keys(arr).map((key) => arr[key]) as User[]);
+        setOptions(Object.keys(arr).map((key) => arr[key]) as Profile[]);
       }
     })();
 
     return () => {
       active = false;
     };
-  }, [loading,proxy]);
+  }, []);
 
   React.useEffect(() => {
     if (!open) {

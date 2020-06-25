@@ -19,7 +19,8 @@ import { store } from "../../../../../init";
 
 import AsyncUserSelect from "./AsyncUserSelect"
 import TextField from '@material-ui/core/TextField';
-
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 import { setUserToProfile } from '../../../../../reduxactions/actions';
 import {ACCESS} from '../../../../security/EAccess'
 import { interfaceACCESS } from './InterfaceAccess';
@@ -46,7 +47,7 @@ interface AlertMSG {
 
 const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any) {
 
-    const access: interfaceACCESS[] = ACCESS;
+    //const access: interfaceACCESS[] = ACCESS;
     const { height } = useWindowResize();
     const history = useHistory();
     const roles:string[] = props0.roles;
@@ -120,12 +121,24 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                             })}
                             />
                         ),
+                        render: rowData => {
+                            return (
+                                <Typography component="div">
+                                    <Box fontWeight="fontWeightMedium">
+                                        {rowData.name}
+                                    </Box>
+                                </Typography> 
+                               
+                               
+                            )
+                        },
                     },
                     {
                         title: t("ТаблицаПрофайлы.2")+' *',
-                        field: 'parentId',
+                        field: 'parentName',
+                        editable: 'never',
                         editComponent: props => (
-                            <TextField required id="parentId" label="Орг. единица" defaultValue={props.value} 
+                            <TextField required id="parentName" label="Орг. единица" defaultValue={props.value} 
                             onChange={(event => {
                                 props.onChange(event.target.value)
                             })}
@@ -137,10 +150,10 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                         field: 'userId',
                         editComponent: props => (
 
-                            <AsyncUserSelect proxy={props0.proxy} //callBackSetUser={callBackSetUser} 
-                            defValue={props.rowData.user?props.rowData.user.username:undefined} onChange={props.onChange} />
-                          
-                            
+                            <AsyncUserSelect proxy={props0.proxy} 
+                                defValue={props.rowData.user?props.rowData.user.username:undefined} 
+                                onChange={props.onChange} 
+                            />  
                         ),
                         
                         render: rowData => {
@@ -172,8 +185,9 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                         title: t("ТаблицаПрофайлы.4")+' *',
                         field: 'access',
                         editComponent: props => (
-                            <SelectAccessMultiple //callBackSetMultipleSelectAccess={callBackSetMultipleSelectAccess}
-                            value={props.value} onChange={props.onChange}
+                            <SelectAccessMultiple
+                                value={props.value} 
+                                onChange={props.onChange}
                             />
                         ),
                         
@@ -233,10 +247,22 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                         editComponent: props => (
                             <TextField required id="name-required" label={t("ТаблицаПрофайлы.0")} defaultValue={props.value} />
                         ),
+                        render: rowData => {
+                            return (
+                                <Typography component="div">
+                                    <Box fontWeight="fontWeightMedium">
+                                        {rowData.name}
+                                    </Box>
+                                </Typography> 
+                               
+                               
+                            )
+                        },
                     },
                     {
                         title: t("ТаблицаПрофайлы.2")+' *', 
                         field: 'parentId',
+                        editable: 'never',
                         editComponent: props => (
                             <TextField id="parentId" label="parentId" defaultValue={props.value} 
                             onChange={(event => {
@@ -248,19 +274,35 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                     {
                         title: t("ТаблицаПрофайлы.3")+' *',
                          field: 'userId',
-                        editComponent: props => (
-                            <AsyncUserSelect proxy={props0.proxy}/>
-                        ),
-                        render: rowData => {
-                            let user = null;
-                            if (rowData !== null && rowData !== undefined) {
-                                const data: any = rowData;
-                                user = data.user;
+                         editComponent: props => (
 
-                            }
-                            return (
-                                user?.username
-                            )
+                            <AsyncUserSelect proxy={props0.proxy} 
+                                defValue={props.rowData.user?props.rowData.user.username:undefined} 
+                                onChange={props.onChange} 
+                            />  
+                        ),
+                        
+                        render: rowData => {
+                            if (rowData.userId !== null && rowData.userId !== undefined) {
+                                return (
+                                    rowData.userId
+                                    )
+                            } else {
+                                let user = null;
+                                if (rowData.user !== null && rowData.user !== undefined) {
+                                    const data: any = rowData;
+                                    user = data.user;
+                                
+                                return (
+                                    user?.username
+                                )
+                                } else {
+                                    return (
+                                    "null"
+                                    )
+                                }
+                            }                       
+
                         },
                     },
 
@@ -490,6 +532,12 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                     });
 
                 }}
+                onChangePage={(page: number) => {
+                    setQueryPage((prevState) => {
+                        return { ...prevState, page };
+                    });
+
+                }}
                 detailPanel={[
                     {
                         icon: 'account_circle',
@@ -628,13 +676,13 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                                     const newData1: NewProfile = {
                                     
                                         name: newData.name,
-                                        parentId: newData.parentId,
+                                        parentName: newData.parentName,
                                         user: user,
                                         //userId: newData.userId,
                                         oldUserId:"",
                                         access: arrAccess,
                                     }
-                                    console.log(newData1,"newData1 add")
+                                    //console.log(newData1,"newData1 add")
                                     resolve();
                                     setNewProfile(newData1)
 
@@ -642,7 +690,7 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                                         const data = [...prevState.data];
                                         const ae: any = {
                                             name: newData1?.name,
-                                            parentId: newData1?.parentId,
+                                            parentName: newData1?.parentName,
                                             //userId: newData1?.userId,
                                             user: newData1?.user,
                                             access: newData.access,
@@ -675,7 +723,7 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                                          })
                                         const uu: NewProfile = {
                                         name: newData.name,
-                                        parentId: newData.parentId,
+                                        parentName: newData.parentName,
                                         user: user,
                                         //userId: userId,
                                         oldUserId: oldUserId,
@@ -683,7 +731,7 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                                     }
                                     const dataUpdate: NewProfile = {
                                         name: newData.name,
-                                        parentId: newData.parentId,
+                                        parentName: newData.parentName,
                                         user: user,
                                         //userId: userId,
                                         oldUserId: oldUserId,

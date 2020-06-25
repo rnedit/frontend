@@ -232,17 +232,15 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props: any) 
 
                           editComponent: props => (
 
-                            <SelectRole value={props.value} onChange={props.onChange} 
-                            Roles={ROLES}/>
+                            <SelectRole value={props.value}
+                                onChange={props.onChange} 
+                                Roles={ROLES}
+                                />
 
                          ),
                    
                         render: rowData => {
                             let stringRole: string = "";
-                          //  if (rowData.email==="loh2"){
-                          //      console.log(rowData.roles)
-                           // }
-                            
                             if (rowData !== null && rowData !== undefined) {
 
                                 const { roles } = rowData;
@@ -553,6 +551,12 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props: any) 
                         return { ...prevState, pageSize };
                     });
                    
+                }}
+                onChangePage={(page: number) => {
+                    setQueryPage((prevState) => {
+                        return { ...prevState, page };
+                    });
+
                 }}
                 detailPanel={[
                     {

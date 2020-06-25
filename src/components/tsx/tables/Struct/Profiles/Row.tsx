@@ -2,7 +2,7 @@ export interface Row {
     id: string;
     name: string;
     creationDate: string;
-    parentId: string;
+    parentName: string;
     userId: string;
     user: any;
     access: [
