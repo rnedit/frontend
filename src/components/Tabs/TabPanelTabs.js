@@ -32,9 +32,8 @@ TabPanel.propTypes = {
 };
 
 export default function Tabs(props) {
-    const { value } = props;
+    const { value, t } = props;
     const { valueTopMenu } = props;
-
     return (
         <>
             <TabPanel value={value} index={0}>
@@ -44,10 +43,10 @@ export default function Tabs(props) {
                 Приказы и распоряжения
             </TabPanel>
             <TabPanel value={value} index={2}>
-                Входящие докменты
+                Входящие документы
             </TabPanel>
             <TabPanel value={value} index={3}>
-                Исходящие докменты
+                Исходящие документы
             </TabPanel>
      
                 <TabPanel value={value} index={4}>
@@ -55,7 +54,7 @@ export default function Tabs(props) {
                  <div style={{ width: '100%' }}>
 
                         <Box >
-                            <StructTabs proxy={proxy} value={valueTopMenu} />
+                            <StructTabs t={t} proxy={proxy} value={valueTopMenu} />
                         </Box>
 
                     </div>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import TopAppBarAndLeftMenu from "./components/TopAppBarAndLeftMenu";
 import SignIn from "./components/SignIn";
 import { updateCurrentUser, updateValueUser } from './reduxactions/actions';
@@ -9,6 +9,9 @@ import MainDocument from "./workflowForm/MainDocument"
 import { ROLES } from './components/security/ERules'
 import GrantAccess from './components/security/GrantAccess'
 import Main from './components/Main'
+import axios from "axios";
+import {proxy} from "./components/Conf"
+import { useHistory } from "react-router-dom";
 
 export const defaultUser = {
     id: null,
@@ -48,7 +51,9 @@ class App extends Component {
             refreshJwtMaxAge:
                 (store.getState().currentUser.user.refreshJwtMaxAge !== undefined) ? store.getState().currentUser.user.refreshJwtMaxAge : null,
             refreshJwt:
-                (store.getState().currentUser.user.refreshJwt !== undefined) ? store.getState().currentUser.user.refreshJwt : null
+                (store.getState().currentUser.user.refreshJwt !== undefined) ? store.getState().currentUser.user.refreshJwt : null,
+
+            redir: false
         };
 
         //
@@ -74,30 +79,46 @@ class App extends Component {
         }
 
     }
+    /*
+    async checkUser () {
+        let promise = new Promise((resolve, reject) => {
+                axios.get(proxy + '/api/test/user', 
+                    { withCredentials: true })
+                    .then(res => {
+                        resolve(true)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        console.log(error.response)
+                        resolve(false) 
+                             
+                    })
+        })
 
-    componentDidMount() {
+        const result = await promise;
+        console.log(result,"result")
+        return result;
+    }
+*/
+   componentDidMount() {
 
         this.unsubscribeStore = store.subscribe(this.updateStateFromStore);
-
+    
     }
     componentWillUnmount() {
         this.unsubscribeStore();
     }
     render() {
-
+        
         return (
             <div>
                 <Switch>
-
-                    <Route exact path="/workflow">
-                        <GrantAccess>
-                            <TopAppBarAndLeftMenu>
-
-                            </TopAppBarAndLeftMenu>
+                    <Route exact path="/workflow" >
+                        <GrantAccess >
+                            <TopAppBarAndLeftMenu/>
                         </GrantAccess>
                     </Route>
 
-                    
                     <Route exact path="/signin">
                         <SignIn />
                     </Route>

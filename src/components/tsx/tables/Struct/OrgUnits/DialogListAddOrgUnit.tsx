@@ -89,8 +89,6 @@ export default function CustomizedDialogs(props: any) {
     const loading = open && orgUnitsParentIdIsNull.length === 0;
 
     React.useEffect(() => {
-        let active = true;
-
         if (!loading) {
             return undefined;
         }
@@ -104,7 +102,6 @@ export default function CustomizedDialogs(props: any) {
 
         (async () => {
             const response = await axios(axiosOption)
-            await sleep(1e3);
             const res = await response;
             const p: Array<OrgUnit> = res.data.orgUnits;
             const pParentIdIsNull: Array<OrgUnit> = res.data.ParentIdIsNullAndIdIsNot;
@@ -113,9 +110,7 @@ export default function CustomizedDialogs(props: any) {
                 setOrgUnits(p.map(prof => ({ id: prof.id, name: prof.name, homeOrgUnit: prof.homeOrgUnit })))
             if (pParentIdIsNull !== null && pParentIdIsNull !== undefined)
                 setOrgUnitsParentIdIsNull(pParentIdIsNull.map(prof => ({ id: prof.id, name: prof.name, homeOrgUnit: prof.homeOrgUnit })))
-            return () => {
-                active = false;
-            };
+
         })();
     }, [loading, proxy]);
 
@@ -178,7 +173,7 @@ export default function CustomizedDialogs(props: any) {
                     CallBack={SelectUserCallBack} />
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={handleSave} color="primary">
+                    <Button autoFocus disabled={orgUnitsParentIdIsNull.length>0?false:true} onClick={handleSave} color="primary">
                         Сохранить
                     </Button>
                 </DialogActions>

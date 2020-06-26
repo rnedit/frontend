@@ -6,9 +6,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Tab from '@material-ui/core/Tab';
 import Tabs from "@material-ui/core/Tabs";
 import { makeStyles } from '@material-ui/core/styles';
-import {  useLocation } from "react-router-dom";
 import { NavTab } from "react-router-tabs";
-import { createMuiTheme } from "@material-ui/core/styles";
+
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -17,8 +16,8 @@ function TabPanel(props) {
         <div
             role="tabpanel"
             hidden={value !== index}
-            id={`scrollable-auto-tabpanel-${index}`}
-            aria-labelledby={`scrollable-auto-tab-${index}`}
+            id={`scrollable-auto-top-tabpanel-${index}`}
+            aria-labelledby={`scrollable-auto-top-tab-${index}`}
             {...other}
         >
             {value === index && (
@@ -38,8 +37,8 @@ TabPanel.propTypes = {
 
 function a11yProps(index: any) {
     return {
-      id: `scrollable-auto-tab-${index}`,
-      'aria-controls': `scrollable-auto-tabpanel-${index}`,
+      id: `scrollable-auto-top-tab-${index}`,
+      'aria-controls': `scrollable-auto-top-tabpanel-${index}`,
     };
   }
  
@@ -51,9 +50,10 @@ function a11yProps(index: any) {
         backgroundColor: theme.palette.background.paper,
     },
 }));
-const TabsTopMenu = React.memo(function TabsTopMenu(props) {
+function TabsTopMenu(props) {
+    
     console.log("Render TabsTopMenu")
-    const { value } = props;
+    const { value, stab } = props;
     const { callback } = props;
 
     const classes = useStyles();
@@ -63,15 +63,12 @@ const TabsTopMenu = React.memo(function TabsTopMenu(props) {
      setValue(newValue);
      callback(newValue);
     };
-    const location = useLocation();
-    const query = new URLSearchParams(location.search);
-    const stab = query.get('stab')
 
     const NavTabRef = React.forwardRef((props, ref) =><NavTab {...props} innerRef={ref} />)
     return (
         <>
             <TabPanel value={value} index={0}>
-                Внутренние документы
+                Внутренние документы top
             </TabPanel>
             <TabPanel value={value} index={1}>
                 Приказы и распоряжения
@@ -93,7 +90,7 @@ const TabsTopMenu = React.memo(function TabsTopMenu(props) {
                                 textColor="primary"
                                 variant="scrollable"
                                 scrollButtons="auto"
-                                aria-label="scrollable auto tabs example"
+                                aria-label="scrollable auto tabs"
                                 value={stab?Number(stab):valueOut} 
                             >
                                 <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=0"} label="Пользователи" {...a11yProps(0)} />
@@ -114,5 +111,5 @@ const TabsTopMenu = React.memo(function TabsTopMenu(props) {
         </>
 
     )
-});
+};
 export default TabsTopMenu

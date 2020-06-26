@@ -6,10 +6,25 @@ import Moment from 'moment';
 import { editCurrentUser } from "../../App"
 import axios from "axios";
 import { proxy } from '../Conf'
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 function GrantAccess(props) {
     const user = props.user;
-    const checkAuth = () => {
+    const [g,setG] = React.useState(true)
+    const [r,setR] = React.useState(false)
+    
+    React.useEffect(()=>{
+        checkAuth();
+    },[])
+
+    React.useEffect(()=>{
+      if (g===false)
+        setR(true)
+      else
+        setR(false)
+    },[g])
+
+     const checkAuth = async ()=>{
         Moment.locale('ru');
 
         if (!user.updatedJwt) {
@@ -18,12 +33,20 @@ function GrantAccess(props) {
 
         }
 
+        const as = await checkUser();
+        if (as!==true) {
+            console.log("checkUser false")
+            setG(false)
+            return false;
+        } else {
+            setG(true)
+        }
+
         if (user.roles.includes(ROLES.USER | ROLES.ADMIN | ROLES.MODERATOR)) {
             console.log("roles false", user.roles)
             return false
 
         }
-
         try {
             const exp = Moment(user.updatedJwt).diff(Moment().startOf('day'), 'seconds');
             const cur = Moment(new Date().getTime()).diff(Moment().startOf('day'), 'seconds');
@@ -40,6 +63,26 @@ function GrantAccess(props) {
         }
         console.log("GrantAccess true")
         return true;
+    }
+
+    async function checkUser () {
+        let promise = new Promise((resolve, reject) => {
+                axios.get(proxy + '/api/test/user', 
+                    { withCredentials: true })
+                    .then(res => {
+                        resolve(true)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        console.log(error.response)
+                        resolve(false) 
+                             
+                    })
+        })
+
+        const result = await promise;
+    console.log(result,"result")
+        return result;
     }
 
     async function updateJwtToken () {
@@ -69,18 +112,23 @@ function GrantAccess(props) {
         return result;
         
     }
+    if (r){
+        return <Redirect to='/signin'/>;
+    }
 
     return (
         <>
-            {checkAuth() ? (
+            {g? (
                 props.children
             ) : (
-                    <Redirect to={{ pathname: '/signin' }} />
+             <LinearProgress/>
+                  
                 )}
         </>
     )
 
 }
+
 const mapStateToProps = function (state) {
     return {
         user: state.currentUser.user,

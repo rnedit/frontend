@@ -1,5 +1,5 @@
 import i18n from 'i18next';
-import Backend from 'i18next-xhr-backend';
+import Backend from 'i18next-http-backend';
 import Cache from 'i18next-localstorage-cache';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
@@ -16,10 +16,10 @@ const resources = {
     translation: translationEN
   },
 };
-*/
+
 const options = {
   // order and from where user language should be detected
-  order: ['querystring', 'localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
+  //order: ['querystring', 'localStorage', 'navigator', 'htmlTag', 'path'],
 
   lookupQuerystring: 'lng',
  // lookupCookie: 'i18next',
@@ -43,7 +43,7 @@ const options = {
   // only detect languages that are in the whitelist
   checkWhitelist: true
 }
-
+*/
 i18n
   .use(Backend) // load translation using xhr -> see /public/locales. We will add locales in the next step
   .use(Cache)
@@ -53,8 +53,8 @@ i18n
   .init({
 
     debug: false,
-    whitelist: availableLanguages,
-    detection: options,
+   // whitelist: availableLanguages,
+  //  detection: options,
     fallbackLng: 'ru', 
 
     interpolation: {

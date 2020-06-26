@@ -7,7 +7,6 @@ import axios from "axios";
 import { useWindowResize } from "../../../UseWindowResize";
 import { connect } from 'react-redux';
 import { ROLES } from '../../../../security/ERules'
-import { useTranslation } from 'react-i18next';
 import { NewProfile } from './NewProfile';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -22,8 +21,7 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { setUserToProfile } from '../../../../../reduxactions/actions';
-import {ACCESS} from '../../../../security/EAccess'
-import { interfaceACCESS } from './InterfaceAccess';
+
 import {User} from "./InterfaceUser"
 
 function Alert(props: any) {
@@ -45,21 +43,19 @@ interface AlertMSG {
     openMsg: boolean,
 }
 
-const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any) {
+function ProfileTable(props0: any) {
 
-    //const access: interfaceACCESS[] = ACCESS;
     const { height } = useWindowResize();
     const history = useHistory();
     const roles:string[] = props0.roles;
     const roleAccess: boolean = roles.includes(ROLES.ADMIN || ROLES.MODERATOR);
     const roleAccessAdmin: boolean = roles.includes(ROLES.ADMIN);
-    const roleAccessModerator: boolean = roles.includes(ROLES.MODERATOR);
-    const { t } = useTranslation();
+ 
+    const {t}=props0;
 
-    // const [open, setOpen] = React.useState(false);
     const [openMsg, setOpenMsg] = React.useState(false);
     const [newProfile, setNewProfile] = React.useState<NewProfile>();
-    const [qquery, setQuery] = React.useState(false);
+    const [qquery, setQuery] = React.useState(true);
 
     const [alertMSG, setAlertMSG] = React.useState<AlertMSG>({
         text: "",
@@ -106,7 +102,11 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                                 stringDate = Moment(creationDate).format('hh:mm DD/MM/YYYY')
                             }
                             return (
-                                stringDate
+                                <Typography component="div">
+                                    <Box fontWeight="fontWeightRegular" fontSize="fontSize">
+                                        {stringDate}
+                                    </Box>
+                                </Typography> 
                             )
                         },
                     },
@@ -124,7 +124,7 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                         render: rowData => {
                             return (
                                 <Typography component="div">
-                                    <Box fontWeight="fontWeightMedium">
+                                    <Box fontWeight="fontWeightMedium" fontSize="fontSize">
                                         {rowData.name}
                                     </Box>
                                 </Typography> 
@@ -144,6 +144,17 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                             })}
                             />
                         ),
+                        render: rowData => {
+                            return (
+                                <Typography component="div">
+                                    <Box fontWeight="fontWeightRegular" fontSize="fontSize">
+                                        {rowData.parentName}
+                                    </Box>
+                                </Typography> 
+                               
+                               
+                            )
+                        },
                     },
                     {
                         title: t("ТаблицаПрофайлы.3")+' *',
@@ -159,7 +170,12 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                         render: rowData => {
                             if (rowData.userId !== null && rowData.userId !== undefined) {
                                 return (
-                                    rowData.userId
+                                    <Typography component="div">
+                                    <Box fontWeight="fontWeightRegular" fontSize="fontSize">
+                                        {rowData.userId}
+                                    </Box>
+                                </Typography> 
+                                    
                                     )
                             } else {
                                 let user = null;
@@ -168,7 +184,12 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                                     user = data.user;
                                 
                                 return (
-                                    user?.username
+                                    <Typography component="div">
+                                    <Box fontWeight="fontWeightRegular" fontSize="fontSize">
+                                        { user?.username}
+                                    </Box>
+                                </Typography> 
+                                   
                                 )
                                 } else {
                                     return (
@@ -203,7 +224,12 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                                 })
                             }
                             return (
-                                stringAccess
+                                <Typography component="div">
+                                    <Box fontWeight="fontWeightRegular" fontSize="fontSize">
+                                        { stringAccess}
+                                    </Box>
+                                </Typography> 
+                                
                             )
                         },
                        
@@ -236,7 +262,12 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                                 stringDate = Moment(creationDate).format('hh:mm DD/MM/YYYY')
                             }
                             return (
-                                stringDate
+                                <Typography component="div">
+                                <Box fontWeight="fontWeightRegular" fontSize="fontSize">
+                                    {stringDate}
+                                </Box>
+                            </Typography> 
+                                
                             )
                         },
                     },
@@ -250,7 +281,7 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                         render: rowData => {
                             return (
                                 <Typography component="div">
-                                    <Box fontWeight="fontWeightMedium">
+                                    <Box fontWeight="fontWeightMedium" fontSize="fontSize">
                                         {rowData.name}
                                     </Box>
                                 </Typography> 
@@ -260,16 +291,27 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                         },
                     },
                     {
-                        title: t("ТаблицаПрофайлы.2")+' *', 
-                        field: 'parentId',
+                        title: t("ТаблицаПрофайлы.2")+' *',
+                        field: 'parentName',
                         editable: 'never',
                         editComponent: props => (
-                            <TextField id="parentId" label="parentId" defaultValue={props.value} 
+                            <TextField required id="parentName" label="Орг. единица" defaultValue={props.value} 
                             onChange={(event => {
                                 props.onChange(event.target.value)
                             })}
                             />
                         ),
+                        render: rowData => {
+                            return (
+                                <Typography component="div">
+                                    <Box fontWeight="fontWeightRegular" fontSize="fontSize">
+                                        {rowData.parentName}
+                                    </Box>
+                                </Typography> 
+                               
+                               
+                            )
+                        },
                     },
                     {
                         title: t("ТаблицаПрофайлы.3")+' *',
@@ -285,7 +327,11 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                         render: rowData => {
                             if (rowData.userId !== null && rowData.userId !== undefined) {
                                 return (
-                                    rowData.userId
+                                    <Typography component="div">
+                                    <Box fontWeight="fontWeightRegular" fontSize="fontSize">
+                                        {rowData.userId}
+                                    </Box>
+                                </Typography> 
                                     )
                             } else {
                                 let user = null;
@@ -294,7 +340,11 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                                     user = data.user;
                                 
                                 return (
-                                    user?.username
+                                    <Typography component="div">
+                                    <Box fontWeight="fontWeightRegular" fontSize="fontSize">
+                                        { user?.username}
+                                    </Box>
+                                </Typography> 
                                 )
                                 } else {
                                     return (
@@ -322,6 +372,7 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
         }
     }, [state,props0]);
 
+    
     const dataPost = useCallback(
         () => {
              //  console.log("dataPost")
@@ -361,14 +412,14 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
         },
         [props0,queryPage,history],
     )
-
+/*
     React.useEffect(() => {
         console.log('Profile mount it!');
         setTimeout(() => {
             setQuery(true);
         }, 500);
     }, []);
-
+*/
   
     React.useEffect(() => {
         if (alertMSG.text !== "")
@@ -790,7 +841,7 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
         </>
 
     );
-})
+}
 const mapStateToProps = function (state: any) {
     return {
         roles: state.currentUser.user.roles,
@@ -799,4 +850,4 @@ const mapStateToProps = function (state: any) {
         setUserToProfile: state.profiles.setUserToProfile
     }
 }
-export default connect(mapStateToProps)(MaterialTableStruct);
+export default connect(mapStateToProps)(ProfileTable);

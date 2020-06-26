@@ -89,34 +89,32 @@ export default function CustomizedDialogs(props: any) {
     const loading = open && profilesParentIdIsNull.length === 0;
 
     React.useEffect(() => {
-        let active = true;
 
         if (!loading) {
             return undefined;
         }
-        const axiosOption: AxiosRequestConfig = {
-            method: 'post',
-            url: proxy + '/api/orgunits/getprofilesandprofilesparentidisnull/' + id,
-            headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-            withCredentials: true,
 
-        };
+            const axiosOption: AxiosRequestConfig = {
+                method: 'post',
+                url: proxy + '/api/orgunits/getprofilesandprofilesparentidisnull/' + id,
+                headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+                withCredentials: true,
 
-        (async () => {
-            const response = await axios(axiosOption)
-            await sleep(1e3);
-            const res = await response;
-            const p: Array<Profile> = res.data.profiles;
-            const pParentIdIsNull: Array<Profile> = res.data.profilesParentIdIsNull;
-           
-            if (p !== null && p !== undefined)
-                setProfiles(p.map(prof => ({ id: prof.id, name: prof.name })))
-            if (pParentIdIsNull !== null && pParentIdIsNull !== undefined)
-                setProfilesParentIdIsNull(pParentIdIsNull.map(prof => ({ id: prof.id, name: prof.name })))
-            return () => {
-                active = false;
             };
-        })();
+
+            (async () => {
+                const response = await axios(axiosOption)
+                const res = await response;
+                const p: Array<Profile> = res.data.profiles;
+                const pParentIdIsNull: Array<Profile> = res.data.profilesParentIdIsNull;
+
+                if (p !== null && p !== undefined)
+                    setProfiles(p.map(prof => ({ id: prof.id, name: prof.name })))
+                if (pParentIdIsNull !== null && pParentIdIsNull !== undefined)
+                    setProfilesParentIdIsNull(pParentIdIsNull.map(prof => ({ id: prof.id, name: prof.name })))
+
+            })();
+
     }, [loading, proxy]);
 
     const profilesSelectUserCallBack=(data:Profile[])=>{
@@ -178,7 +176,7 @@ export default function CustomizedDialogs(props: any) {
                     CallBack={profilesSelectUserCallBack} />
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={handleSave} color="primary">
+                    <Button autoFocus disabled={profilesParentIdIsNull.length>0?false:true} onClick={handleSave} color="primary">
                         Сохранить
                     </Button>
                 </DialogActions>

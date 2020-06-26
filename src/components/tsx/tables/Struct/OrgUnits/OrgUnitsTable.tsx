@@ -7,7 +7,6 @@ import axios from "axios";
 import { useWindowResize } from "../../../UseWindowResize";
 import { connect } from 'react-redux';
 import { ROLES } from '../../../../security/ERules'
-import { useTranslation } from 'react-i18next';
 import { NewOrgUnit } from './NewOrgUnit';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -37,7 +36,7 @@ interface AlertMSG {
     openMsg: boolean,
 }
 
-const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any) {
+function MaterialTableStruct(props0: any) {
 
     const { height } = useWindowResize();
     const history = useHistory();
@@ -45,7 +44,7 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
     const roleAccess: boolean = roles.includes(ROLES.ADMIN || ROLES.MODERATOR);
     const roleAccessAdmin: boolean = roles.includes(ROLES.ADMIN);
     const roleAccessModerator: boolean = roles.includes(ROLES.MODERATOR);
-    const { t } = useTranslation();
+    const {t}=props0;
 
     //const [open, setOpen] = React.useState(false);
     const [openMsg, setOpenMsg] = React.useState(false);
@@ -97,7 +96,12 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                                 stringDate = Moment(creationDate).format('hh:mm DD/MM/YYYY')
                             }
                             return (
-                                stringDate
+                                <Typography component="div">
+                                    <Box fontWeight="fontWeightRegular" fontSize="fontSize">
+                                        {stringDate}
+                                    </Box>
+                                </Typography> 
+                                
                             )
                         },
                     },
@@ -115,7 +119,7 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
                         render: rowData => {
                             return (
                                 <Typography component="div">
-                                    <Box fontWeight="fontWeightMedium">
+                                    <Box fontWeight="fontWeightMedium" fontSize="fontSize">
                                         {rowData.name}
                                     </Box>
                                 </Typography> 
@@ -691,7 +695,7 @@ const MaterialTableStruct = React.memo(function MaterialTableStruct(props0: any)
         </>
 
     );
-})
+}
 const mapStateToProps = function (state: any) {
     return {
         roles: state.currentUser.user.roles,

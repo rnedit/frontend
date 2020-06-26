@@ -1,12 +1,12 @@
 import React from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import StructTable from '../tables/Struct/Users/StructTable'
 import ProfileTable from '../tables/Struct/Profiles/ProfileTable'
 import OrgUnitsTable from '../tables/Struct/OrgUnits/OrgUnitsTable'
-import StructureTree from '../tables/Struct/Structure/StructureTree'
+import IStructureTree from '../tables/Struct/Structure/IStructureTree'
+
 interface TabPanelProps {
   children?: React.ReactNode;
   index: any;
@@ -20,8 +20,8 @@ function TabPanel(props: TabPanelProps) {
     <div
       role="tabpanel"
       hidden={value !== index}
-      id={`scrollable-auto-tabpanel-${index}`}
-      aria-labelledby={`scrollable-auto-tab-${index}`}
+      id={`scrollable-auto-top-tabpanel-${index}`}
+      aria-labelledby={`scrollable-auto-top-tab-${index}`}
       {...other}
     >
       {value === index && (
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export default function ScrollableTabsButtonAuto(props: any) {
-  const { value } = props;
+  const { value, t } = props;
   const { proxy } = props;
   const classes = useStyles();
 
@@ -53,30 +53,30 @@ export default function ScrollableTabsButtonAuto(props: any) {
         <div style={{ width: '100%' }}>
 
           <Box >
-            <StructTable proxy={proxy} />
+            <StructTable t={t} proxy={proxy} />
           </Box>
 
         </div>
 
       </TabPanel>
       <TabPanel value={value} index={1}>
-         Группы
+         Группы555
       </TabPanel>
       <TabPanel value={value} index={2}>
       <div style={{ width: '100%' }}>
 
-<Box >
-  <ProfileTable proxy={proxy} />
-</Box>
+      <Box >
+        <ProfileTable t={t} proxy={proxy} />
+      </Box>
 
-</div>
+      </div>
         
       </TabPanel>
       <TabPanel value={value} index={3}>
       <div style={{ width: '100%' }}>
 
 <Box >
-  <OrgUnitsTable proxy={proxy} />
+  <OrgUnitsTable t={t} proxy={proxy} />
 </Box>
 
       </div>
@@ -84,7 +84,7 @@ export default function ScrollableTabsButtonAuto(props: any) {
       </TabPanel>
       <TabPanel value={value} index={4}>
       <Box >
-        <StructureTree proxy={proxy} />
+        <IStructureTree t={t} proxy={proxy} />
       </Box>
 
       </TabPanel>

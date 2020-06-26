@@ -30,6 +30,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 
 import { NavTab } from "react-router-tabs";
+import { useTranslation } from 'react-i18next';
 
 const drawerWidth = 240;
 
@@ -94,6 +95,7 @@ function a11yProps(index) {
 
 function TopAppBarAndLeftMenu(props) {
 console.log("Render TopAppBarAndLeftMenu")
+const { t } = useTranslation();
     const { window } = props;
     const classes = useStyles();
     const theme = useTheme();
@@ -164,18 +166,21 @@ console.log("Render TopAppBarAndLeftMenu")
                     variant="scrollable"
                     scrollButtons="auto"
                     value={tab?Number(tab):value} 
-                    aria-label="scrollable auto tabs example"
+                    aria-label="scrollable auto tabs"
                 >
                    
-                    <Tab component={NavTabRef} to="/workflow?tab=0" classes={{ wrapper: classes.wrapper }} label="Внутренние документы" {...a11yProps(0)} />) 
-                    <Tab component={NavTabRef} to="/workflow?tab=1" classes={{ wrapper: classes.wrapper }} label="Приказы и ОРД" {...a11yProps(1)} />
-                    <Tab component={NavTabRef} to="/workflow?tab=2" classes={{ wrapper: classes.wrapper }} label="Входящие документы" {...a11yProps(2)} />
-                    <Tab component={NavTabRef} to="/workflow?tab=3" classes={{ wrapper: classes.wrapper }} label="Исходящие документы" {...a11yProps(3)} />
-                    <Tab component={NavTabRef} to="/workflow?tab=4" classes={{ wrapper: classes.wrapper }} label="Структура" {...a11yProps(4)} />
-                    <Tab component={NavTabRef} to="/workflow?tab=5" classes={{
-                        wrapper: classes.wrapper,
-
-                    }} label="Справочник" {...a11yProps(5)} />
+                    <Tab component={NavTabRef} to="/workflow?tab=0"
+                     classes={{ wrapper: classes.wrapper }} label="Внутренние документы" {...a11yProps(0)} />) 
+                    <Tab component={NavTabRef} to="/workflow?tab=1"
+                     classes={{ wrapper: classes.wrapper }} label="Приказы и ОРД" {...a11yProps(1)} />
+                    <Tab component={NavTabRef} to="/workflow?tab=2"
+                     classes={{ wrapper: classes.wrapper }} label="Входящие документы" {...a11yProps(2)} />
+                    <Tab component={NavTabRef} to="/workflow?tab=3"
+                     classes={{ wrapper: classes.wrapper }} label="Исходящие документы" {...a11yProps(3)} />
+                    <Tab component={NavTabRef} to="/workflow?tab=4"
+                     classes={{ wrapper: classes.wrapper }} label="Структура" {...a11yProps(4)} />
+                    <Tab component={NavTabRef} to="/workflow?tab=5"
+                     classes={{ wrapper: classes.wrapper }} label="Справочник" {...a11yProps(5)} />
                 </Tabs>
             </AppBar>
             <List>
@@ -231,7 +236,7 @@ console.log("Render TopAppBarAndLeftMenu")
                     <div style={{ width: '100%' }}>
                         <Box display="flex" >
                             <Box flexGrow={1} >
-                                 <TabPanelTabsOnTopMenu value={tab?Number(tab):value} callback={myCallback} />
+                                 <TabPanelTabsOnTopMenu value={tab?Number(tab):value} stab={stab?Number(stab):"0"} callback={myCallback} />
                             </Box>
                             <Box >
                                 <LoginLogout />
@@ -280,7 +285,7 @@ console.log("Render TopAppBarAndLeftMenu")
 
                 {/* props.children */}
 
-                <TabPanelTabs value={tab?Number(tab):value} valueTopMenu={stab?Number(stab):valueTopMenu}/>
+                <TabPanelTabs t={t} value={tab?Number(tab):value} valueTopMenu={stab?Number(stab):valueTopMenu}/>
                
             </main>
 
@@ -302,4 +307,4 @@ const mapStateToProps = function (state) {
         loggedIn: state.currentUser.user.loggedIn
     }
 }
-export default connect(mapStateToProps)(React.memo(TopAppBarAndLeftMenu));
+export default connect(mapStateToProps)(TopAppBarAndLeftMenu);
