@@ -2,26 +2,21 @@ import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import axios, { AxiosRequestConfig } from "axios";
 import Profile from "./InterfaceProfile"
 import { useTranslation } from 'react-i18next';
 
-function sleep(delay = 0) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay);
-  });
-}
+import { usersApi } from "../../../../../api/Users"
 
-export default function Asynchronous(props:any) {
-  const {proxy} = props;
+export default function Asynchronous(props: any) {
+  const { proxy } = props;
   const { defValue, onChange } = props;
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState<Profile[]>([]);
   const loading = open && options.length === 0;
   const { t } = useTranslation();
   let arr: any = [];
-  if (defValue!==null && defValue!==undefined)
-  arr.push({id:"0", username:defValue})
+  if (defValue !== null && defValue !== undefined)
+    arr.push({ id: "0", username: defValue })
 
   React.useEffect(() => {
     let active = true;
@@ -30,27 +25,16 @@ export default function Asynchronous(props:any) {
       return undefined;
     }
 
-    const axiosOption: AxiosRequestConfig = {
-        method: 'post',
-        url: proxy+'/api/users/parentidnotnull',
-        headers:{'Content-Type': 'application/json; charset=UTF-8'},
-        withCredentials: true,
-       
-      };
+    usersApi.parentidnotnull()
+      .then((r:any) => {
+        r.data.forEach((element:any) => {
+          arr.push(element)
+        })
 
-    (async () => {
-      const response = await axios(axiosOption)
-      await sleep(1e3);
-      const res = await response;
-      const a:[] = res.data;
-      a.forEach(element => {
-      arr.push(element)
       })
-      if (active) {
-        setOptions(Object.keys(arr).map((key) => arr[key]) as Profile[]);
-      }
-    })();
-
+    if (active) {
+      setOptions(Object.keys(arr).map((key) => arr[key]) as Profile[]);
+    }
     return () => {
       active = false;
     };
@@ -60,7 +44,7 @@ export default function Asynchronous(props:any) {
     if (!open) {
       setOptions([]);
       arr = [];
-      arr.push({id:"0", username:defValue})
+      arr.push({ id: "0", username: defValue })
     }
   }, [open]);
 
@@ -69,7 +53,7 @@ export default function Asynchronous(props:any) {
       id="asynchronous"
       style={{ width: 200 }}
       open={open}
-      defaultValue={defValue===null && defValue===undefined ? undefined:defValue}
+      defaultValue={defValue === null && defValue === undefined ? undefined : defValue}
       onOpen={() => {
         setOpen(true);
       }}
@@ -78,22 +62,22 @@ export default function Asynchronous(props:any) {
       }}
       getOptionSelected={(option, value) => (option.username === value.username || option.username === defValue)}
 
-      getOptionLabel={(option) => option.username===undefined?defValue:option.username}
-      
+      getOptionLabel={(option) => option.username === undefined ? defValue : option.username}
+
       options={options}
       loading={loading}
-      
+
       loadingText={t("ТаблицаПрофайлы.5")}
       noOptionsText={t("ТаблицаПрофайлы.6")}
       onChange={(event: React.ChangeEvent<{}>, value: any) => {
-        if (value!==null && value!==undefined)
-           onChange(value.username)
-        }}
-      
+        if (value !== null && value !== undefined)
+          onChange(value.username)
+      }}
+
       renderInput={(params) => (
         <TextField
           {...params}
-         // defaultValue={value}
+          // defaultValue={value}
           label={t("ТаблицаПрофайлы.3")}
           required
           InputProps={{

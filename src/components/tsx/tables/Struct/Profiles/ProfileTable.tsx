@@ -148,7 +148,7 @@ function ProfileTable(props0: any) {
                             return (
                                 <Typography component="div">
                                     <Box fontWeight="fontWeightRegular" fontSize="fontSize">
-                                        {rowData.parentName}
+                                        {rowData?.parentName}
                                     </Box>
                                 </Typography> 
                                
@@ -305,7 +305,7 @@ function ProfileTable(props0: any) {
                             return (
                                 <Typography component="div">
                                     <Box fontWeight="fontWeightRegular" fontSize="fontSize">
-                                        {rowData.parentName}
+                                        {rowData?.parentName}
                                     </Box>
                                 </Typography> 
                                
@@ -589,46 +589,6 @@ function ProfileTable(props0: any) {
                     });
 
                 }}
-                detailPanel={[
-                    {
-                        icon: 'account_circle',
-                        tooltip: 'Show Surname',
-                        render: rowData => {
-                            return (
-                                <div
-                                    style={{
-                                        fontSize: 100,
-                                        textAlign: 'center',
-                                        color: 'white',
-                                        backgroundColor: '#e53935',
-                                    }}
-                                >
-                                    {"asd"}
-                                </div>
-                            );
-                        },
-                    },
-                    rowData => ({
-
-                        icon: 'favorite_border',
-                        openIcon: 'favorite',
-                        tooltip: 'Show Both',
-                        render: rowData => {
-                            return (
-                                <div
-                                    style={{
-                                        fontSize: 100,
-                                        textAlign: 'center',
-                                        color: 'white',
-                                        backgroundColor: '#FDD835',
-                                    }}
-                                >
-                                    {"rowData.name"} {"rowData.surname"}
-                                </div>
-                            );
-                        },
-                    }),
-                ]}
 
                 actions={[
                     {
@@ -717,7 +677,7 @@ function ProfileTable(props0: any) {
                                    
                                     let arrAccess:string[] = [];
                                     if (newData.access!==null && newData.access!==undefined)
-                                        newData.access.forEach(element=>{
+                                        newData.access.forEach((element: any)=>{
                                                arrAccess.push(element.name)
                                         })
                                     const user:User = {
@@ -729,7 +689,7 @@ function ProfileTable(props0: any) {
                                         name: newData.name,
                                         parentName: newData.parentName,
                                         user: user,
-                                        //userId: newData.userId,
+                                        userId: newData.userId,
                                         oldUserId:"",
                                         access: arrAccess,
                                     }
@@ -742,7 +702,7 @@ function ProfileTable(props0: any) {
                                         const ae: any = {
                                             name: newData1?.name,
                                             parentName: newData1?.parentName,
-                                            //userId: newData1?.userId,
+                                            userId: newData1?.userId,
                                             user: newData1?.user,
                                             access: newData.access,
                                         }
@@ -764,19 +724,19 @@ function ProfileTable(props0: any) {
                                         const oldUser:any = oldData?.user; 
                                         const oldUserId:string = oldUser?oldUser.id:undefined;
                                         const userId = newData.userId!==undefined?newData.userId:newData.user.username
-                                        const user:User = {
+                                        const user: User = {
                                             username: userId,
                                         }   
                                         let access:string[] = [];
                                         const tmp = newData.access;
-                                        tmp.forEach(element=>{
+                                        tmp.forEach((element: any)=>{
                                             access.push(element.name);
                                          })
                                         const uu: NewProfile = {
                                         name: newData.name,
                                         parentName: newData.parentName,
                                         user: user,
-                                        //userId: userId,
+                                        userId: userId,
                                         oldUserId: oldUserId,
                                         access: access,
                                     }
@@ -784,7 +744,7 @@ function ProfileTable(props0: any) {
                                         name: newData.name,
                                         parentName: newData.parentName,
                                         user: user,
-                                        //userId: userId,
+                                        userId: userId,
                                         oldUserId: oldUserId,
                                         access: newData.access,
                                     }                                 

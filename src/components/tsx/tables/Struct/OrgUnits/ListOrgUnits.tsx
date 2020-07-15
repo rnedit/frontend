@@ -7,6 +7,7 @@ import OrgUnit from './InterfaceOrgUnit'
 import axios, { AxiosRequestConfig } from "axios";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Box from '@material-ui/core/Box';
+import { orgunitsApi } from "../../../../../api/Orgunits"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,26 +49,15 @@ export default function ChipsArray(props: any) {
     if (!loading1) {
       return undefined;
     }
-    const axiosOption: AxiosRequestConfig = {
-      method: 'post',
-      url: proxy + '/api/orgunits/getorgunits/' + id,
-      headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-      withCredentials: true,
-
-    };
-
-    (async () => {
-      const response = await axios(axiosOption)
-      await sleep(1e3);
-      const res = await response;
-      const p: Array<OrgUnit> = res.data.orgunits;
+  
+    orgunitsApi.getorgunits(id)
+    .then((r:any)=>{
+      const p: Array<OrgUnit> = r.data.orgunits;
       if (p !== null && p !== undefined && p.length>0)
-        setChipData(p.map(prof => ({ id: prof.id, name: prof.name, homeOrgUnit: prof.homeOrgUnit })))
-      else 
-       setLoading(false);
-       
-
-    })();
+      setChipData(p.map(prof => ({ id: prof.id, name: prof.name, homeOrgUnit: prof.homeOrgUnit })))
+    else 
+     setLoading(false);
+    })
   }, []);
 
   return (

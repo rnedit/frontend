@@ -1,40 +1,13 @@
 import React, { Component } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import TopAppBarAndLeftMenu from "./components/TopAppBarAndLeftMenu";
 import SignIn from "./components/SignIn";
-import { updateCurrentUser, updateValueUser } from './reduxactions/actions';
+
 import { store } from "./init";
 import SignUp from './components/SignUp';
 import MainDocument from "./workflowForm/MainDocument"
-import { ROLES } from './components/security/ERules'
 import GrantAccess from './components/security/GrantAccess'
 import Main from './components/Main'
-import axios from "axios";
-import {proxy} from "./components/Conf"
-import { useHistory } from "react-router-dom";
-
-export const defaultUser = {
-    id: null,
-    username: 'Гость',
-    parentId: "0",
-    firstName: null,
-    lastName: null,
-    name: null,
-    loggedIn: false,
-    refreshJwt: null,
-    updateCount: 0,
-    refreshJwtMaxAge: null,
-    roles: [ROLES.ANONYMOUS],
-};
-//
-
-export const editCurrentUser = (data) => store.dispatch(
-    updateCurrentUser(data)
-);
-
-const updateValueUserS = (data) => store.dispatch(
-    updateValueUser(data)
-)
 
 class App extends Component {
 
@@ -79,27 +52,7 @@ class App extends Component {
         }
 
     }
-    /*
-    async checkUser () {
-        let promise = new Promise((resolve, reject) => {
-                axios.get(proxy + '/api/test/user', 
-                    { withCredentials: true })
-                    .then(res => {
-                        resolve(true)
-                    })
-                    .catch(error => {
-                        console.log(error)
-                        console.log(error.response)
-                        resolve(false) 
-                             
-                    })
-        })
-
-        const result = await promise;
-        console.log(result,"result")
-        return result;
-    }
-*/
+  
    componentDidMount() {
 
         this.unsubscribeStore = store.subscribe(this.updateStateFromStore);

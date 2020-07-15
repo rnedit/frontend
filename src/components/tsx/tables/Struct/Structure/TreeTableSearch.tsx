@@ -8,7 +8,7 @@ import {useWindowResize} from "../../../UseWindowResize";
 //import { useTranslation } from 'react-i18next';
 
 const TreeTableSearch = (props: any) => {
-    const {dataC, t} = props;
+    const {dataC, t, postUpdate} = props;
     const { height } = useWindowResize();
     //const { t } = useTranslation();
    
@@ -57,6 +57,8 @@ const TreeTableSearch = (props: any) => {
             }
         })
     }, [dataC]);
+
+
      
     const isLeaf = (rowData : any) =>
     state.data.find(el => el.parentId === rowData.id) === undefined;
@@ -64,10 +66,14 @@ const TreeTableSearch = (props: any) => {
     const [qquery, setQuery] = React.useState(false);
     const [selectedRow, setSelectedRow] = React.useState("null");
    
+    React.useEffect(() => {
+        postUpdate()
+    }, [qquery]);
+
     return (
         <>
         <MaterialTable
-            title={t("ТаблицаПрофайлы.2")}
+            title={t("ТаблицаСтруктура.0")}
             data={state.data}
             isLoading={state.data.length === 0}
             columns={state.columns}
@@ -135,7 +141,7 @@ const TreeTableSearch = (props: any) => {
                 sorting: true,
                 selection: true,
                 paging: false,
-                search: true,
+                search: false,
                 showSelectAllCheckbox: false,
                 headerStyle: { position: 'sticky', top: 0 },
                 maxBodyHeight: height - 48,

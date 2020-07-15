@@ -1,4 +1,4 @@
-import React,{useCallback} from 'react';
+import React from 'react';
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -13,6 +13,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import axios, { AxiosRequestConfig } from "axios";
 import Profile from './InterfaceProfile';
 import Tooltip from '@material-ui/core/Tooltip';
+import { orgunitsApi } from "../../../../../api/Orgunits"
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -32,12 +33,6 @@ const styles = (theme: Theme) =>
         },
 
     });
-
-function sleep(delay = 0) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, delay);
-    });
-}
 
 export interface DialogTitleProps extends WithStyles<typeof styles> {
     id: string;
@@ -94,28 +89,18 @@ export default function CustomizedDialogs(props: any) {
             return undefined;
         }
 
-            const axiosOption: AxiosRequestConfig = {
-                method: 'post',
-                url: proxy + '/api/orgunits/getprofilesandprofilesparentidisnull/' + id,
-                headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-                withCredentials: true,
-
-            };
-
-            (async () => {
-                const response = await axios(axiosOption)
-                const res = await response;
-                const p: Array<Profile> = res.data.profiles;
-                const pParentIdIsNull: Array<Profile> = res.data.profilesParentIdIsNull;
-
+            orgunitsApi.getprofilesandprofilesparentidisnull(id)
+            .then((r:any)=>{
+                const p: Array<Profile> = r.data.profiles;
+                const pParentIdIsNull: Array<Profile> = r.data.profilesParentIdIsNull;
                 if (p !== null && p !== undefined)
-                    setProfiles(p.map(prof => ({ id: prof.id, name: prof.name })))
-                if (pParentIdIsNull !== null && pParentIdIsNull !== undefined)
-                    setProfilesParentIdIsNull(pParentIdIsNull.map(prof => ({ id: prof.id, name: prof.name })))
-
-            })();
-
-    }, [loading, proxy]);
+                setProfiles(p.map(prof => ({ id: prof.id, name: prof.name,
+                    user: { username: prof.user.username } })))
+            if (pParentIdIsNull !== null && pParentIdIsNull !== undefined)
+                setProfilesParentIdIsNull(pParentIdIsNull.map(prof => ({ id: prof.id, name: prof.name, 
+                    user: { username: prof.user.username }  })))
+            })
+    }, [loading]);
 
     const profilesSelectUserCallBack=(data:Profile[])=>{
         setProfilesSelectUser(data)
@@ -126,7 +111,7 @@ export default function CustomizedDialogs(props: any) {
         setOpen(false);
     };
 
-    const Save = useCallback((data:Profile[]) => {
+    const Save = (data:Profile[]) => {
 
         const axiosOption: AxiosRequestConfig = {
             method: 'post',
@@ -138,14 +123,12 @@ export default function CustomizedDialogs(props: any) {
         };
 
         (async () => {
-            const response = await axios(axiosOption)
-            await sleep(1e3);
-            const res = await response;
+             await axios(axiosOption)
+           // await sleep(1e3);
+         //   const res = await response;
 
         })();
-        },
-        [],
-    )
+        }
 
     React.useEffect(() => {
         if (!open) {

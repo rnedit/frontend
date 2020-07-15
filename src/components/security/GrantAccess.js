@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { ROLES } from './ERules';
 import Moment from 'moment';
-import { editCurrentUser } from "../../App"
+import { editCurrentUser } from "../../reducers/currentUser"
 import axios from "axios";
 import { proxy } from '../Conf'
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -14,17 +14,14 @@ function GrantAccess(props) {
     const [r,setR] = React.useState(false)
     
     React.useEffect(()=>{
-        checkAuth();
-    },[])
-
-    React.useEffect(()=>{
       if (g===false)
         setR(true)
       else
         setR(false)
     },[g])
 
-     const checkAuth = async ()=>{
+     const checkAuth = React.useCallback( 
+         async ()=>{
         Moment.locale('ru');
 
         if (!user.updatedJwt) {
@@ -63,7 +60,13 @@ function GrantAccess(props) {
         }
         console.log("GrantAccess true")
         return true;
-    }
+    },
+    [],
+)
+
+    React.useEffect(()=>{
+        checkAuth();
+    },[checkAuth])
 
     async function checkUser () {
         let promise = new Promise((resolve, reject) => {
@@ -96,7 +99,7 @@ function GrantAccess(props) {
                 axios.post(proxy + '/api/auth/refreshjwt', { "refreshJwt": user.refreshJwt },
                     { headers: headers, withCredentials: true })
                     .then(res => {
-                        editCurrentUser(res.data)
+                        props.editCurrentUser(res.data)
                         resolve(true)
                       
                     })
@@ -134,4 +137,4 @@ const mapStateToProps = function (state) {
         user: state.currentUser.user,
     }
 }
-export default connect(mapStateToProps)(GrantAccess)
+export default connect(mapStateToProps,{editCurrentUser})(GrantAccess)

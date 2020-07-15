@@ -1,4 +1,5 @@
 import {ROLES} from '../components/security/ERules'
+import { updateCurrentUser, updateValueUser } from '../reduxactions/actions';
 
 const initialState = {
         user: {
@@ -42,3 +43,19 @@ export default function currentUser(state = initialState, action) {
             return state;
     }
 }
+
+export const editCurrentUser = (data) => {
+    return (dispatch) => {
+        dispatch(updateCurrentUser(data));
+    }
+   
+}
+
+export function getDefaultUser() {
+    return (dispatch) => {
+        return initialState;
+}
+}
+         
+    
+   

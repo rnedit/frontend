@@ -7,6 +7,7 @@ import storage from 'redux-persist/lib/storage'
 import users from './users';
 import profiles from './profiles';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
+import { reducer as formReducer } from 'redux-form'
 
 //https://www.npmjs.com/package/redux-persist
 const persistConfig = {
@@ -29,10 +30,12 @@ const usersPersistConfig = {
   }
 const rootReducer = combineReducers({
     routing: routerReducer,
+    form: formReducer,
     accessProfile: accessProfile,
     currentUser: currentUser,
     users: persistReducer(usersPersistConfig, users),
     profiles: persistReducer(profilesPersistConfig, profiles),
+   
 })
 
 export default persistReducer(persistConfig,rootReducer);

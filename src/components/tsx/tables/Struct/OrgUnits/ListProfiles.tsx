@@ -7,6 +7,7 @@ import Profile from './InterfaceProfile'
 import axios, { AxiosRequestConfig } from "axios";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Box from '@material-ui/core/Box';
+import { orgunitsApi } from "../../../../../api/Orgunits"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,26 +49,15 @@ export default function ChipsArray(props: any) {
     if (!loading1) {
       return undefined;
     }
-    const axiosOption: AxiosRequestConfig = {
-      method: 'post',
-      url: proxy + '/api/orgunits/getprofiles/' + id,
-      headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-      withCredentials: true,
-
-    };
-
-    (async () => {
-      const response = await axios(axiosOption)
-      await sleep(1e3);
-      const res = await response;
-      const p: Array<Profile> = res.data.profiles;
+ 
+    orgunitsApi.getprofiles(id)
+    .then((r:any)=>{
+      const p: Array<Profile> = r.data.profiles;
       if (p !== null && p !== undefined && p.length>0)
-        setChipData(p.map(prof => ({ id: prof.id, name: prof.name })))
+        setChipData(p.map(prof => ({ id: prof.id, name: prof.name, user: { username: prof.user.username } })))
       else 
        setLoading(false);
-       
-
-    })();
+    })
   }, []);
 
   return (
@@ -84,7 +74,7 @@ export default function ChipsArray(props: any) {
                 variant="outlined"
                 color="primary"
                 icon={icon}
-                label={data.name}
+                label={data.name + " ("+data.user.username+")"}
                 className={classes.chip}
               />
             </li>

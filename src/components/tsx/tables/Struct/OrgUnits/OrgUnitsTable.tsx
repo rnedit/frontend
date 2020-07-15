@@ -195,7 +195,12 @@ function MaterialTableStruct(props0: any) {
                                 stringDate = Moment(creationDate).format('hh:mm DD/MM/YYYY')
                             }
                             return (
-                                stringDate
+                                <Typography component="div">
+                                    <Box fontWeight="fontWeightRegular" fontSize="fontSize">
+                                        {stringDate}
+                                    </Box>
+                                </Typography> 
+                                
                             )
                         },
                     },
@@ -204,12 +209,16 @@ function MaterialTableStruct(props0: any) {
                         title: t("ТаблицаПрофайлы.0") + ' *',
                         field: 'name',
                         editComponent: props => (
-                            <TextField required id="name-required" label={t("ТаблицаПрофайлы.0")} defaultValue={props.value} />
+                            <TextField required id="name-required" label={t("ТаблицаПрофайлы.0")} defaultValue={props.value}
+                                onChange={(event => {
+                                    props.onChange(event.target.value)
+                                })}
+                            />
                         ),
                         render: rowData => {
                             return (
                                 <Typography component="div">
-                                    <Box fontWeight="fontWeightMedium">
+                                    <Box fontWeight="fontWeightMedium" fontSize="fontSize">
                                         {rowData.name}
                                     </Box>
                                 </Typography> 
@@ -235,27 +244,6 @@ function MaterialTableStruct(props0: any) {
 
                         },
 
-                    },
-
-                    {
-                        title: "",
-                        field: 'profiles',
-                        editComponent: props => (
-                            <>
-                            </>
-                        ),
-                        render: rowData => {
-
-                            return (
-
-                                <Box display="flex" justifyContent="right">
-                                    <DialogListAddProfile proxy={props0.proxy} id={rowData.id} />
-                                    <DialogListAddOrgUnit proxy={props0.proxy} id={rowData.id} />
-                                </Box>
-
-                            )
-
-                        },
                     },
 
                 ],
@@ -322,18 +310,26 @@ function MaterialTableStruct(props0: any) {
         if (qquery) dataPost()
     }, [qquery, dataPost]);
 
-    const add = useCallback(
-        () => {
+    const add = (n: NewOrgUnit) => {
             new Promise((resolve) => {
                 const { proxy } = props0;
                 const headers = {
                     'Content-Type': 'application/json; charset=UTF-8',
                 }
-                // console.log("addProfile", newProfile)
-                axios.post(proxy + '/api/orgunits/add', newOrgUnit, { headers: headers, withCredentials: true })
+                
+                axios.post(proxy + '/api/orgunits/add', n, { headers: headers, withCredentials: true })
                     .then(res => {
                         resolve()
-                        // console.log(res.data)
+                        
+                        setState((prevState) => {
+                            const data = [...prevState.data];
+                            const ae: any = {
+                                id: res.data?.id,
+                                name: res.data?.name,
+                            }
+                            data.push(ae);
+                            return { ...prevState, data };
+                        })
                         setAlertMSG((prevState) => {
                             return {
                                 ...prevState,
@@ -406,17 +402,15 @@ function MaterialTableStruct(props0: any) {
                     })
                 }, 3000);
             })
-        },
-        [newOrgUnit, props0, t],
-    )
-
-    React.useEffect(() => {
-        if (newOrgUnit !== null && newOrgUnit !== undefined
-            && newOrgUnit?.name !== ""
-        ) {
-            add()
         }
-    }, [newOrgUnit, add]);
+
+ //   React.useEffect(() => {
+//        if (newOrgUnit !== null && newOrgUnit !== undefined
+ //           && newOrgUnit?.name !== ""
+ //       ) {
+ //           add()
+ //       }
+  //  }, [newOrgUnit, add]);
 
 
     const del = (id: string) => {
@@ -495,8 +489,12 @@ function MaterialTableStruct(props0: any) {
                                                 Является Главной:
                                         </Grid>
                                             <Grid item xs={9}>
-                                               <SwitcheHomeOrgUnit proxy={props0.proxy} id={rowData.id}
+                                                {roleAccess? <SwitcheHomeOrgUnit proxy={props0.proxy} id={rowData.id}
                                                 homeOrgUnit={rowData.homeOrgUnit} />
+                                                :
+                                                (rowData.homeOrgUnit===true?"+":"-")
+                                                }
+                                              
                                             </Grid>
                                         </Grid>
                                     </Box>
@@ -613,20 +611,12 @@ function MaterialTableStruct(props0: any) {
                             setTimeout(() => {
                                 if (newData) {
                                     const newData1: NewOrgUnit = {
+                                        id: newData.id,
                                         name: newData.name,
                                     }
-                                    // console.log(newData1, "newData1 add")
                                     resolve();
-                                    setNewOrgUnit(newData1)
-
-                                    setState((prevState) => {
-                                        const data = [...prevState.data];
-                                        const ae: any = {
-                                            name: newData1?.name,
-                                        }
-                                        data.push(ae);
-                                        return { ...prevState, data };
-                                    })
+                                    setNewOrgUnit({ id: newData1.id, name: newData1.name })
+                                    add(newData1)
                                 }
                             }, 600);
 
@@ -641,6 +631,7 @@ function MaterialTableStruct(props0: any) {
                                         const id: any = oldData?.id;
 
                                         const uu: NewOrgUnit = {
+                                            id: newData.id,
                                             name: newData.name,
                                         }
                                         edit(id, uu)

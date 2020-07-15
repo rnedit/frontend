@@ -14,7 +14,7 @@ import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import axios from "axios";
 
-import {editCurrentUser} from "../App";
+//import {editCurrentUser} from "../components/";
 import Link from "@material-ui/core/Link";
 
 function Copyright() {
@@ -81,11 +81,10 @@ class Login extends React.Component {
     SignIn(){
         const headers = {
             'Content-Type': 'application/json; charset=UTF-8',
-            //'Authorization': 'token ' + jwtID,
         }
         axios.post(this.proxy+'/api/auth/signin',this.state, {headers:headers, withCredentials: true})
             .then(res => {
-                editCurrentUser(res.data)
+                //editCurrentUser(res.data)
 
                 this.setState({user:res.data})
                 this.props.history.push('/')
@@ -99,29 +98,12 @@ class Login extends React.Component {
         event.preventDefault();
         this.SignIn();
 
-        /*
-                axios.get(this.proxy+'/users/'+'5eccdb0697b5ee6db05afb3b',{withCredentials: true})
-                    .then(res => {
-                        console.log(res)
-                    })
-                    .catch(error => {
-                        console.log(error.response)
-
-                    })
-         */
     }
 
 
 
     render() {
-        /*
-         const {user} = this.state;
 
-             if (user.loggedIn) {
-                 return <TopAppBarAndLeftMenu/>
-             } else {
-
-         */
         return (
 
             <Container component="main" maxWidth="xs">
@@ -202,4 +184,4 @@ class Login extends React.Component {
 
 }
 
-export default connect()(Login);;
+export default connect(editCurrentUser)(Login);;

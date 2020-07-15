@@ -4,12 +4,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import axios, { AxiosRequestConfig } from "axios";
 import OrgUnit from './InterfaceOrgUnit';
-
-function sleep(delay = 0) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, delay);
-    });
-}
+import {orgunitsApi} from "../../../../../api/Orgunits"
 
 export default function SwitchLabels(props: any) {
   const {proxy, id, homeOrgUnit} = props;
@@ -21,27 +16,10 @@ export default function SwitchLabels(props: any) {
     Save({id:id, name:"", homeOrgUnit:event.target.checked})
   };
 
-  const Save = React.useCallback((data:OrgUnit) => {
+  const Save = (data:OrgUnit) => {
 
-    const axiosOption: AxiosRequestConfig = {
-        method: 'post',
-        url: proxy + '/api/orgunits/sethomeorgunit',
-        data: data,
-        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-        withCredentials: true,
-
-    };
-
-    (async () => {
-        const response = await axios(axiosOption)
-        await sleep(1e3);
-        const res = await response;
-
-    })();
-    },
-    [],
-)
-
+    orgunitsApi.sethomeorgunit(data);
+  }
   return (
     <FormGroup row>
       <FormControlLabel

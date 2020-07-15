@@ -13,6 +13,7 @@ import Divider from '@material-ui/core/Divider';
 import Profile from './InterfaceProfile';
 import Progress from './Progress'
 import Box from '@material-ui/core/Box';
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,6 +35,9 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+//  const ou: Array<Object> = _.filter(p, function(o:any) { return o.name==="Группа мам"; })
+const _ = require('lodash');
+
 function not(a: Profile[], b: Profile[]) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
@@ -54,6 +58,9 @@ export default function TransferList(props: any) {
 
   const [left, setLeft] = React.useState<Profile[]>(pIsNull as Profile[]);
   const [right, setRight] = React.useState<Profile[]>(p as Profile[]);
+
+  const [leftFilter, setLeftFilter] = React.useState("");
+  const [rightFilter, setRightFilter] = React.useState("");
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
@@ -93,6 +100,39 @@ export default function TransferList(props: any) {
     setChecked(not(checked, rightChecked));
   };
 
+  const handleOnChangeLeft = (event: any) => {
+    const { target: { value } } = event;
+    setLeftFilter(value)
+    if (value.trim()!==""){
+      const ou: Profile[] = _.filter(pIsNull, 
+        function(o:any) {
+          const name: string = _.toLower(o.name)
+          const username: string = _.toLower(o.user?.username)
+           return name.includes(_.toLower(value)) || username.includes(_.toLower(value)); 
+          })
+      setLeft(ou);
+    } else {
+      setLeft(pIsNull);
+    }
+  };
+  
+  const handleOnChangeRight = (event: any) => {
+    const { target: { value } } = event;
+    setRightFilter(value)
+    if (value.trim()!==""){
+      const ou: Profile[] = _.filter(p, 
+        function(o:any) {
+          const name: string = _.toLower(o.name)
+          const username: string = _.toLower(o.user?.username)
+           return name.includes(_.toLower(value)) || username.includes(_.toLower(value)); 
+          })
+      setRight(ou);
+    } else {
+      setRight(p);
+    }
+    
+  };
+
   React.useEffect(() => {
     setLeft(pIsNull);
     setRight(p);
@@ -123,7 +163,7 @@ export default function TransferList(props: any) {
       <List className={classes.list} dense component="div" role="list">
         {items.map((value: Profile) => {
           const labelId = `transfer-list-all-item-${value}-label`;
-
+          
           return (
             <ListItem key={value.id} role="listitem" button onClick={handleToggle(value)}>
               <ListItemIcon>
@@ -135,7 +175,8 @@ export default function TransferList(props: any) {
                   inputProps={{ 'aria-labelledby': labelId }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={`${value.name}`} />
+              <ListItemText id={labelId} 
+              primary={(value.user!==null && value.user!==undefined)?`${value.name}`+" ("+`${value.user?.username}`+")":`${value.name}`} />
             </ListItem>
           );
         })}
@@ -146,9 +187,15 @@ export default function TransferList(props: any) {
 
   return (
     <>
-      {pIsNull.length > 0 ?
+      { pIsNull.length > 0 ?
         <Grid container spacing={2} justify="center" alignItems="center" className={classes.root}>
-          <Grid item>{customList('Доступны', left)}</Grid>
+         
+          <Grid item>
+          <TextField fullWidth id="left-filter" label="Фильтр" type="text"
+           value={leftFilter} onChange={handleOnChangeLeft}/>
+            {customList('Доступны', left)}
+            
+            </Grid>
 
           <Grid item>
             <Grid container direction="column" alignItems="center">
@@ -174,7 +221,11 @@ export default function TransferList(props: any) {
           </Button>
             </Grid>
           </Grid>
-          <Grid item>{customList('Выбраны', right)}</Grid>
+          <Grid item>
+          <TextField fullWidth id="right-filter" label="Фильтр" type="text"
+           value={rightFilter} onChange={handleOnChangeRight}/>
+            {customList('Выбраны', right)}
+            </Grid>
         </Grid>
         : (
           <Box display="flex" width="100%" justifyContent="center" m={1} p={1} bgcolor="background.paper">

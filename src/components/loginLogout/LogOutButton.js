@@ -5,7 +5,8 @@ import ExitToAppTwoToneIcon from '@material-ui/icons/ExitToAppTwoTone';
 import Typography from "@material-ui/core/Typography";
 import Popover from "@material-ui/core/Popover";
 import {useHistory} from "react-router-dom";
-import {defaultUser, editCurrentUser} from "../../App";
+import {getDefaultUser, editCurrentUser} from "../../reducers/currentUser";
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function LogOutButton() {
+function LogOutButton(props: any) {
     let history = useHistory();
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -35,7 +36,7 @@ export default function LogOutButton() {
 
     const handleOnClick = () => {
         history.push('/signin')
-        editCurrentUser(defaultUser)
+        props.editCurrentUser(props.getDefaultUser())
     }
 
 
@@ -75,3 +76,5 @@ export default function LogOutButton() {
         </div>
     );
 }
+
+export default connect(null,{editCurrentUser,getDefaultUser})(LogOutButton);

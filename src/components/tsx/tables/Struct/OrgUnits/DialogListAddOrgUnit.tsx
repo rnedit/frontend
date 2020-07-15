@@ -1,4 +1,4 @@
-import React,{useCallback} from 'react';
+import React from 'react';
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -13,6 +13,7 @@ import ListIcon from '@material-ui/icons/List';
 import Tooltip from '@material-ui/core/Tooltip';
 import axios, { AxiosRequestConfig } from "axios";
 import OrgUnit from './InterfaceOrgUnit';
+import { orgunitsApi } from "../../../../../api/Orgunits"
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -32,12 +33,6 @@ const styles = (theme: Theme) =>
         },
 
     });
-
-function sleep(delay = 0) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, delay);
-    });
-}
 
 export interface DialogTitleProps extends WithStyles<typeof styles> {
     id: string;
@@ -86,33 +81,25 @@ export default function CustomizedDialogs(props: any) {
     const [orgUnits, setOrgUnits] = React.useState<OrgUnit[]>([]);
     const [orgUnitsParentIdIsNull, setOrgUnitsParentIdIsNull] = React.useState<OrgUnit[]>([]);
     const [orgUnitsSelectUser, setOrgUnitsSelectUser] = React.useState<OrgUnit[]>([]);
-    const loading = open && orgUnitsParentIdIsNull.length === 0;
+    const loading = open && orgUnitsParentIdIsNull.length === 0 ;
 
     React.useEffect(() => {
         if (!loading) {
             return undefined;
         }
-        const axiosOption: AxiosRequestConfig = {
-            method: 'post',
-            url: proxy + '/api/orgunits/getorgunitsbyparentidisnullandidisnot/' + id,
-            headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-            withCredentials: true,
-
-        };
-
-        (async () => {
-            const response = await axios(axiosOption)
-            const res = await response;
-            const p: Array<OrgUnit> = res.data.orgUnits;
-            const pParentIdIsNull: Array<OrgUnit> = res.data.ParentIdIsNullAndIdIsNot;
-            
-            if (p !== null && p !== undefined)
-                setOrgUnits(p.map(prof => ({ id: prof.id, name: prof.name, homeOrgUnit: prof.homeOrgUnit })))
+ 
+        orgunitsApi.getorgunitsbyparentidisnullandidisnot(id)
+        .then((r:any)=>{
+            const p: Array<OrgUnit> = r.data.orgUnits;
+            const pParentIdIsNull: Array<OrgUnit> = r.data.ParentIdIsNullAndIdIsNot;
+            if (p !== null && p !== undefined) 
+                setOrgUnits(p.map(prof => ({ id: prof.id, name: prof.name, homeOrgUnit: prof.homeOrgUnit })))              
+                           
             if (pParentIdIsNull !== null && pParentIdIsNull !== undefined)
                 setOrgUnitsParentIdIsNull(pParentIdIsNull.map(prof => ({ id: prof.id, name: prof.name, homeOrgUnit: prof.homeOrgUnit })))
 
-        })();
-    }, [loading, proxy]);
+        })
+    }, [loading]);
 
     const SelectUserCallBack=(data:OrgUnit[])=>{
         setOrgUnitsSelectUser(data)
@@ -123,26 +110,9 @@ export default function CustomizedDialogs(props: any) {
         setOpen(false);
     };
 
-    const Save = useCallback((data:OrgUnit[]) => {
-
-        const axiosOption: AxiosRequestConfig = {
-            method: 'post',
-            url: proxy + '/api/orgunits/setorgunits/' + id,
-            data: data,
-            headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-            withCredentials: true,
-
-        };
-
-        (async () => {
-            const response = await axios(axiosOption)
-            await sleep(1e3);
-            const res = await response;
-
-        })();
-        },
-        [],
-    )
+    const Save = (data:OrgUnit[]) => {
+        orgunitsApi.setorgunits(id,data)
+        }
 
     React.useEffect(() => {
         if (!open) {
@@ -150,8 +120,7 @@ export default function CustomizedDialogs(props: any) {
             setOrgUnitsSelectUser([]);
         }
     }, [open]);
-
-    //const as =()=>{loading===true?<Progress/>:<TransferList/>}; 
+    
     return (
         <div>
              <Tooltip title="Орг. единица добавить/удалить">

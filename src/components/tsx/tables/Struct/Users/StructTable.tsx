@@ -116,11 +116,9 @@ function MaterialTableStruct(props: any) {
     };
 
     const handleOK = () => {
-        const arr: Array<string> = [];
-        arr.push(role);
         setNewUser(
             {
-                roles: arr,
+                roles: newUser?.roles,
                 password: form.password,
                 email: newUser?.email,
                 firstName: newUser?.firstName,
@@ -600,7 +598,7 @@ function MaterialTableStruct(props: any) {
         if (newUser !== null && newUser !== undefined && newUser?.password !== "") {
             signUp()
         }
-    }, [newUser,signUp]);
+    }, [newUser]);
 
     const deleteUser = (id: string) => {
         //console.log("deleteUser",id)
@@ -623,7 +621,7 @@ function MaterialTableStruct(props: any) {
 
     const editUser = (id: string, updateUser: NewUser) => {
         new Promise((resolve) => {
-           // console.log("editUser",id,updateUser)
+            console.log("editUser",id,updateUser)
             const { proxy } = props;
             const headers = {
                 'Content-Type': 'application/json; charset=UTF-8',
@@ -665,47 +663,7 @@ function MaterialTableStruct(props: any) {
                     });
 
                 }}
-                detailPanel={[
-                    {
-                        icon: 'account_circle',
-                        tooltip: 'Show Surname',
-                        render: rowData => {
-                            return (
-                                <div
-                                    style={{
-                                        fontSize: 100,
-                                        textAlign: 'center',
-                                        color: 'white',
-                                        backgroundColor: '#e53935',
-                                    }}
-                                >
-                                    {"asd"}
-                                </div>
-                            );
-                        },
-                    },
-                    rowData => ({
                 
-                        icon: 'favorite_border',
-                        openIcon: 'favorite',
-                        tooltip: 'Show Both',
-                        render: rowData => {
-                            return (
-                                <div
-                                    style={{
-                                        fontSize: 100,
-                                        textAlign: 'center',
-                                        color: 'white',
-                                        backgroundColor: '#FDD835',
-                                    }}
-                                >
-                                    {"rowData.name"} {"rowData.surname"}
-                                </div>
-                            );
-                        },
-                    }),
-                ]}
-
                 actions={[
                     {
                         icon: 'refresh',
@@ -790,8 +748,11 @@ function MaterialTableStruct(props: any) {
                         new Promise((resolve) => {
                             if (newData) {
                              
-                                const arr: Array<string> = [];
-                                arr.push(ROLES.USER);
+                                let arr: Array<string> = [];
+                                newData.roles.forEach((role: any) => {
+                                    const { name } = role;
+                                    arr.push(name) ;
+                                })
                                 const newData1: NewUser = {
                                     id: newData.id,
                                     username: newData.username,
@@ -805,7 +766,7 @@ function MaterialTableStruct(props: any) {
                                 resolve();
                                 setNewUser(newData1)
                                 setOpen(true);
-                              //  console.log(newData1)
+                               // console.log(newData1)
                             }
                         })
                     ,
@@ -813,13 +774,18 @@ function MaterialTableStruct(props: any) {
                         new Promise((resolve) => {
                             setTimeout(() => {
                             if (newData) {
+                                let arr: Array<string> = [];
+                                newData.roles.forEach((role: any) => {
+                                    const { name } = role;
+                                    arr.push(name) ;
+                                })
                                 const uu: NewUser = {
                                     id: newData.id,
                                     username: newData.username,
                                     firstName: newData.firstName,
                                     lastName: newData.lastName,
                                     email: newData.email,
-                                    roles: newData.roles,
+                                    roles: arr,
                                     password: "",
                                 }
                                
@@ -842,7 +808,7 @@ function MaterialTableStruct(props: any) {
                         new Promise((resolve) => {
                             const { roles } = oldData;
                             let a = false;
-                            roles.forEach(role => {
+                            roles.forEach((role: any) => {
                                 const { name } = role;
                                 if ( name===ROLES.ADMIN || name===ROLES.MODERATOR) {
                                     a = true;

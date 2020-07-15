@@ -16,11 +16,12 @@ import { useHistory } from "react-router-dom";
 import { connect } from 'react-redux';
 import axios from "axios";
 import { Link as LinkRoute } from 'react-router-dom';
-import { editCurrentUser } from "../App";
+import {editCurrentUser} from "../reducers/currentUser";
 import { proxy } from "./Conf";
 import { useTranslation } from 'react-i18next';
 import LngSelect from './LngSelect'
 import Copyright from './Copyright'
+import { reduxForm } from 'redux-form';
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -55,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 function SignIn(props) {
     const classes = useStyles();
     let history = useHistory();
-
+ //   const { handleSubmit } = props;
     const [form, setState] = useState({
         username: '',
         password: ''
@@ -94,7 +95,7 @@ function SignIn(props) {
         axios.post(proxy + '/api/auth/signin', form, { headers: headers, withCredentials: true })
             .then(res => {
                 
-                editCurrentUser(res.data)
+                props.editCurrentUser(res.data)
                 console.log(res)
                 history.push('/workflow')
                 
@@ -119,17 +120,6 @@ function SignIn(props) {
         setSubmitDisabled(true);
         SignIn();
     }
-
-    /*
-            axios.get(this.proxy+'/users/'+'5eccdb0697b5ee6db05afb3b',{withCredentials: true})
-                .then(res => {
-                    console.log(res)
-                })
-                .catch(error => {
-                    console.log(error.response)
-
-                })
-     */
 
     return (
         <div className={classes.root}>
@@ -231,5 +221,5 @@ function SignIn(props) {
 
     );
 }
-
-export default connect()(SignIn);
+//export const SignInReduxForm = reduxForm({form:"signin"})(connect(null,{editCurrentUser})(SignIn))
+export default connect(null,{editCurrentUser})(SignIn);
