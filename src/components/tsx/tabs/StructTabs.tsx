@@ -59,10 +59,10 @@ export default function ScrollableTabsButtonAuto(props: any) {
         </div>
 
       </TabPanel>
-      <TabPanel value={value} index={1}>
+      {/* <TabPanel value={value} index={1}>
          Группы555
-      </TabPanel>
-      <TabPanel value={value} index={2}>
+      </TabPanel> */}
+      <TabPanel value={value} index={1}>
       <div style={{ width: '100%' }}>
 
       <Box >
@@ -72,7 +72,7 @@ export default function ScrollableTabsButtonAuto(props: any) {
       </div>
         
       </TabPanel>
-      <TabPanel value={value} index={3}>
+      <TabPanel value={value} index={2}>
       <div style={{ width: '100%' }}>
 
 <Box >
@@ -82,7 +82,7 @@ export default function ScrollableTabsButtonAuto(props: any) {
       </div>
        
       </TabPanel>
-      <TabPanel value={value} index={4}>
+      <TabPanel value={value} index={3}>
       <Box >
         <IStructureTree t={t} proxy={proxy} />
       </Box>

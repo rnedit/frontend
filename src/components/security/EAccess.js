@@ -22,6 +22,7 @@ export const ACCESS = [
    
     {id:10,name:"ACCESS_ORD",info:"Доступ к ОРД"},
     
+    
     {id:11,name:"ACCESS_ALL",info:"Полный доступ"}, //для админа
     
 ]

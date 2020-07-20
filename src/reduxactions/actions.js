@@ -20,7 +20,7 @@ export const setProfiles = (data) => ({
 
 
 export const setAccessProfile = (data) => ({
-    data,
+    data:data,
     type: 'SET_ACCESS'
 });
 

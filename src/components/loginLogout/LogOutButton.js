@@ -6,6 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import Popover from "@material-ui/core/Popover";
 import {useHistory} from "react-router-dom";
 import {getDefaultUser, editCurrentUser} from "../../reducers/currentUser";
+import {setDefaultProfiles} from "../../reducers/accessProfile";
 import { connect } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +38,7 @@ function LogOutButton(props: any) {
     const handleOnClick = () => {
         history.push('/signin')
         props.editCurrentUser(props.getDefaultUser())
+        props.setDefaultProfiles()
     }
 
 
@@ -77,4 +79,4 @@ function LogOutButton(props: any) {
     );
 }
 
-export default connect(null,{editCurrentUser,getDefaultUser})(LogOutButton);
+export default connect(null,{editCurrentUser,getDefaultUser,setDefaultProfiles})(LogOutButton);

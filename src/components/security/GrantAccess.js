@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { ROLES } from './ERules';
 import Moment from 'moment';
 import { editCurrentUser } from "../../reducers/currentUser"
+import { setAccessProfiles } from "../../reducers/accessProfile"
 import axios from "axios";
 import { proxy } from '../Conf'
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -68,6 +69,29 @@ function GrantAccess(props) {
         checkAuth();
     },[checkAuth])
 
+    async function getAccessProfile () {
+        let promise = new Promise((resolve, reject) => {
+            const headers = {
+                'Content-Type': 'application/json; charset=UTF-8',
+            }
+            axios.post(proxy + '/api/users/getaccessprofile/'+user.id, null,
+            { headers: headers, withCredentials: true })
+                .then(res => {
+                    //console.log(res,"getAccessProfiles");
+                    resolve(res)
+                })
+                .catch(error => {
+                    console.log(error)
+                    console.log(error.response)
+                    reject()
+                })
+    })
+
+    const result = await promise;
+    //console.log(result,"result")
+    return result;
+    }
+
     async function checkUser () {
         let promise = new Promise((resolve, reject) => {
                 axios.get(proxy + '/api/test/user', 
@@ -75,11 +99,18 @@ function GrantAccess(props) {
                     .then(res => {
                         resolve(true)
                     })
+                    .then(() => {
+                        getAccessProfile()
+                         .then(res => {
+                             if (res.data.accessprofile!==null && res.data.accessprofile!==undefined) {
+                                props.setAccessProfiles(res.data.accessprofile)
+                             }
+                        })
+                    })
                     .catch(error => {
                         console.log(error)
                         console.log(error.response)
                         resolve(false) 
-                             
                     })
         })
 
@@ -137,4 +168,4 @@ const mapStateToProps = function (state) {
         user: state.currentUser.user,
     }
 }
-export default connect(mapStateToProps,{editCurrentUser})(GrantAccess)
+export default connect(mapStateToProps,{editCurrentUser,setAccessProfiles})(GrantAccess)

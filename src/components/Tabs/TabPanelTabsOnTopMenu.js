@@ -94,10 +94,10 @@ function TabsTopMenu(props) {
                                 value={stab?Number(stab):valueOut} 
                             >
                                 <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=0"} label="Пользователи" {...a11yProps(0)} />
-                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=1"} label="Группы" {...a11yProps(1)} />
-                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=2"} label="Должности" {...a11yProps(2)} />
-                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=3"} label="Организационная единица" {...a11yProps(3)} />
-                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=4"} label="Структура" {...a11yProps(4)} />
+                                {/* <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=1"} label="Группы" {...a11yProps(1)} /> */}
+                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=1"} label="Должности" {...a11yProps(1)} />
+                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=2"} label="Организационная единица" {...a11yProps(2)} />
+                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=3"} label="Структура" {...a11yProps(3)} />
 
                             </Tabs>
                         </AppBar>

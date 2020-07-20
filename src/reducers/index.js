@@ -16,22 +16,25 @@ const persistConfig = {
     whitelist:['currentUser'],
     stateReconciler: autoMergeLevel2
 }
+const accessProfileConfig = {
+  key: 'accessProfile',
+  storage,
+  stateReconciler: autoMergeLevel2
+}
 const usersPersistConfig = {
     key: 'users',
     storage,
-    whitelist:['users'],
     stateReconciler: autoMergeLevel2
   }
   const profilesPersistConfig = {
     key: 'profiles',
     storage,
-    whitelist:['profiles'],
     stateReconciler: autoMergeLevel2
   }
 const rootReducer = combineReducers({
     routing: routerReducer,
     form: formReducer,
-    accessProfile: accessProfile,
+    accessProfile: persistReducer(accessProfileConfig, accessProfile),
     currentUser: currentUser,
     users: persistReducer(usersPersistConfig, users),
     profiles: persistReducer(profilesPersistConfig, profiles),

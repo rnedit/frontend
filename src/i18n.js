@@ -53,7 +53,7 @@ i18n
   .init({
 
     debug: false,
-   // whitelist: availableLanguages,
+    whitelist: availableLanguages,
   //  detection: options,
     fallbackLng: 'ru', 
 

@@ -53,7 +53,7 @@ export const editCurrentUser = (data) => {
 
 export function getDefaultUser() {
     return (dispatch) => {
-        return initialState;
+        return initialState.user;
 }
 }
          
