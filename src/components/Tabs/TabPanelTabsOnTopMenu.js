@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
@@ -7,7 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from "@material-ui/core/Tabs";
 import { makeStyles } from '@material-ui/core/styles';
 import { NavTab } from "react-router-tabs";
-
+import { connect } from 'react-redux';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -55,61 +55,110 @@ function TabsTopMenu(props) {
     console.log("Render TabsTopMenu")
     const { value, stab } = props;
     const { callback } = props;
-
     const classes = useStyles();
     const [valueOut, setValue] = React.useState(0);
-
+    const {dataAccessProfile} = props;
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
      setValue(newValue);
      callback(newValue);
     };
 
     const NavTabRef = React.forwardRef((props, ref) =><NavTab {...props} innerRef={ref} />)
+
+    const topMenuUserGen = () => {
+
+        let arr = []
+
+        dataAccessProfile.map(p => {
+            switch (p.name) {
+                case "ACCESS_SZ": {
+                    let d =  <TabPanel key={p.count} value={value} index={p.count}>
+                    Внутренние документы top
+                    </TabPanel>
+                arr.push(d)
+                break;
+                }
+                   
+                case "ACCESS_ORD":{
+                    let d =  <TabPanel key={p.count} value={value} index={p.count}>
+                    Приказы и распоряжения
+                        </TabPanel>
+                arr.push(d)
+                break;
+                }
+                   
+                case "ACCESS_INDOC":{
+                    let d =  <TabPanel key={p.count} value={value} index={p.count}>
+                    Входящие докменты
+                </TabPanel>
+                arr.push(d)
+                break;
+                }
+                   
+                case "ACCESS_OUTDOC":{
+                    let d = <TabPanel key={p.count} value={value} index={p.count}>
+                    Исходящие докменты
+                        </TabPanel>
+                arr.push(d)
+                break;
+                }
+                    
+                case "ACCESS_STRUCT":{
+                    let d = <TabPanel key={p.count} value={value} index={p.count}>
+
+                    <div className={classes.root}>
+    
+                            <AppBar position="static" color="default">
+                                <Tabs
+                                    onChange={handleChange}
+                                    indicatorColor="primary"
+                                    textColor="primary"
+                                    variant="scrollable"
+                                    scrollButtons="auto"
+                                    aria-label="scrollable auto tabs"
+                                    value={stab?Number(stab):valueOut} 
+                                >
+                                    <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=0"} label="Пользователи" {...a11yProps(0)} />
+                                    {/* <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=1"} label="Группы" {...a11yProps(1)} /> */}
+                                    <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=1"} label="Должности" {...a11yProps(1)} />
+                                    <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=2"} label="Организационная единица" {...a11yProps(2)} />
+                                    <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=3"} label="Структура" {...a11yProps(3)} />
+    
+                                </Tabs>
+                            </AppBar>
+                    </div>
+                </TabPanel>
+                arr.push(d)
+                break;
+                }
+                   
+                case "ACCESS_SPRAV":{
+                    let d =  <TabPanel key={p.count} value={value} index={p.count}>
+                    Справочник
+                </TabPanel>
+                arr.push(d)
+                break;
+                }
+                   
+                default:
+                    break;
+            }
+
+        })
+        return arr
+    }
+   
     return (
         <>
-            <TabPanel value={value} index={0}>
-                Внутренние документы top
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                Приказы и распоряжения
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-                Входящие докменты
-            </TabPanel>
-            <TabPanel value={value} index={3}>
-                Исходящие докменты
-            </TabPanel>
-            <TabPanel value={value} index={4} >
-
-                <div className={classes.root}>
-
-                        <AppBar position="static" color="default">
-                            <Tabs
-                                onChange={handleChange}
-                                indicatorColor="primary"
-                                textColor="primary"
-                                variant="scrollable"
-                                scrollButtons="auto"
-                                aria-label="scrollable auto tabs"
-                                value={stab?Number(stab):valueOut} 
-                            >
-                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=0"} label="Пользователи" {...a11yProps(0)} />
-                                {/* <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=1"} label="Группы" {...a11yProps(1)} /> */}
-                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=1"} label="Должности" {...a11yProps(1)} />
-                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=2"} label="Организационная единица" {...a11yProps(2)} />
-                                <Tab component={NavTabRef} to={"/workflow?tab="+value+"&stab=3"} label="Структура" {...a11yProps(3)} />
-
-                            </Tabs>
-                        </AppBar>
-                  
-
-                </div>
-            </TabPanel>
-            <TabPanel value={value} index={5}>
-                Справочник
-            </TabPanel>
+        {topMenuUserGen()}
         </>
 
     )
 };
-export default TabsTopMenu
+const mapStateToProps = function (state) {
+    return {
+        accessProfile: state.accessProfile.data,
+        roles: state.currentUser.user.roles,
+    }
+}
+export default connect(mapStateToProps)(TabsTopMenu);

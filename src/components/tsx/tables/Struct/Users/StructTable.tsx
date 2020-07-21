@@ -71,7 +71,8 @@ function MaterialTableStruct(props: any) {
     const { height } = useWindowResize();
     const history = useHistory();
     const { roles } = props;
-    const roleAccess: boolean = roles.includes(ROLES.ADMIN || ROLES.MODERATOR);
+    const adminModerRoles = [ROLES.MODERATOR , ROLES.ADMIN]
+    const roleAccess: boolean = roles.some((r:any) => adminModerRoles.includes(r) );
     const roleAccessAdmin: boolean = roles.includes(ROLES.ADMIN );
     const roleAccessModerator: boolean = roles.includes(ROLES.MODERATOR );
     
@@ -747,26 +748,21 @@ function MaterialTableStruct(props: any) {
                     onRowAdd: (newData) =>
                         new Promise((resolve) => {
                             if (newData) {
-                             
-                                let arr: Array<string> = [];
-                                newData.roles.forEach((role: any) => {
-                                    const { name } = role;
-                                    arr.push(name) ;
-                                })
+                                                           
                                 const newData1: NewUser = {
                                     id: newData.id,
                                     username: newData.username,
                                     firstName: newData.firstName,
                                     lastName: newData.lastName,
                                     email: newData.email,
-                                    roles: arr,
+                                    roles: newData.roles,
                                     password: "",
                                 }
-                               
-                                resolve();
+
                                 setNewUser(newData1)
                                 setOpen(true);
-                               // console.log(newData1)
+                                resolve();
+                               
                             }
                         })
                     ,
@@ -774,22 +770,17 @@ function MaterialTableStruct(props: any) {
                         new Promise((resolve) => {
                             setTimeout(() => {
                             if (newData) {
-                                let arr: Array<string> = [];
-                                newData.roles.forEach((role: any) => {
-                                    const { name } = role;
-                                    arr.push(name) ;
-                                })
+                               
                                 const uu: NewUser = {
                                     id: newData.id,
                                     username: newData.username,
                                     firstName: newData.firstName,
                                     lastName: newData.lastName,
                                     email: newData.email,
-                                    roles: arr,
+                                    roles: newData.roles,
                                     password: "",
                                 }
-                               
-                                    resolve();
+
                                     if (oldData) {
                                         const id: any = oldData?.id;
                                         editUser(id, uu)
@@ -799,7 +790,7 @@ function MaterialTableStruct(props: any) {
                                             return { ...prevState, data };
                                         });
                                     }
-
+                                    resolve();
                               
                             }
                         }, 600);

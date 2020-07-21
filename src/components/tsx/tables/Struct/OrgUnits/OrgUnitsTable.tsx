@@ -41,7 +41,8 @@ function MaterialTableStruct(props0: any) {
     const { height } = useWindowResize();
     const history = useHistory();
     const roles: string[] = props0.roles;
-    const roleAccess: boolean = roles.includes(ROLES.ADMIN || ROLES.MODERATOR);
+    const adminModerRoles = [ROLES.MODERATOR , ROLES.ADMIN]
+    const roleAccess: boolean = roles.some((r:any) => adminModerRoles.includes(r) );
     const roleAccessAdmin: boolean = roles.includes(ROLES.ADMIN);
     const roleAccessModerator: boolean = roles.includes(ROLES.MODERATOR);
     const {t}=props0;

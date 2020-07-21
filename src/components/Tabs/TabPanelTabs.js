@@ -1,9 +1,10 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import StructTabs from '../tsx/tabs/StructTabs'
 import { proxy } from "../Conf";
+import { connect } from 'react-redux';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -31,43 +32,93 @@ TabPanel.propTypes = {
     value: PropTypes.any.isRequired,
 };
 
-export default function Tabs(props) {
+function Tabs(props) {
     const { value, t } = props;
     const { valueTopMenu } = props;
+    const {dataAccessProfile} = props;
+
+    const bodyMenuUserGen = () => {
+
+        let arr = []
+
+        dataAccessProfile.map(p => {
+            switch (p.name) {
+                case "ACCESS_SZ": {
+                    let d =  <TabPanel key={p.count} value={value} index={p.count}>
+                    Внутренние документы body
+                    </TabPanel>
+                arr.push(d)
+                break;
+                }
+                   
+                case "ACCESS_ORD":{
+                    let d =  <TabPanel key={p.count} value={value} index={p.count}>
+                    Приказы и распоряжения body
+                        </TabPanel>
+                arr.push(d)
+                break;
+                }
+                   
+                case "ACCESS_INDOC":{
+                    let d =  <TabPanel key={p.count} value={value} index={p.count}>
+                    Входящие докменты body
+                </TabPanel>
+                arr.push(d)
+                break;
+                }
+                   
+                case "ACCESS_OUTDOC":{
+                    let d = <TabPanel key={p.count} value={value} index={p.count}>
+                    Исходящие докменты body
+                        </TabPanel>
+                arr.push(d)
+                break;
+                }
+                    
+                case "ACCESS_STRUCT":{
+                    let d = <TabPanel key={p.count} value={value} index={p.count}>
+               
+                    <div style={{ width: '100%' }}>
+   
+                           <Box >
+                               <StructTabs t={t} proxy={proxy} value={valueTopMenu} />
+                           </Box>
+   
+                       </div>
+               
+                      
+                   </TabPanel>
+   
+                arr.push(d)
+                break;
+                }
+                   
+                case "ACCESS_SPRAV":{
+                    let d =  <TabPanel key={p.count} value={value} index={p.count}>
+                    Справочник
+                </TabPanel>
+                arr.push(d)
+                break;
+                }
+                   
+                default:
+                    break;
+            }
+
+        })
+        return arr
+    }
     return (
         <>
-            <TabPanel value={value} index={0}>
-                Внутренние документы
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                Приказы и распоряжения
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-                Входящие документы
-            </TabPanel>
-            <TabPanel value={value} index={3}>
-                Исходящие документы
-            </TabPanel>
-     
-                <TabPanel value={value} index={4}>
-               
-                 <div style={{ width: '100%' }}>
-
-                        <Box >
-                            <StructTabs t={t} proxy={proxy} value={valueTopMenu} />
-                        </Box>
-
-                    </div>
-            
-                   
-                </TabPanel>
-
-           
-
-            <TabPanel value={value} index={5}>
-                Справочник
-            </TabPanel>
+      {bodyMenuUserGen()}
         </>
 
     )
 }
+const mapStateToProps = function (state) {
+    return {
+        accessProfile: state.accessProfile.data,
+        roles: state.currentUser.user.roles,
+    }
+}
+export default connect(mapStateToProps)(Tabs);

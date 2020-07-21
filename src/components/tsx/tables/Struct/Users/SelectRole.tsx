@@ -1,18 +1,10 @@
 /* eslint-disable no-use-before-define */
-import React from 'react';
+import React, {useEffect} from 'react';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-
-interface roles {
-  [index: number]:
-  {
-    id: string,
-    name: string,
-  },
-}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,29 +18,24 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 function SelectRole(props: any) {
-  console.log("Render SelectRole")
   const { Roles } = props;
   const { value, onChange } = props;
-  const defaultRole:roles = {
-    [0]: {
-      id:"0",
-      name: "ROLE_USER",
-    }
-  }
+  const defaultRole:any[] = [{id:0, name:"ROLE_USER"}]
 
-  const [name, setName] = React.useState<roles>(value?value:defaultRole);
- 
+  const [name, setName] = React.useState<any[]>(value?value:defaultRole);
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setName((prevState) => {
-      const data = [{
-        ...prevState[0],
-        name: event.target.value as string
-      }] 
-      onChange(data);
-    return data ;
-  });
+    const data = [{id:0, name:event.target.value}];
+    setName(data);
+    onChange(data);
+  };
   
-}
+useEffect(() => {
+  onChange(name);
+  return () => {
+    
+  }
+}, [])
+
 const classes = useStyles();
 return (
   <div >
