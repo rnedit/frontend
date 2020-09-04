@@ -1,21 +1,19 @@
 // @ts-ignore
 import React, { useCallback } from 'react';
-import { useHistory } from "react-router-dom";
 import MaterialTable from 'material-table';
 import { TableState } from './ITableState';
-import axios from "axios";
 import { connect } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Moment from 'moment';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { ROLES } from '../../../security/ERules'
 import { useWindowResize } from "../../UseWindowResize";
 import { internalsApi } from "../../../../api/Internals"
 import RequestInternal from "./RequestInternal"
-
+import {setInternal} from "../../../../reducers/internal";
+import InternalDocument from "../../workflowForm/Internal/MainDocument"
 
 function Alert(props: any) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -45,6 +43,12 @@ function MaterialTableStruct(props: any) {
 
     const [query, setQuery] = React.useState(false);
 
+    const [openInternal, setOpenInternal] = React.useState(false);
+
+    const handleCallBackClose = () => {
+        setOpenInternal(false)
+      }
+
     //const [open, setOpen] = React.useState(false);
     const [openMsg, setOpenMsg] = React.useState(false);
     
@@ -65,8 +69,10 @@ function MaterialTableStruct(props: any) {
         // setOpen(false);
     };
 
-    const handleOnClickRow = (event: any, selectedRow: any) => {
-        setSelectedRow(selectedRow.tableData.id)
+    const handleOnClickRow = (event: any, rowData: any) => {
+        setSelectedRow(rowData.tableData.id);
+        props.setInternal(rowData.id);
+        setOpenInternal(true);
     }
 
     const [state, setState] = React.useState<TableState>(
@@ -186,8 +192,17 @@ function MaterialTableStruct(props: any) {
   
     const tableRef: any = React.createRef();
 
+    const drawer = (
+    
+        <div>
+            <InternalDocument propsOpen={openInternal} callBackClose={handleCallBackClose}/>
+        </div>
+        
+        );
+
     return (
         <>
+        {drawer}
             <MaterialTable
                 title={t("ТаблицаВнутренниеДокументы.0")}
                 tableRef={tableRef}
@@ -303,4 +318,4 @@ const mapStateToProps = function (state: any) {
         userId: state.currentUser.user.id
     }
 }
-export default connect(mapStateToProps)(MaterialTableStruct);
+export default connect(mapStateToProps,{setInternal})(MaterialTableStruct);

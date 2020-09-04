@@ -10,6 +10,7 @@ import FormHelperText from '@material-ui/core/FormHelperText'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import asyncValidateEmail from '../Validators/asyncValidateEmail'
+import { connect } from 'react-redux';
 
 
 const validate = values => {
@@ -108,10 +109,17 @@ const validate = values => {
     </FormControl>
   )
   
-  const MaterialUiForm = props => {
+  let InitializeFromStateForm = props => {
     const { handleSubmit, pristine, reset, submitting, classes } = props
     return (
       <form onSubmit={handleSubmit}>
+        <div>
+          <Field
+            name="subject"
+            component={renderTextField}
+            label="Краткое содержание"
+          />
+        </div>
         <div>
           <Field
             name="firstName"
@@ -169,9 +177,19 @@ const validate = values => {
       </form>
     )
   }
-  
-  export default reduxForm({
-    form: 'MainDocumentInternal', // a unique identifier for this form
+
+  InitializeFromStateForm = reduxForm ({
+    form: 'InternalForm',  // a unique identifier for this form
+    enableReinitialize: true,
     validate,
     asyncValidateEmail
-  })(MaterialUiForm)
+  })(InitializeFromStateForm)
+
+  InitializeFromStateForm = connect(
+    state => ({
+      initialValues: state.internal // pull initial values from reducer
+    }),
+    //{ load: loadAccount }               // bind account loading action creator
+  )(InitializeFromStateForm)
+
+  export default InitializeFromStateForm

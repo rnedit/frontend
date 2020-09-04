@@ -6,6 +6,7 @@ import {persistReducer} from "redux-persist";
 import storage from 'redux-persist/lib/storage'
 import users from './users';
 import profiles from './profiles';
+import internal from './internal';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import { reducer as formReducer } from 'redux-form'
 
@@ -18,6 +19,11 @@ const persistConfig = {
 }
 const accessProfileConfig = {
   key: 'accessProfile',
+  storage,
+  stateReconciler: autoMergeLevel2
+}
+const internalConfig = {
+  key: 'internal',
   storage,
   stateReconciler: autoMergeLevel2
 }
@@ -38,6 +44,7 @@ const rootReducer = combineReducers({
     currentUser: currentUser,
     users: persistReducer(usersPersistConfig, users),
     profiles: persistReducer(profilesPersistConfig, profiles),
+    internal: persistReducer(internalConfig, internal),
    
 })
 

@@ -28,3 +28,13 @@ export const setUserToProfile = (data) => ({
     username:data,
     type: 'SET_USERTOPROFILE'
 });
+
+export const setInternalData = (data) => ({
+    data: data,
+    type: 'SET_INTERNAL'
+});
+
+export const setUpdateInternalData = (data) => ({
+    data: data,
+    type: 'UPDATE_INTERNAL'
+});

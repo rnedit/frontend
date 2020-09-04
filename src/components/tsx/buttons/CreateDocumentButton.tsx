@@ -4,8 +4,9 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Add from '@material-ui/icons/Add';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-
+import {setUpdateInternal} from "../../../reducers/internal";
 import InternalDocument from "../workflowForm/Internal/MainDocument"
+import { connect } from 'react-redux';
 
 const options = [
   'Создать внутренний документ',
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 const ITEM_HEIGHT = 48;
 
-export default function LongMenu() {
+function LongMenu(props: any) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [createInternal, setCreateInternal] = React.useState(false);
   const open = Boolean(anchorEl);
@@ -45,7 +46,8 @@ export default function LongMenu() {
     setAnchorEl(null);
     const indexAttr: number = Number(event.currentTarget.getAttribute("index-attr"));
     if (indexAttr==0) {
-        setCreateInternal(true)
+      props.setUpdateInternal(null);
+      setCreateInternal(true)
     }
        
   };
@@ -93,3 +95,9 @@ const drawer = (
     </div>
   );
 }
+const mapStateToProps = function (state: any) {
+  return {
+
+  }
+}
+export default connect(mapStateToProps,{setUpdateInternal})(LongMenu);

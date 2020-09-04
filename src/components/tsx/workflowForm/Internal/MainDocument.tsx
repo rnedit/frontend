@@ -10,8 +10,9 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
-import ContactForm from "./ReduxFormMainDoc"
-
+import Internal from "./ReduxFormMainDoc"
+import { connect } from 'react-redux';
+import Moment from 'moment';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,8 +33,9 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function FullScreenDialog(props: any) {
+function FullScreenDialog(props: any) {
   const {propsOpen, callBackClose} = props;
+  Moment.locale('ru');
 
   const classes = useStyles();
   const [open, setOpen] = React.useState(propsOpen);
@@ -65,20 +67,36 @@ export default function FullScreenDialog(props: any) {
             </IconButton>
 
             <Typography variant="h6" className={classes.title}>
-              Создание внутреннего документа
+              {!props.id?"Создание внутреннего документа":"Внутренний документ № "+
+              props.number+" от "+
+              Moment(props.creationDate).format('DD.MM.YYYY')}
             </Typography>
 
-            <Button autoFocus color="inherit" onClick={handleClose}>
-              Отправить
-            </Button>
-            <Button autoFocus color="inherit" onClick={handleClose}>
-              Сохранить как черновик
-            </Button>
+            {!props.id?
+             <Button autoFocus color="inherit" onClick={handleClose}>
+             Отправить
+           </Button>
+            :null}
+        
+            {!props.id?
+             <Button autoFocus color="inherit" onClick={handleClose}>
+             Сохранить как черновик
+           </Button>
+            :null}
+           
 
           </Toolbar>
         </AppBar>
-        <ContactForm onSubmit={submit} />
+        <Internal onSubmit={submit} />
       </Dialog>
     </div>
   );
 }
+const mapStateToProps = function (state: any) {
+  return {
+    id: state.internal.id,
+    number: state.internal.number,
+    creationDate: state.internal.creationDate
+  }
+}
+export default connect(mapStateToProps)(FullScreenDialog);

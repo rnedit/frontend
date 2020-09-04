@@ -15,6 +15,14 @@ export const internalsApi = {
             console.error(error)
         }
         
-    }
-    ,
+    },
+
+    async getInternal(data) {
+        try {
+            return await instance.post(proxy + '/api/internals/getInternal', data)
+        } catch (error) {
+            console.error(error)
+        }
+        
+    },
 }

@@ -98,7 +98,7 @@ function a11yProps(index) {
 }
 
 function TopAppBarAndLeftMenu(props) {
-    console.log("Render TopAppBarAndLeftMenu")
+    //console.log("Render TopAppBarAndLeftMenu")
     const { t } = useTranslation();
     const { window } = props;
     const classes = useStyles();
