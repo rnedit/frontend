@@ -129,6 +129,29 @@ function MaterialTableStruct(props0: any) {
                             )
                         },
                     },
+
+                    {
+                        title: t("ТаблицаОргЕдиница.4") + ' *',
+                        field: 'suffix',
+                        editComponent: props => (
+                            <TextField required id="suffix-required" label={t("ТаблицаОргЕдиница.4")} defaultValue={props.value}
+                                onChange={(event => {
+                                    props.onChange(event.target.value)
+                                })}
+                            />
+                        ),
+                        render: rowData => {
+                            return (
+                                <Typography component="div">
+                                    <Box fontWeight="fontWeightMedium" fontSize="fontSize">
+                                        {rowData.suffix}
+                                    </Box>
+                                </Typography> 
+                               
+                               
+                            )
+                        },
+                    },
                     
                     {
                         title: t("ТаблицаОргЕдиница.2"),
@@ -221,6 +244,28 @@ function MaterialTableStruct(props0: any) {
                                 <Typography component="div">
                                     <Box fontWeight="fontWeightMedium" fontSize="fontSize">
                                         {rowData.name}
+                                    </Box>
+                                </Typography> 
+                               
+                               
+                            )
+                        },
+                    },
+                    {
+                        title: t("ТаблицаОргЕдиница.4") + ' *',
+                        field: 'suffix',
+                        editComponent: props => (
+                            <TextField required id="suffix-required" label={t("ТаблицаОргЕдиница.4")} defaultValue={props.value}
+                                onChange={(event => {
+                                    props.onChange(event.target.value)
+                                })}
+                            />
+                        ),
+                        render: rowData => {
+                            return (
+                                <Typography component="div">
+                                    <Box fontWeight="fontWeightMedium" fontSize="fontSize">
+                                        {rowData.suffix}
                                     </Box>
                                 </Typography> 
                                

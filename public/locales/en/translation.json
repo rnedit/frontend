@@ -110,7 +110,9 @@
 
           "36": "Are you sure delete this row?",
           "37": "Cancel",
-          "38": "Save"
+          "38": "Save",
+          "39": "Summary",
+          "40": "№"
     },
     "ТаблицаПрофайлы": {
         "0":"Title",
@@ -126,10 +128,15 @@
         "0":"Profiles",
         "1":"Positions/Organ.",
         "2":"Refs to",
-        "3":"Home"
+        "3":"Home",
+        "4":"№ org.units"
     },
     "ТаблицаСтруктура": {
         "0":"Structure"
        
+    },
+
+    "ТаблицаВнутренниеДокументы":{
+        "0":"Internal documents"
     }
 }

@@ -26,7 +26,11 @@ export default function Asynchronous(props:any) {
 
       usersApi.parentidisnull()
       .then((r:any)  => {
+        if (defValue!==null && defValue!==undefined)
+          arr = {...r.data }
+        else
           arr = {arr, ...r.data }
+          
         if (active) {
           setOptions(Object.keys(arr).map((key) => arr[key]) as User[]);
         }
@@ -41,11 +45,10 @@ export default function Asynchronous(props:any) {
   React.useEffect(() => {
     if (!open) {
       setOptions([]);
-      arr = [];
-      arr.push({id:"0", username:defValue})
+      // arr = [];
+      // arr.push({id:"0", username:defValue})
     }
   }, [open]);
-
   return (
     <Autocomplete
       id="asynchronous"

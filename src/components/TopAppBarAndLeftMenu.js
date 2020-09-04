@@ -23,8 +23,8 @@ import LetterAvatars from "./LetterAvatars/la";
 import { useLocation } from "react-router-dom";
 import ButtonSignUp from "./ButtonSignUp";
 
-import TabPanelTabs from '../components/Tabs/TabPanelTabs'
-import TabPanelTabsOnTopMenu from '../components/Tabs/TabPanelTabsOnTopMenu'
+import TabPanelTabs from '../components/tsx/tabs/TabPanelTabs'
+import TabPanelTabsOnTopMenu from '../components/tsx/tabs/TabPanelTabsOnTopMenu'
 
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -33,6 +33,8 @@ import { NavTab } from "react-router-tabs";
 import { useTranslation } from 'react-i18next';
 import { ROLES } from '../components/security/ERules'
 import useGenerateLinkAccessForLeftAndTopAndBodyNav from "./utils/useGenerateLinkAccessForLeftAndTopAndBodyNav"
+
+import CreateDocumentButton from "./tsx/buttons/CreateDocumentButton"
 
 const drawerWidth = 240;
 
@@ -148,24 +150,13 @@ function TopAppBarAndLeftMenu(props) {
             <div className={classes.toolbar}>
                 <div style={{ width: '100%' }}>
                     <Box display="flex" justifyContent="center" mx={1.5} px={1.5} >
-                        <Box flexGrow={1} >
-                            <LetterAvatars username={props.username} />
-                        </Box>
-                        <Box mt={1.5} >
-                            {/*
-                            <Fab size="small" variant="extended"  color="primary"
-                                 onClick={() => {
-                                     history.push('/workflow/createmaindocument')
-                                 }}>
-                                <AddIcon className={classes.extendedIcon} />
-                                Создать
-                            </Fab>
-                                */}
-                        </Box>
+                       
+                   
                     </Box>
-
+                    
                 </div>
             </div>
+            
             <Divider />
             <AppBar position="static" color="default">
                 <Tabs
@@ -221,6 +212,12 @@ function TopAppBarAndLeftMenu(props) {
 
             <AppBar position="fixed" color="default" className={AppBar1}>
                 <Toolbar>
+                {Number(tab) !== 4 && Number(tab) !== 5 ?
+                    <Box>
+                            <CreateDocumentButton></CreateDocumentButton>
+                    </Box> 
+                    : null}
+                     
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
@@ -241,6 +238,9 @@ function TopAppBarAndLeftMenu(props) {
                                 dataAccessProfile={dataAccessProfile}
                                 />
                             </Box>
+                            <Box>
+                                <LetterAvatars username={props.username} />
+                             </Box>
                             <Box >
                                 <LoginLogout />
                             </Box>
@@ -382,7 +382,8 @@ const useLeftMenuUserGen = (dataAccessProfile) => {
                 default:
                     break;
             }
-    
+
+            return null
         })
 
         return () => {

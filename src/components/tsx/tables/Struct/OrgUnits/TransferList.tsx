@@ -176,7 +176,7 @@ export default function TransferList(props: any) {
                 />
               </ListItemIcon>
               <ListItemText id={labelId} 
-              primary={(value.user!==null && value.user!==undefined)?`${value.name}`+" ("+`${value.user?.username}`+")":`${value.name}`} />
+              primary={(value.user!==null && value.user!==undefined)? value.name +' ('+ value.user?.username +')': value.name } />
             </ListItem>
           );
         })}

@@ -1,12 +1,13 @@
-import React,{useEffect} from 'react';
+import React from 'react';
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
-import StructTabs from '../tsx/tabs/StructTabs'
-import { proxy } from "../Conf";
+import StructTabs from './StructTabs'
+import { proxy } from "../../Conf";
 import { connect } from 'react-redux';
+import TableInternal from '../tables/Internal'
 
-function TabPanel(props) {
+function TabPanel(props:any) {
     const { children, value, index, ...other } = props;
 
     return (
@@ -32,20 +33,20 @@ TabPanel.propTypes = {
     value: PropTypes.any.isRequired,
 };
 
-function Tabs(props) {
+function Tabs(props:any) {
     const { value, t } = props;
     const { valueTopMenu } = props;
     const {dataAccessProfile} = props;
 
     const bodyMenuUserGen = () => {
 
-        let arr = []
+        let arr:any = []
 
-        dataAccessProfile.map(p => {
+        dataAccessProfile.map((p:any) => {
             switch (p.name) {
                 case "ACCESS_SZ": {
                     let d =  <TabPanel key={p.count} value={value} index={p.count}>
-                    Внутренние документы body
+                        <TableInternal t={t}/>
                     </TabPanel>
                 arr.push(d)
                 break;
@@ -115,7 +116,7 @@ function Tabs(props) {
 
     )
 }
-const mapStateToProps = function (state) {
+const mapStateToProps = function (state:any) {
     return {
         accessProfile: state.accessProfile.data,
         roles: state.currentUser.user.roles,

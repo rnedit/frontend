@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
@@ -9,7 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { NavTab } from "react-router-tabs";
 import { connect } from 'react-redux';
 
-function TabPanel(props) {
+function TabPanel(props:any) {
     const { children, value, index, ...other } = props;
 
     return (
@@ -50,7 +50,7 @@ function a11yProps(index: any) {
         backgroundColor: theme.palette.background.paper,
     },
 }));
-function TabsTopMenu(props) {
+function TabsTopMenu(props:any) {
     
     console.log("Render TabsTopMenu")
     const { value, stab } = props;
@@ -63,13 +63,13 @@ function TabsTopMenu(props) {
      callback(newValue);
     };
 
-    const NavTabRef = React.forwardRef((props, ref) =><NavTab {...props} innerRef={ref} />)
+    const NavTabRef = React.forwardRef((props:any, ref:any) =><NavTab {...props} innerRef={ref} />)
 
     const topMenuUserGen = () => {
 
-        let arr = []
+        let arr:any = []
 
-        dataAccessProfile.map(p => {
+        dataAccessProfile.map((p:any) => {
             switch (p.name) {
                 case "ACCESS_SZ": {
                     let d =  <TabPanel key={p.count} value={value} index={p.count}>
@@ -155,7 +155,7 @@ function TabsTopMenu(props) {
 
     )
 };
-const mapStateToProps = function (state) {
+const mapStateToProps = function (state:any) {
     return {
         accessProfile: state.accessProfile.data,
         roles: state.currentUser.user.roles,

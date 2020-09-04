@@ -52,7 +52,7 @@ function ProfileTable(props0: any) {
     const roleAccess: boolean = roles.some((r:any) => adminModerRoles.includes(r) );
     const roleAccessAdmin: boolean = roles.includes(ROLES.ADMIN);
  
-    const {t}=props0;
+    const {t, username}=props0;
 
     const [openMsg, setOpenMsg] = React.useState(false);
     const [newProfile, setNewProfile] = React.useState<NewProfile>();
@@ -163,7 +163,7 @@ function ProfileTable(props0: any) {
                         editComponent: props => (
 
                             <AsyncUserSelect proxy={props0.proxy} 
-                                defValue={props.rowData.user?props.rowData.user.username:undefined} 
+                                defValue={props.rowData.user?props.rowData.user.username:username} 
                                 onChange={props.onChange} 
                             />  
                         ),
@@ -806,6 +806,7 @@ function ProfileTable(props0: any) {
 const mapStateToProps = function (state: any) {
     return {
         roles: state.currentUser.user.roles,
+        username: state.currentUser.user.username,
         storeUsers: state.users.data,
         accessProfile: state.accessProfile.data,
         setUserToProfile: state.profiles.setUserToProfile

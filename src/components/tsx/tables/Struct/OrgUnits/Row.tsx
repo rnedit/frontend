@@ -3,6 +3,7 @@ export interface Row {
     creationDate: string;
     name: string;
     parentName: string;
+    suffix:string;
     homeOrgUnit: boolean;
     profiles: [
         {

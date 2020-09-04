@@ -5,11 +5,13 @@ import { deepOrange, deepPurple } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        display: 'flex',
+        paddingLeft:theme.spacing(0.5),
+       paddingTop:theme.spacing(0.5),
         '& > *': {
             margin: theme.spacing(1),
         },
     },
+    
     orange: {
         color: theme.palette.getContrastText(deepOrange[500]),
         backgroundColor: deepOrange[500],

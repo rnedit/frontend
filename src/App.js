@@ -5,7 +5,6 @@ import SignIn from "./components/SignIn";
 
 import { store } from "./init";
 import SignUp from './components/SignUp';
-import MainDocument from "./workflowForm/MainDocument"
 import GrantAccess from './components/security/GrantAccess'
 import Main from './components/Main'
 
