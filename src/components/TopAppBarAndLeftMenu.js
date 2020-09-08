@@ -34,8 +34,6 @@ import { useTranslation } from 'react-i18next';
 import { ROLES } from '../components/security/ERules'
 import useGenerateLinkAccessForLeftAndTopAndBodyNav from "./utils/useGenerateLinkAccessForLeftAndTopAndBodyNav"
 
-import CreateDocumentButton from "./tsx/buttons/CreateDocumentButton"
-
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -211,13 +209,7 @@ function TopAppBarAndLeftMenu(props) {
             <CssBaseline />
 
             <AppBar position="fixed" color="default" className={AppBar1}>
-                <Toolbar>
-                {Number(tab) !== 4 && Number(tab) !== 5 ?
-                    <Box>
-                            <CreateDocumentButton></CreateDocumentButton>
-                    </Box> 
-                    : null}
-                     
+                <Toolbar>                     
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"

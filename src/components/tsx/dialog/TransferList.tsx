@@ -51,7 +51,7 @@ function union(a: Profile[], b: Profile[]) {
 }
 
 export default function TransferList(props: any) {
-  const { p, pIsNull, CallBack } = props;
+  const { p, pIsNull, CallBack, multiple} = props;
 
   const classes = useStyles();
   const [checked, setChecked] = React.useState<Profile[]>([]);
@@ -77,6 +77,23 @@ export default function TransferList(props: any) {
 
     setChecked(newChecked);
   };
+
+  let multipleState : Boolean = true;
+  
+  if (multiple!==null && multiple!==undefined) {
+    if (leftChecked.length>1){
+      multipleState = true;
+    } else
+    if (!multiple) {
+      multipleState = leftChecked.length===0 || right.length>0;
+    } else {
+      multipleState = multiple
+    }
+  } else {
+    multipleState = leftChecked.length===0
+  }
+  // const c = leftChecked.length===0;
+  // console.log("c "+c,"aa "+multiple,"b "+multipleState)
 
   const numberOfChecked = (items: Profile[]) => intersection(checked, items).length;
 
@@ -187,7 +204,7 @@ export default function TransferList(props: any) {
 
   return (
     <>
-      { pIsNull.length > 0 ?
+      { pIsNull.length > 0  || p.length > 0 ?
         <Grid container spacing={2} justify="center" alignItems="center" className={classes.root}>
          
           <Grid item>
@@ -204,7 +221,7 @@ export default function TransferList(props: any) {
                 size="small"
                 className={classes.button}
                 onClick={handleCheckedRight}
-                disabled={leftChecked.length === 0}
+                disabled={multipleState===true}
                 aria-label="move selected right"
               >
                 &gt;
@@ -229,7 +246,6 @@ export default function TransferList(props: any) {
         </Grid>
         : (
           <Box display="flex" width="100%" justifyContent="center" m={1} p={1} bgcolor="background.paper">
-
             <Box p={1}   >
               <Progress />
             </Box>

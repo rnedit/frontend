@@ -8,6 +8,8 @@ import Tabs from "@material-ui/core/Tabs";
 import { makeStyles } from '@material-ui/core/styles';
 import { NavTab } from "react-router-tabs";
 import { connect } from 'react-redux';
+import { ROLES } from '../../../components/security/ERules'
+import CreateDocumentButton from "../buttons/CreateDocumentButton"
 
 function TabPanel(props:any) {
     const { children, value, index, ...other } = props;
@@ -58,6 +60,8 @@ function TabsTopMenu(props:any) {
     const classes = useStyles();
     const [valueOut, setValue] = React.useState(0);
     const {dataAccessProfile} = props;
+    const adminModerRoles = [ROLES.MODERATOR , ROLES.ADMIN]
+    const roleAccess = props.roles.some((r: any) => adminModerRoles.includes(r) );
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
      setValue(newValue);
      callback(newValue);
@@ -65,46 +69,88 @@ function TabsTopMenu(props:any) {
 
     const NavTabRef = React.forwardRef((props:any, ref:any) =><NavTab {...props} innerRef={ref} />)
 
+    const ButtonCreateDocs =()=>{
+
+        return (
+            <Box>
+            {roleAccess || props.accessProfile.some((e: any) => e.name === "ACCESS_CREATEDOCUMENT")?
+            <CreateDocumentButton/>
+            :
+            null
+        }
+           
+        </Box> 
+        )
+       
+    }
+
     const topMenuUserGen = () => {
 
         let arr:any = []
 
+        //arr.push( <div key={99}><ButtonCreateDocs/></div> )
         dataAccessProfile.map((p:any) => {
             switch (p.name) {
                 case "ACCESS_SZ": {
-                    let d =  <TabPanel key={p.count} value={value} index={p.count}>
-                    Внутренние документы top
-                    </TabPanel>
+                    let d = (
+                        <div key={p.count}>
+                            <TabPanel  value={value} index={p.count}>
+                                <ButtonCreateDocs/>
+                                Внутренние документы top
+                                </TabPanel>
+                        </div>
+                    
+                    )
                 arr.push(d)
                 break;
                 }
                    
                 case "ACCESS_ORD":{
-                    let d =  <TabPanel key={p.count} value={value} index={p.count}>
+                    let d =  (
+                        <div key={p.count}>
+<TabPanel  value={value} index={p.count}>
+<ButtonCreateDocs/>
                     Приказы и распоряжения
                         </TabPanel>
+                        </div>
+                    
+                    )
                 arr.push(d)
                 break;
                 }
                    
                 case "ACCESS_INDOC":{
-                    let d =  <TabPanel key={p.count} value={value} index={p.count}>
+                    let d =   (
+                        <div key={p.count}>
+                            <TabPanel  value={value} index={p.count}>
+                            <ButtonCreateDocs/>
                     Входящие докменты
                 </TabPanel>
+                </div>
+                    
+                    )
                 arr.push(d)
                 break;
                 }
                    
                 case "ACCESS_OUTDOC":{
-                    let d = <TabPanel key={p.count} value={value} index={p.count}>
+                    let d =   (
+                        <div key={p.count}>
+                            <TabPanel  value={value} index={p.count}>
+                            <ButtonCreateDocs/>
                     Исходящие докменты
                         </TabPanel>
+                        </div>
+                    
+                    )
                 arr.push(d)
                 break;
                 }
                     
                 case "ACCESS_STRUCT":{
-                    let d = <TabPanel key={p.count} value={value} index={p.count}>
+                    let d = (
+                    <div key={p.count}>
+                        <TabPanel value={value} index={p.count}>
 
                     <div className={classes.root}>
     
@@ -128,14 +174,20 @@ function TabsTopMenu(props:any) {
                             </AppBar>
                     </div>
                 </TabPanel>
+                </div>
+                    )
                 arr.push(d)
                 break;
                 }
                    
                 case "ACCESS_SPRAV":{
-                    let d =  <TabPanel key={p.count} value={value} index={p.count}>
+                    let d = (
+                    <div key={p.count}>
+<TabPanel value={value} index={p.count}>
                     Справочник
                 </TabPanel>
+                    </div> 
+                    )
                 arr.push(d)
                 break;
                 }

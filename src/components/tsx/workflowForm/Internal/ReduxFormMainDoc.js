@@ -11,7 +11,12 @@ import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import asyncValidateEmail from '../Validators/asyncValidateEmail'
 import { connect } from 'react-redux';
-
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+import DialogListAddProfile from '../../dialog/DialogListAddProfile'
+import {setUpdateRecipient} from "../../../../reducers/internal"
+import submit from './submit'
 
 const validate = values => {
     const errors = {}
@@ -38,15 +43,23 @@ const validate = values => {
 
   const renderTextField = ({
     label,
+    id,
+    variant,
     input,
+    disabled,
+    margin,
     meta: { touched, invalid, error },
     ...custom
   }) => (
     <TextField
+      id={id}
       label={label}
+      variant={variant}
+      margin={margin}
       placeholder={label}
       error={touched && invalid}
       helperText={touched && error}
+      disabled={disabled}
       {...input}
       {...custom}
     />
@@ -69,9 +82,9 @@ const validate = values => {
   const radioButton = ({ input, ...rest }) => (
     <FormControl>
       <RadioGroup {...input} {...rest}>
-        <FormControlLabel value="female" control={<Radio />} label="Female" />
-        <FormControlLabel value="male" control={<Radio />} label="Male" />
-        <FormControlLabel value="other" control={<Radio />} label="Other" />
+        <FormControlLabel value="0" control={<Radio />} label="Без согласования" />
+        <FormControlLabel value="1" control={<Radio />} label="Параллельное" />
+        <FormControlLabel value="2" control={<Radio />} label="Последовательное" />
       </RadioGroup>
     </FormControl>
   )
@@ -93,14 +106,14 @@ const validate = values => {
   }) => (
     <FormControl 
     error={(touched && (typeof error !== "undefined" ))}>
-      <InputLabel htmlFor="age-native-simple">Age</InputLabel>
+      <InputLabel htmlFor="typeAgreement-native-simple">Тип согласования</InputLabel>
       <Select
         native
         {...input}
         {...custom}
         inputProps={{
-          name: 'age',
-          id: 'age-native-simple'
+          name: 'typeAgreements',
+          id: 'typeAgreements-native-simple'
         }}
       >
         {children}
@@ -111,69 +124,118 @@ const validate = values => {
   
   let InitializeFromStateForm = props => {
     const { handleSubmit, pristine, reset, submitting, classes } = props
+
+    const callBackInternal = (data) =>{
+      if (data.length>0)
+        props.setUpdateRecipient(data[0])
+    }
+
     return (
       <form onSubmit={handleSubmit}>
-        <div>
+
+<Grid container spacing={3}>
+<Grid item xs={12} md={6}>
+<Typography component="div" style={{
+            margin:'5px' }} >
+          
           <Field
+            id="subject"
             name="subject"
+            variant="outlined"
+            margin="dense"
             component={renderTextField}
             label="Краткое содержание"
+            fullWidth
           />
-        </div>
-        <div>
+
+          </Typography>
+</Grid>
+</Grid>
+
+<Grid container spacing={3}>
+<Grid item xs={12} md={6}>
+<Typography component="div" style={{
+            margin:'5px' }} >
+       <Box display="flex" justifyContent="right">
+      <DialogListAddProfile type="Internal" multiple={false} callBackInternal={callBackInternal} />
+    </Box>    
           <Field
-            name="firstName"
+            id="recipientName"
+            name="recipientName"
+            variant="outlined"
+            margin="dense"
             component={renderTextField}
-            label="First Name"
+            label="Получатель"
+            disabled
+            fullWidth
           />
-        </div>
-        <div>
-          <Field name="lastName" component={renderTextField} label="Last Name" />
-        </div>
-        <div>
-          <Field name="email" component={renderTextField} label="Email" />
-        </div>
-        <div>
-          <Field name="sex" component={radioButton}>
-            <Radio value="male" label="male" />
-            <Radio value="female" label="female" />
-          </Field>
-        </div>
-        <div>
-          <Field
-            classes={classes}
-            name="favoriteColor"
-            component={renderSelectField}
-            label="Favorite Color"
-          >
-            <option value="" />
-            <option value={'ff0000'}>Red</option>
-            <option value={'00ff00'}>Green</option>
-            <option value={'0000ff'}>Blue</option>
-          </Field>
-        </div>
-        <div>
-          <Field name="employed" component={renderCheckbox} label="Employed" />
-        </div>
-        <div />
-        <div>
-          <Field
-            name="notes"
+
+          </Typography>
+</Grid>
+</Grid>
+
+<Typography component="div" hidden style={{
+            margin:'5px' }} >
+
+            <Field
+            name="recipient"
+            id="recipient"
+            variant="outlined"
+            margin="dense"
             component={renderTextField}
-            label="Notes"
-            multiline
-            rowsMax="4"
-            margin="normal"
+            label="Получатель ID"
+            disabled
+            fullWidth
           />
-        </div>
-        <div>
-          <button type="submit" disabled={pristine || submitting}>
-            Submit
-          </button>
-          <button type="button" disabled={pristine || submitting} onClick={reset}>
-            Clear Values
-          </button>
-        </div>
+
+           </Typography>
+<Grid container spacing={3}>
+<Grid item xs={12} md={6}>
+<Typography component="div" style={{
+            margin:'5px' }} >
+              
+           <Field name="typeAgreement" component={radioButton}>
+              <Radio value="0" label="Без согласования" />
+              <Radio value="1" label="Параллельное" />
+              <Radio value="2" label="Последовательное" />
+           </Field>
+
+</Typography>
+</Grid>
+</Grid>
+
+            <Field
+            name="draft"
+            id="draft"
+            variant="outlined"
+            margin="dense"
+            component={renderTextField}
+            label="draft"
+            disabled
+            
+          />
+
+            <Field
+            name="сreatorProfileId"
+            id="сreatorProfileId"
+            variant="outlined"
+            margin="dense"
+            component={renderTextField}
+            label="сreatorProfileId"
+            disabled
+            
+          />
+
+            <Field
+            name="сreatorRolesId"
+            id="сreatorRolesId"
+            variant="outlined"
+            margin="dense"
+            component={renderTextField}
+            label="сreatorRolesId"
+            disabled
+          />
+
       </form>
     )
   }
@@ -181,14 +243,17 @@ const validate = values => {
   InitializeFromStateForm = reduxForm ({
     form: 'InternalForm',  // a unique identifier for this form
     enableReinitialize: true,
+    keepDirtyOnReinitialize: true,
+    onSubmit: submit,
     validate,
     asyncValidateEmail
   })(InitializeFromStateForm)
 
   InitializeFromStateForm = connect(
+    
     state => ({
-      initialValues: state.internal // pull initial values from reducer
-    }),
+      initialValues: state.internal, // pull initial values from reducer
+    }),{setUpdateRecipient}
     //{ load: loadAccount }               // bind account loading action creator
   )(InitializeFromStateForm)
 

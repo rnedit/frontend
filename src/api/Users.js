@@ -10,7 +10,7 @@ const instance = axios.create({
 export const usersApi = {
     async parentidnotnull () {
         try {
-            return await instance.post(proxy+'/api/users/parentidnotnull')
+            return await instance.post('/api/users/parentidnotnull')
         } catch (error) {
             console.error(error)
         }
@@ -19,9 +19,32 @@ export const usersApi = {
 
         ,
 
+        async signin (data) {
+            try {
+                return await instance.post('/api/auth/signin', data)
+            } catch (error) {
+                console.error(error)
+            }
+          
+            }
+    
+            ,
+
+            async signup (data) {
+                try {
+                    return await instance.post('/api/auth/signup', data)
+                } catch (error) {
+                    console.error(error)
+                }
+              
+                }
+        
+                ,
+    
+
     async parentidisnull () {
         try {
-            return await instance.post(proxy+'/api/users/parentidisnull')
+            return await instance.post('/api/users/parentidisnull')
         } catch (error) {
             console.error(error)
         }
@@ -32,7 +55,7 @@ export const usersApi = {
         
     async sethomeorgunit (data) {
         try {
-            return await instance.post(proxy+'/api/orgunits/sethomeorgunit', data)
+            return await instance.post('/api/orgunits/sethomeorgunit', data)
         } catch (error) {
             console.error(error)
         }

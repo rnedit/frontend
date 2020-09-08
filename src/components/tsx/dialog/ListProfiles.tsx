@@ -7,7 +7,7 @@ import Profile from './InterfaceProfile'
 import axios, { AxiosRequestConfig } from "axios";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Box from '@material-ui/core/Box';
-import { orgunitsApi } from "../../../../../api/Orgunits"
+import { orgunitsApi } from "../../../api/Orgunits"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

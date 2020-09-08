@@ -1,12 +1,9 @@
-import { setInternalData, setUpdateInternalData } from '../reduxactions/actions';
+import { setInternalData, setUpdateInternalData, setUpdateRecipientData } from '../reduxactions/actions';
 import { internalsApi } from "../api/Internals"
 
 const initialState = {
-    id:"",
-    number:"",
-    draft:false,
-    subject:"",
-    creationDate:""
+    draft: false,
+    subject: "",
 };
 
 export default function internal(state = initialState, action) {
@@ -20,7 +17,14 @@ export default function internal(state = initialState, action) {
                 return {
                     ... action.data
                 };
-            
+
+        case "UPDATE_RECIPIENT_INTERNAL":
+                    return {
+                        ...state,
+                        recipientName: action.data.name + " ( " + action.data.user.username + " )",
+                        recipient: action.data.id
+                    };
+                
         default:
             return state;
     }
@@ -44,6 +48,18 @@ export const setInternal = (data) => {
 export const setUpdateInternal = (data) => {
     return (dispatch) => {
         dispatch(setUpdateInternalData(data));
+    }
+}
+
+export const setCreateNewInternal = (data) => {
+    return (dispatch) => {
+        dispatch(setUpdateInternalData(data));
+    }
+}
+
+export const setUpdateRecipient = (data) => {
+    return (dispatch) => {
+        dispatch(setUpdateRecipientData(data));
     }
 }
 

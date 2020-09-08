@@ -10,7 +10,7 @@ const instance = axios.create({
 export const internalsApi = {
     async getInternals(data) {
         try {
-            return await instance.post(proxy + '/api/internals/getInternals', data)
+            return await instance.post('/api/internals/getInternals', data)
         } catch (error) {
             console.error(error)
         }
@@ -19,7 +19,15 @@ export const internalsApi = {
 
     async getInternal(data) {
         try {
-            return await instance.post(proxy + '/api/internals/getInternal', data)
+            return await instance.post('/api/internals/getInternal', data)
+        } catch (error) {
+            console.error(error)
+        }
+        
+    },
+    async saveInternal(data) {
+        try {
+            return await instance.post('/api/internals/saveInternal', data)
         } catch (error) {
             console.error(error)
         }

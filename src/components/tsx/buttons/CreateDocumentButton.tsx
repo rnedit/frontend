@@ -4,7 +4,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Add from '@material-ui/icons/Add';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import {setUpdateInternal} from "../../../reducers/internal";
+import {setUpdateInternal, setCreateNewInternal} from "../../../reducers/internal";
 import InternalDocument from "../workflowForm/Internal/MainDocument"
 import { connect } from 'react-redux';
 
@@ -29,7 +29,6 @@ function LongMenu(props: any) {
   const [createInternal, setCreateInternal] = React.useState(false);
   const open = Boolean(anchorEl);
   const classes = useStyles();
-
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -42,11 +41,19 @@ function LongMenu(props: any) {
     setCreateInternal(false)
   }
 
+  const {сreatorProfileId, сreatorProfileName, сreatorRolesId, сreatorUserId} = props;
   const handleClickMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(null);
     const indexAttr: number = Number(event.currentTarget.getAttribute("index-attr"));
     if (indexAttr==0) {
-      props.setUpdateInternal(null);
+      props.setCreateNewInternal( {
+        draft: false,
+        subject: "",
+        сreatorUserId,
+        сreatorProfileId,
+        сreatorProfileName,
+        сreatorRolesId
+    } );
       setCreateInternal(true)
     }
        
@@ -97,7 +104,10 @@ const drawer = (
 }
 const mapStateToProps = function (state: any) {
   return {
-
+    сreatorUserId:  state.currentUser.user.id,
+    сreatorProfileId: state.currentUser.user.profile.id,
+    сreatorProfileName: state.currentUser.user.profile.name,
+    сreatorRolesId: state.currentUser.user.rolesId
   }
 }
-export default connect(mapStateToProps,{setUpdateInternal})(LongMenu);
+export default connect(mapStateToProps,{setCreateNewInternal})(LongMenu);

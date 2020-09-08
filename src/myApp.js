@@ -8,7 +8,7 @@ import Login from './components/Login';
 import {UserContext} from './context/UserContext'
 import {UserProvider} from './context/UserContext'
 
-export const proxy = "http://localhost:8080"
+//export const proxy = "http://localhost:8080"
 
 class App extends Component {
     static contextType = UserContext;

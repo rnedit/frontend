@@ -14,14 +14,13 @@ import MuiAlert from '@material-ui/lab/Alert';
 import useInterval from 'react-useinterval';
 import { useHistory } from "react-router-dom";
 import { connect } from 'react-redux';
-import axios from "axios";
 import { Link as LinkRoute } from 'react-router-dom';
 import {editCurrentUser} from "../reducers/currentUser";
-import { proxy } from "./Conf";
 import { useTranslation } from 'react-i18next';
 import LngSelect from './LngSelect'
 import Copyright from './Copyright'
 import { reduxForm } from 'redux-form';
+import {usersApi} from '../api/Users'
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -89,30 +88,25 @@ function SignIn(props) {
     const { t } = useTranslation();
 
     const SignIn = () => {     
-        const headers = {
-            'Content-Type': 'application/json; charset=UTF-8',
-        }
-        axios.post(proxy + '/api/auth/signin', form, { headers: headers, withCredentials: true })
-            .then(res => {
-                
-                props.editCurrentUser(res.data)
-                console.log(res)
-                history.push('/workflow')
-                
-            })
-            .catch(error => {
-                if (error.response !== undefined) {
-                    if (Number(error.response.data.status) === 401)
-                        setTextAlert(t('ОшибкаВход.1'))
-                    else
-                        setTextAlert(t('ОшибкаВход.2'))
-                } else {
+ 
+        usersApi.signin(form).then(res =>{
+            props.editCurrentUser(res.data)
+            //console.log(res)
+            history.push('/workflow')
+        })
+        .catch(error => {
+            if (error.response !== undefined) {
+                if (Number(error.response.data.status) === 401)
+                    setTextAlert(t('ОшибкаВход.1'))
+                else
                     setTextAlert(t('ОшибкаВход.2'))
-                }
-                console.log(error)
-                setOpen(true);
-                setStart(true);
-            })
+            } else {
+                setTextAlert(t('ОшибкаВход.2'))
+            }
+            console.log(error)
+            setOpen(true);
+            setStart(true);
+        })
             
     }
     const handleSubmit = (event) => {

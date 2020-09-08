@@ -13,6 +13,10 @@ import { TransitionProps } from '@material-ui/core/transitions';
 import Internal from "./ReduxFormMainDoc"
 import { connect } from 'react-redux';
 import Moment from 'moment';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Container from '@material-ui/core/Container';
+
+import RemoteSubmitButton from "./RemoteSubmitButton"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,7 +38,7 @@ const Transition = React.forwardRef(function Transition(
 });
 
 function FullScreenDialog(props: any) {
-  const {propsOpen, callBackClose} = props;
+  const {propsOpen, callBackClose, internal} = props;
   Moment.locale('ru');
 
   const classes = useStyles();
@@ -44,12 +48,6 @@ function FullScreenDialog(props: any) {
     setOpen(false);
     callBackClose(false);
   };
-
-  const submit = (values:any) => {
-    // print the form values to the console
-    console.log(values)
-  }
-
 
   React.useEffect(() => {
       if (propsOpen)
@@ -73,9 +71,7 @@ function FullScreenDialog(props: any) {
             </Typography>
 
             {!props.id?
-             <Button autoFocus color="inherit" onClick={handleClose}>
-             Отправить
-           </Button>
+             <RemoteSubmitButton callBackClose={handleClose}/>
             :null}
         
             {!props.id?
@@ -87,7 +83,18 @@ function FullScreenDialog(props: any) {
 
           </Toolbar>
         </AppBar>
-        <Internal onSubmit={submit} />
+        <React.Fragment>
+      <CssBaseline />
+      <Container fixed>
+        <Typography component="div" style={{
+           backgroundColor: 'white',
+            //height: '100vh',
+            padding:'20px' }} >
+           <Internal />
+          </Typography>
+      </Container>
+    </React.Fragment>
+       
       </Dialog>
     </div>
   );
@@ -95,6 +102,7 @@ function FullScreenDialog(props: any) {
 const mapStateToProps = function (state: any) {
   return {
     id: state.internal.id,
+    internal: state.internal,
     number: state.internal.number,
     creationDate: state.internal.creationDate
   }

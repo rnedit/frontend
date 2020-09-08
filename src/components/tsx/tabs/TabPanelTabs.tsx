@@ -3,7 +3,7 @@ import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import StructTabs from './StructTabs'
-import { proxy } from "../../Conf";
+import { proxy } from "../../../api/Conf";
 import { connect } from 'react-redux';
 import TableInternal from '../tables/Internal'
 

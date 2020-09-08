@@ -3,7 +3,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import axios, { AxiosRequestConfig } from "axios";
-import OrgUnit from './InterfaceOrgUnit';
+import OrgUnit from '../../../dialog/InterfaceOrgUnit';
 import {orgunitsApi} from "../../../../../api/Orgunits"
 
 export default function SwitchLabels(props: any) {

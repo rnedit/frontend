@@ -11,11 +11,11 @@ import { NewOrgUnit } from './NewOrgUnit';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Moment from 'moment';
-import DialogListAddProfile from './DialogListAddProfile'
-import DialogListAddOrgUnit from './DialogListAddOrgUnit'
+import DialogListAddProfile from '../../../dialog/DialogListAddProfile'
+import DialogListAddOrgUnit from '../../../dialog/DialogListAddOrgUnit'
 import TextField from '@material-ui/core/TextField';
-import ListProfiles from './ListProfiles';
-import ListOrgUnits from './ListOrgUnits';
+import ListProfiles from '../../../dialog/ListProfiles';
+import ListOrgUnits from '../../../dialog/ListOrgUnits';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
@@ -94,7 +94,7 @@ function MaterialTableStruct(props0: any) {
                             if (rowData !== null && rowData !== undefined) {
                                 const { creationDate } = rowData;
                                 Moment.locale('ru');
-                                stringDate = Moment(creationDate).format('hh:mm DD/MM/YYYY')
+                                stringDate = Moment(creationDate).format('HH:mm DD/MM/YYYY')
                             }
                             return (
                                 <Typography component="div">
@@ -183,8 +183,8 @@ function MaterialTableStruct(props0: any) {
 
                             return (
                                 <Box display="flex" justifyContent="right">
-                                    <DialogListAddProfile proxy={props0.proxy} id={rowData.id} />
-                                    <DialogListAddOrgUnit proxy={props0.proxy} id={rowData.id} />
+                                    <DialogListAddProfile type="Struct" id={rowData.id} />
+                                    <DialogListAddOrgUnit type="Struct" id={rowData.id} />
                                 </Box>
                             )
 
@@ -216,7 +216,7 @@ function MaterialTableStruct(props0: any) {
                             if (rowData !== null && rowData !== undefined) {
                                 const { creationDate } = rowData;
                                 Moment.locale('ru');
-                                stringDate = Moment(creationDate).format('hh:mm DD/MM/YYYY')
+                                stringDate = Moment(creationDate).format('HH:mm DD/MM/YYYY')
                             }
                             return (
                                 <Typography component="div">

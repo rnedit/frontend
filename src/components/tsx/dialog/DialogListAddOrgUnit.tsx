@@ -13,7 +13,7 @@ import ListIcon from '@material-ui/icons/List';
 import Tooltip from '@material-ui/core/Tooltip';
 import axios, { AxiosRequestConfig } from "axios";
 import OrgUnit from './InterfaceOrgUnit';
-import { orgunitsApi } from "../../../../../api/Orgunits"
+import { orgunitsApi } from "../../../api/Orgunits"
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -68,7 +68,7 @@ const DialogActions = withStyles((theme: Theme) => ({
 }))(MuiDialogActions);
 
 export default function CustomizedDialogs(props: any) {
-    const { proxy, id } = props;
+    const { id } = props;
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -133,7 +133,7 @@ export default function CustomizedDialogs(props: any) {
 
                 <DialogTitle id="customized-dialog-title" onClose={handleClose}>
                     <div style={{ paddingRight: 100 }}>
-                        Редактирование прикрепленных орг. единиц
+                        Добавить/Удалить орг. единицу
                     </div>
                 </DialogTitle>
                 <DialogContent dividers>
@@ -142,7 +142,7 @@ export default function CustomizedDialogs(props: any) {
                     CallBack={SelectUserCallBack} />
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus disabled={orgUnitsParentIdIsNull.length>0?false:true} onClick={handleSave} color="primary">
+                    <Button autoFocus onClick={handleSave} color="primary">
                         Сохранить
                     </Button>
                 </DialogActions>

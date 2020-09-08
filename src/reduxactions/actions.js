@@ -38,3 +38,8 @@ export const setUpdateInternalData = (data) => ({
     data: data,
     type: 'UPDATE_INTERNAL'
 });
+
+export const setUpdateRecipientData = (data) => ({
+    data: data,
+    type: 'UPDATE_RECIPIENT_INTERNAL'
+});

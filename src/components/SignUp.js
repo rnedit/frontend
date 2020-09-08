@@ -14,12 +14,10 @@ import { useHistory } from "react-router-dom";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import useInterval from 'react-useinterval';
-import axios from "axios";
-import { proxy } from "./Conf";
 import { useTranslation } from 'react-i18next';
 import LngSelect from './LngSelect'
 import Copyright from './Copyright'
-
+import {usersApi} from '../api/Users'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -127,34 +125,54 @@ export default function SignUp() {
     );
 
     const SignUp = () => {
-        const headers = {
-            'Content-Type': 'application/json; charset=UTF-8',
-        }
-        axios.post(proxy + '/api/auth/signup', form, { headers: headers, withCredentials: true })
-            .then(res => {
-                setTextAlert(t("СообщенияРегистрация.1"))
+        usersApi.signup(form).then(res =>{
+            setTextAlert(t("СообщенияРегистрация.1"))
                 setTypeSeverity("success")
 
                 setOpen(true);
                 setStartTimerToSignIn(true)
-            })
-            .catch(error => {
-                if (error.response !== undefined) {
-                    if (Number(error.response.data.code) === 0)
-                        setTextAlert(form.username + t("СообщенияРегистрация.2"))
-                    else
-                        if (Number(error.response.data.code) === 1)
-                            setTextAlert(form.email + t("СообщенияРегистрация.3"))
-                    console.log(error)
-                    console.log(error.response.data)
-                } else {
-                    setTextAlert(t("СообщенияРегистрация.4"))
-                }
-                setOpen(true);
-                setTypeSeverity("error")
-                setStart(true);
+        }).catch(error => {
+            if (error.response !== undefined) {
+                if (Number(error.response.data.code) === 0)
+                    setTextAlert(form.username + t("СообщенияРегистрация.2"))
+                else
+                    if (Number(error.response.data.code) === 1)
+                        setTextAlert(form.email + t("СообщенияРегистрация.3"))
+                console.log(error)
+                console.log(error.response.data)
+            } else {
+                setTextAlert(t("СообщенияРегистрация.4"))
+            }
+            setOpen(true);
+            setTypeSeverity("error")
+            setStart(true);
 
-            })
+        })
+        // axios.post(proxy + '/api/auth/signup', form, { headers: headers, withCredentials: true })
+        //     .then(res => {
+        //         setTextAlert(t("СообщенияРегистрация.1"))
+        //         setTypeSeverity("success")
+
+        //         setOpen(true);
+        //         setStartTimerToSignIn(true)
+        //     })
+        //     .catch(error => {
+        //         if (error.response !== undefined) {
+        //             if (Number(error.response.data.code) === 0)
+        //                 setTextAlert(form.username + t("СообщенияРегистрация.2"))
+        //             else
+        //                 if (Number(error.response.data.code) === 1)
+        //                     setTextAlert(form.email + t("СообщенияРегистрация.3"))
+        //             console.log(error)
+        //             console.log(error.response.data)
+        //         } else {
+        //             setTextAlert(t("СообщенияРегистрация.4"))
+        //         }
+        //         setOpen(true);
+        //         setTypeSeverity("error")
+        //         setStart(true);
+
+        //     })
     }
 
     const handleSubmit = (event) => {

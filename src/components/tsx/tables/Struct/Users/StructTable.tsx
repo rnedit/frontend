@@ -178,7 +178,7 @@ function MaterialTableStruct(props: any) {
                             if (rowData !== null && rowData !== undefined) {
                                 const { creationDate } = rowData;
                                 Moment.locale('ru');
-                                stringDate = Moment(creationDate).format('hh:mm DD/MM/YYYY')
+                                stringDate = Moment(creationDate).format('HH:mm DD/MM/YYYY')
                             }
                             return (
                                 <Typography component="div">
@@ -329,7 +329,7 @@ function MaterialTableStruct(props: any) {
                          if (rowData !== null && rowData !== undefined) {
                              const { creationDate } = rowData;
                              Moment.locale('ru');
-                             stringDate = Moment(creationDate).format('hh:mm DD/MM/YYYY')
+                             stringDate = Moment(creationDate).format('HH:mm DD/MM/YYYY')
                          }
                          return (
                             <Typography component="div">

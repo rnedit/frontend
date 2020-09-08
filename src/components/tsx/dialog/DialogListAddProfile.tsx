@@ -10,10 +10,10 @@ import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import TransferList from './TransferList';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import axios, { AxiosRequestConfig } from "axios";
 import Profile from './InterfaceProfile';
 import Tooltip from '@material-ui/core/Tooltip';
-import { orgunitsApi } from "../../../../../api/Orgunits"
+import { orgunitsApi } from "../../../api/Orgunits"
+import { profilesApi } from "../../../api/Profiles"
 
 const styles = (theme: Theme) =>
     createStyles({
@@ -68,7 +68,8 @@ const DialogActions = withStyles((theme: Theme) => ({
 }))(MuiDialogActions);
 
 export default function CustomizedDialogs(props: any) {
-    const { proxy, id } = props;
+    const { type, id } = props;
+    const {callBackInternal, multiple} = props;
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -88,18 +89,33 @@ export default function CustomizedDialogs(props: any) {
         if (!loading) {
             return undefined;
         }
+        switch (type) {
+            case "Struct":
+                orgunitsApi.getprofilesandprofilesparentidisnull(id)
+                .then((r:any)=>{
+                    const p: Array<Profile> = r.data.profiles;
+                    const pParentIdIsNull: Array<Profile> = r.data.profilesParentIdIsNull;
+                    if (p !== null && p !== undefined)
+                    setProfiles(p.map(prof => ({ id: prof.id, name: prof.name,
+                        user: { username: prof.user.username } })))
+                if (pParentIdIsNull !== null && pParentIdIsNull !== undefined)
+                    setProfilesParentIdIsNull(pParentIdIsNull.map(prof => ({ id: prof.id, name: prof.name, 
+                        user: { username: prof.user.username }  })))
+                })
+                break;
+            case "Internal":
+                profilesApi.getProfilesByParentIdNotNull()
+                .then((r:any)=>{
+                    const p: Array<Profile> = r.data;
+                    setProfilesParentIdIsNull(p.map(prof => ({ id: prof.id, name: prof.name,
+                        user: { username: prof.user.username } })))
+                })
+                
+                break;
+            default:
+                break;
+        }
 
-            orgunitsApi.getprofilesandprofilesparentidisnull(id)
-            .then((r:any)=>{
-                const p: Array<Profile> = r.data.profiles;
-                const pParentIdIsNull: Array<Profile> = r.data.profilesParentIdIsNull;
-                if (p !== null && p !== undefined)
-                setProfiles(p.map(prof => ({ id: prof.id, name: prof.name,
-                    user: { username: prof.user.username } })))
-            if (pParentIdIsNull !== null && pParentIdIsNull !== undefined)
-                setProfilesParentIdIsNull(pParentIdIsNull.map(prof => ({ id: prof.id, name: prof.name, 
-                    user: { username: prof.user.username }  })))
-            })
     }, [loading]);
 
     const profilesSelectUserCallBack=(data:Profile[])=>{
@@ -107,27 +123,27 @@ export default function CustomizedDialogs(props: any) {
     }
 
     const handleSave = () => {
-        Save(profilesSelectUser)
+        switch (type) {
+            case "Struct":
+                Save(profilesSelectUser)
+                break;
+
+            case "Internal":
+                   callBackInternal(profilesSelectUser)
+                break;
+
+            default:
+                break;
+        }
+       
         setOpen(false);
     };
 
     const Save = (data:Profile[]) => {
 
-        const axiosOption: AxiosRequestConfig = {
-            method: 'post',
-            url: proxy + '/api/orgunits/setprofiles/' + id,
-            data: data,
-            headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-            withCredentials: true,
-
-        };
-
-        (async () => {
-             await axios(axiosOption)
-           // await sleep(1e3);
-         //   const res = await response;
-
-        })();
+        orgunitsApi.saveProfiles(id,data).then((r:any)=>{
+            console.log("saved")
+        })
         }
 
     React.useEffect(() => {
@@ -137,7 +153,6 @@ export default function CustomizedDialogs(props: any) {
         }
     }, [open]);
 
-    //const as =()=>{loading===true?<Progress/>:<TransferList/>}; 
     return (
         <div>
             <Tooltip title="Должности добавить/удалить">
@@ -150,16 +165,17 @@ export default function CustomizedDialogs(props: any) {
 
                 <DialogTitle id="customized-dialog-title" onClose={handleClose}>
                     <div style={{ paddingRight: 100 }}>
-                        Редактирование прикрепленных должностей
+                        Добавить/удалить должность
                     </div>
                 </DialogTitle>
                 <DialogContent dividers>
-                    <TransferList p={profiles} 
+                    <TransferList p={profiles}
+                    multiple={multiple}
                     pIsNull={profilesParentIdIsNull} 
                     CallBack={profilesSelectUserCallBack} />
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus disabled={profilesParentIdIsNull.length>0?false:true} onClick={handleSave} color="primary">
+                    <Button autoFocus onClick={handleSave} color="primary">
                         Сохранить
                     </Button>
                 </DialogActions>
