@@ -44,6 +44,7 @@ function MaterialTableStruct(props: any) {
     const [query, setQuery] = React.useState(false);
 
     const [openInternal, setOpenInternal] = React.useState(false);
+    const [loading, setLoading] = React.useState(true);
 
     const handleCallBackClose = () => {
         setOpenInternal(false)
@@ -60,7 +61,7 @@ function MaterialTableStruct(props: any) {
 
     const [queryPage, setQueryPage] = React.useState<QueryPage>({
         page: 1,
-        pageSize: 10,
+        pageSize: 15,
     });
 
     const [selectedRow, setSelectedRow] = React.useState("null");
@@ -166,6 +167,7 @@ function MaterialTableStruct(props: any) {
                         return { ...prevState, data };
     
                     });
+                    setLoading(false)
                 }
                
             })
@@ -208,7 +210,8 @@ function MaterialTableStruct(props: any) {
                 tableRef={tableRef}
                 columns={state.columns}
                 data={state.data}
-                isLoading={state.data.length === 0}
+                //isLoading={state.data.length === 0}.
+                isLoading={loading}
                 onChangeRowsPerPage={(pageSize: number) => {
                     setQueryPage((prevState) => {
                         return { ...prevState, pageSize };
@@ -293,7 +296,7 @@ function MaterialTableStruct(props: any) {
                     maxBodyHeight: height - 48,
                     actionsColumnIndex: -1,
                     exportButton: true,
-                    pageSize: 10,
+                    pageSize: 15,
                     pageSizeOptions: [5, 10, 15, 20, 100, 200, 500],
                     rowStyle: rowData => ({
                         backgroundColor: (selectedRow === rowData.tableData.id) ? '#EEE' : '#FFF'

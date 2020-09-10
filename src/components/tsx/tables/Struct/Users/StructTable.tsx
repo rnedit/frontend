@@ -66,7 +66,7 @@ interface AlertMSG {
 }
 function MaterialTableStruct(props: any) {
     const {t}=props;
-    console.log("Render MaterialTableStruct")
+    //console.log("Render MaterialTableStruct")
     const classes = useStyles();
     const { height } = useWindowResize();
     const history = useHistory();
@@ -81,7 +81,7 @@ function MaterialTableStruct(props: any) {
     const [openMsg, setOpenMsg] = React.useState(false);
     const [newUser, setNewUser] = React.useState<NewUser>();
     const [qquery, setQuery] = React.useState(true);
-
+    const [loading, setLoading] = React.useState(true);
     const [alertMSG,setAlertMSG] = React.useState<AlertMSG>( {
         text:"",
         typeSeverity:"error",
@@ -90,7 +90,7 @@ function MaterialTableStruct(props: any) {
 
     const [queryPage, setQueryPage] = React.useState<QueryPage>({
         page: 1,
-        pageSize: 20,
+        pageSize: 15,
     });
 
     const [role, setRole] = React.useState(ROLES.USER);
@@ -448,6 +448,7 @@ function MaterialTableStruct(props: any) {
                         const data = res.data.users;
                         return { ...prevState, data };
                     });
+                    setLoading(false)
                 })
                 .catch(error => {
                     console.log(error)
@@ -651,7 +652,7 @@ function MaterialTableStruct(props: any) {
                 tableRef={tableRef}
                 columns={state.columns}
                 data={state.data}
-                isLoading={state.data.length===0}
+                isLoading={loading}
                 onChangeRowsPerPage={(pageSize: number) => {
                     setQueryPage((prevState) => {
                         return { ...prevState, pageSize };
@@ -736,8 +737,8 @@ function MaterialTableStruct(props: any) {
                     maxBodyHeight: height - 48,
                     actionsColumnIndex: -1,
                     exportButton: true,
-                    pageSize: 20,
-                    pageSizeOptions: [5, 10, 20, 100, 200, 500],
+                    pageSize: 15,
+                    pageSizeOptions: [5, 10, 15, 20, 100, 200, 500],
                     rowStyle: rowData => ({
                         backgroundColor: (selectedRow === rowData.tableData.id) ? '#EEE' : '#FFF'
                     })

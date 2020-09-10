@@ -54,7 +54,7 @@ function a11yProps(index: any) {
 }));
 function TabsTopMenu(props:any) {
     
-    console.log("Render TabsTopMenu")
+    //console.log("Render TabsTopMenu")
     const { value, stab } = props;
     const { callback } = props;
     const classes = useStyles();

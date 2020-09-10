@@ -51,7 +51,7 @@ function MaterialTableStruct(props0: any) {
     const [openMsg, setOpenMsg] = React.useState(false);
     const [newOrgUnit, setNewOrgUnit] = React.useState<NewOrgUnit>();
     const [qquery, setQuery] = React.useState(false);
-
+    const [loading, setLoading] = React.useState(true);
     const [alertMSG, setAlertMSG] = React.useState<AlertMSG>({
         text: "",
         typeSeverity: "error",
@@ -320,6 +320,7 @@ function MaterialTableStruct(props0: any) {
                             return { ...prevState, data };
 
                         });
+                        setLoading(false)
                     })
                     .catch(error => {
                         console.log(error)
@@ -339,7 +340,7 @@ function MaterialTableStruct(props0: any) {
     )
 
     React.useEffect(() => {
-        console.log('OrgUnit mount it!');
+        //console.log('OrgUnit mount it!');
         setTimeout(() => {
             setQuery(true);
         }, 500);
@@ -507,7 +508,7 @@ function MaterialTableStruct(props0: any) {
                 tableRef={tableRef}
                 columns={state.columns}
                 data={state.data}
-                isLoading={state.data.length === 0}
+                isLoading={loading}
                 onChangeRowsPerPage={(pageSize: number) => {
                     setQueryPage((prevState) => {
                         return { ...prevState, pageSize };

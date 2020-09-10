@@ -57,7 +57,7 @@ function ProfileTable(props0: any) {
     const [openMsg, setOpenMsg] = React.useState(false);
     const [newProfile, setNewProfile] = React.useState<NewProfile>();
     const [qquery, setQuery] = React.useState(true);
-
+    const [loading, setLoading] = React.useState(true);
     const [alertMSG, setAlertMSG] = React.useState<AlertMSG>({
         text: "",
         typeSeverity: "error",
@@ -396,6 +396,7 @@ function ProfileTable(props0: any) {
                         return { ...prevState, data };
 
                     });
+                    setLoading(false)
                 })
                 .catch(error => {
                     console.log(error)
@@ -577,7 +578,7 @@ function ProfileTable(props0: any) {
                 tableRef={tableRef}
                 columns={state.columns}
                 data={state.data}
-                isLoading={state.data.length===0}
+                isLoading={loading}
                 onChangeRowsPerPage={(pageSize: number) => {
                     setQueryPage((prevState) => {
                         return { ...prevState, pageSize };

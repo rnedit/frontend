@@ -71,38 +71,6 @@ function GrantAccess(props) {
         checkAuth();
     }, [checkAuth])
 
-    async function getAccessProfile() {
-        //     let promise = new Promise((resolve, reject) => {
-        //         const headers = {
-        //             'Content-Type': 'application/json; charset=UTF-8',
-        //         }
-        //         axios.post(proxy + '/api/users/getaccessprofile/'+user.id, null,
-        //         { headers: headers, withCredentials: true })
-        //             .then(res => {
-        //                 //console.log(res,"getAccessProfiles");
-        //                 resolve(res)
-        //             })
-        //             .catch(error => {
-        //                 console.log(error)
-        //                 console.log(error.response)
-        //                 reject()
-        //             })
-        // })
-        let promise = new Promise((resolve, reject) => {
-            securityApi.getaccessprofile(user.id).then(res => {
-                resolve(res)
-            }).catch(error => {
-                console.log(error)
-                console.log(error.response)
-                reject()
-            })
-        })
-
-        const result = await promise;
-        return result;
-
-    }
-
     async function checkUser() {
         //     let promise = new Promise((resolve, reject) => {
         //             axios.get(proxy + '/api/test/user', 
@@ -130,14 +98,28 @@ function GrantAccess(props) {
         //     return result;
         let promise = new Promise((resolve, reject) => {
             securityApi.testUser().then(res => {
-                resolve(true)
+                if (res.status!==null && res.status!==undefined){
+                    if (res.status===200)
+                        resolve(true)
+                    else
+                        resolve(false)
+                } else {
+                    resolve(false)
+                }
+                
             }).then(() => {
-                getAccessProfile()
-                    .then(res => {
-                        if (res.data.accessprofile !== null && res.data.accessprofile !== undefined) {
-                            props.setAccessProfiles(res.data.accessprofile)
-                        }
-                    })
+                securityApi.getaccessprofile(user.id).then(res => {
+                    if (res.status!==null && res.status!==undefined){
+                        if (res.status === 200)
+                            if (res.data.accessprofile !== null && res.data.accessprofile !== undefined) {
+                                props.setAccessProfiles(res.data.accessprofile)
+                            }
+                    }
+                    
+                }).catch(error => {
+                    console.log(error)
+                    console.log(error.response)
+                })
             })
                 .catch(error => {
                     console.log(error)
@@ -146,7 +128,7 @@ function GrantAccess(props) {
                 })
         })
         const result = await promise;
-        // console.log(result,"result")
+         console.log(result,"result")
         return result;
 
     }
@@ -178,11 +160,13 @@ function GrantAccess(props) {
         // return result;
         let promise = new Promise((resolve, reject) => {
             securityApi.updateJwtToken({ "refreshJwt": user.refreshJwt }).then(res => {
+                console.log(res)
                 props.editCurrentUser(res.data)
                 resolve(true)
             })
                 .catch(error => {
                     console.log(error)
+                    console.log(error.response)
                     resolve(false)
                 })
         })
