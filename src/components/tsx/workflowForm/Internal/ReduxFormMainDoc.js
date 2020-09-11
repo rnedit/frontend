@@ -13,6 +13,7 @@ import asyncValidateEmail from '../Validators/asyncValidateEmail'
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Divider from '@material-ui/core/Divider';
 import Box from '@material-ui/core/Box';
 import DialogListAddProfile from '../../dialog/DialogListAddProfile'
 import {setUpdateRecipient} from "../../../../reducers/internal"
@@ -204,7 +205,9 @@ const validate = values => {
 </Grid>
 </Grid>
 
-            <Field
+<Typography component="div" style={{
+            margin:'5px' }} >
+      <Field
             name="draft"
             id="draft"
             variant="outlined"
@@ -214,7 +217,7 @@ const validate = values => {
             disabled
             
           />
-
+<Divider/>
             <Field
             name="сreatorProfileId"
             id="сreatorProfileId"
@@ -225,7 +228,7 @@ const validate = values => {
             disabled
             
           />
-
+<Divider/>
             <Field
             name="сreatorRolesId"
             id="сreatorRolesId"
@@ -235,7 +238,30 @@ const validate = values => {
             label="сreatorRolesId"
             disabled
           />
+<Divider/>
 
+<Divider/>
+            <Field
+            name="attachmentNames"
+            id="attachmentNames"
+            variant="outlined"
+            margin="dense"
+            component={renderTextField}
+            label="attachmentNames"
+            disabled
+          />
+<Divider/>
+            <Field
+            name="attachmentIds"
+            id="attachmentIds"
+            variant="outlined"
+            margin="dense"
+            component={renderTextField}
+            label="attachmentIds"
+            disabled
+          />
+</Typography>
+            
       </form>
     )
   }

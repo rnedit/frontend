@@ -17,6 +17,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 
 import RemoteSubmitButton from "./RemoteSubmitButton"
+import UploadButton from "../../buttons/UploadButton"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,6 +44,7 @@ function FullScreenDialog(props: any) {
 
   const classes = useStyles();
   const [open, setOpen] = React.useState(propsOpen);
+  const [selectedFiles, setSelectedFiles] = React.useState(null);
 
   const handleClose = () => {
     setOpen(false);
@@ -53,6 +55,11 @@ function FullScreenDialog(props: any) {
       if (propsOpen)
         setOpen(propsOpen)
      }, [propsOpen]);
+
+    //  React.useEffect(() => {
+    //   if (selectedFiles!==null)
+    //     console.log(selectedFiles)
+    //  }, [selectedFiles]);
 
   return (
     <div>
@@ -71,7 +78,11 @@ function FullScreenDialog(props: any) {
             </Typography>
 
             {!props.id?
-             <RemoteSubmitButton callBackClose={handleClose}/>
+              <UploadButton callBackSelectedFiles={setSelectedFiles}/>
+            :null}
+            
+            {!props.id?
+             <RemoteSubmitButton selectedFiles={selectedFiles} callBackClose={handleClose}/>
             :null}
         
             {!props.id?

@@ -28,6 +28,18 @@ export const internalsApi = {
     async saveInternal(data) {
         try {
             return await instance.post('/api/internals/saveInternal', data)
+            // if (result !==null && result!==undefined)
+            //     if (result.status!==null && result.status!==undefined)
+            //         if (result.status === 200) {
+            //             result = await instance.post('/api/internals/saveAttachment',
+            //              data,
+            //              {
+            //                 headers: {
+            //                   "Content-Type": "multipart/form-data",
+            //                 }
+            //               })
+            //         }
+
         } catch (error) {
             console.error(error)
         }

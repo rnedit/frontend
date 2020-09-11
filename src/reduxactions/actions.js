@@ -43,3 +43,13 @@ export const setUpdateRecipientData = (data) => ({
     data: data,
     type: 'UPDATE_RECIPIENT_INTERNAL'
 });
+
+export const setUpdateAttachmentNames = (data) => ({
+    data: data,
+    type: 'UPDATE_ATTACHMENTS_NAMES'
+});
+
+export const setUpdateAttachmentIds = (data) => ({
+    data: data,
+    type: 'UPDATE_ATTACHMENTS_IDS'
+});

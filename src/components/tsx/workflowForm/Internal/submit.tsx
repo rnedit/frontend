@@ -1,6 +1,7 @@
 
 import { SubmissionError } from 'redux-form'
 import {internalsApi} from '../../../../api/Internals'
+import InternalInterface from './InternalInterface';
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 function submit(values: any) {
@@ -20,11 +21,11 @@ function submit(values: any) {
             }
            }
        })
-        //console.log(internal)
-        internalsApi.saveInternal(internal)
-        .then((r:any)=>{
-          console.log(r)
-        })
+       console.log(internal)
+        // internalsApi.saveInternal(internal)
+        // .then((r:any)=>{
+        //   //console.log(r)
+        // })
   })
 }
 
