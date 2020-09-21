@@ -21,11 +21,14 @@ function submit(values: any) {
             }
            }
        })
-       console.log(internal)
-        // internalsApi.saveInternal(internal)
-        // .then((r:any)=>{
+       //console.log(internal)
+         internalsApi.saveInternal(internal)
+         .then((r:any)=>{
         //   //console.log(r)
-        // })
+         }).catch(error =>{
+          console.log(error)
+          console.log(error.response)
+         })
   })
 }
 

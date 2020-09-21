@@ -17,6 +17,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 
 import RemoteSubmitButton from "./RemoteSubmitButton"
+import SaveButton from "../../buttons/SaveButton"
 import UploadButton from "../../buttons/UploadButton"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -79,6 +80,10 @@ function FullScreenDialog(props: any) {
 
             {!props.id?
               <UploadButton callBackSelectedFiles={setSelectedFiles}/>
+            :null}
+
+            {props.id?
+             <SaveButton callBackClose={handleClose}/>
             :null}
             
             {!props.id?

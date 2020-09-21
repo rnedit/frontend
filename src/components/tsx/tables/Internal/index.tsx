@@ -86,6 +86,12 @@ function MaterialTableStruct(props: any) {
                         field: 'id',
                         editable: "never",
                     },
+                    {
+                        title: "version",
+                        hidden: true,
+                        field: 'version',
+                        editable: "never",
+                    },
 
                     {
                         title: t("Таблица.40"),
