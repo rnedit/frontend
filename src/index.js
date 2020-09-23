@@ -6,16 +6,42 @@ import * as serviceWorker from './serviceWorker';
 import { Provider } from "react-redux";
 import { BrowserRouter } from 'react-router-dom';
 
+import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context'
+
 //https://www.npmjs.com/package/redux-persist
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./init";
 import LinearIndeterminate from "./components/progress/linear"
-
+import {urlGraphql} from "./api/Conf"
 import './i18n';
+import {nameStorageJWTField} from './api/Conf'
+
+const link = createHttpLink({
+    uri: urlGraphql,
+    credentials: 'same-origin',
+    
+  });
+
+  const authLink = setContext((_, { headers }) => {
+    const token = localStorage.getItem(nameStorageJWTField);
+    return {
+      headers: {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : "",
+      }
+    }
+  });
+
+const client = new ApolloClient({
+    link:authLink.concat(link),
+    cache: new InMemoryCache()
+  });
 
 ReactDOM.render(
 
     <React.Fragment>
+        <ApolloProvider client={client}>
         <Suspense fallback={(<LinearIndeterminate/>)}>
             <Provider store={store}>
                 <BrowserRouter>
@@ -25,6 +51,8 @@ ReactDOM.render(
                 </BrowserRouter>
             </Provider>
         </Suspense>
+        </ApolloProvider>
+        
     </React.Fragment>
     ,
     document.getElementById('root')

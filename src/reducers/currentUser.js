@@ -1,5 +1,5 @@
 import {ROLES} from '../components/security/ERules'
-import { updateCurrentUser, updateValueUser } from '../reduxactions/actions';
+import { updateCurrentUser } from '../reduxactions/actions';
 
 const initialState = {
         user: {

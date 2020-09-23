@@ -1,0 +1,10 @@
+query GetInternals($query: InternalTableRequest!){
+  getInternals(internalRequest:$query) {
+    id
+    draft
+    number
+    version
+    subject
+    creationDate
+  }
+}

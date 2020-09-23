@@ -8,7 +8,7 @@ import { setAccessProfiles } from "../../reducers/accessProfile"
 import axios from "axios";
 import { proxy } from '../../api/Conf'
 import LinearProgress from '@material-ui/core/LinearProgress';
-
+import {nameStorageJWTField} from '../../api/Conf'
 import { securityApi } from '../../api/Security'
 
 function GrantAccess(props) {
@@ -162,6 +162,7 @@ function GrantAccess(props) {
             securityApi.updateJwtToken({ "refreshJwt": user.refreshJwt }).then(res => {
                 console.log(res)
                 props.editCurrentUser(res.data)
+                localStorage.setItem(nameStorageJWTField, res.data.jwtID)
                 resolve(true)
             })
                 .catch(error => {

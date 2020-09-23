@@ -3,4 +3,6 @@ export interface Row {
     creationDate: string;
     subject: string;
     number: string;
+    draft: boolean;
+    version: number;
 }

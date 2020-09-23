@@ -1,5 +1,5 @@
 import React from 'react'
-import { Field, reduxForm } from 'redux-form'
+import { Field, reduxForm, formValueSelector} from 'redux-form'
 import TextField from '@material-ui/core/TextField'
 import Checkbox from '@material-ui/core/Checkbox'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -83,12 +83,12 @@ const renderCheckbox = ({ input, label }) => (
   </div>
 )
 
-const radioButton = ({ input, ...rest }) => (
+const radioButton = ({ input, typeAgreement, ...rest }) => (
   <FormControl>
     <RadioGroup {...input} {...rest}>
-      <FormControlLabel value="0" control={<Radio />} label="Без согласования" />
-      <FormControlLabel value="1" control={<Radio />} label="Параллельное" />
-      <FormControlLabel value="2" control={<Radio />} label="Последовательное" />
+      <FormControlLabel checked={Number(typeAgreement) === 0} value="0" control={<Radio />} label="Без согласования" />
+      <FormControlLabel checked={Number(typeAgreement) === 1} value="1" control={<Radio />} label="Параллельное" />
+      <FormControlLabel checked={Number(typeAgreement) === 2} value="2" control={<Radio />} label="Последовательное" />
     </RadioGroup>
   </FormControl>
 )
@@ -128,17 +128,21 @@ const renderSelectField = ({
   const HiddenFileds = [
     "id",
     "draft",
+    "сreatorUserId",
     "сreatorProfileId",
     "сreatorRolesId",
     "attachmentNames",
-    "attachmentIds",
+    "attachments",
     "version",
   ]
 
     
   
 let InitializeFromStateForm = props => {
-  const { handleSubmit, pristine, reset, submitting, classes } = props
+  const { handleSubmit, pristine, reset, submitting, classes,
+    typeAgreement,
+    profileRecipientUserName,
+    profileRecipientName} = props
 
   const callBackInternal = (data) => {
     if (data.length > 0)
@@ -202,6 +206,7 @@ let InitializeFromStateForm = props => {
             <Field
               id="recipientName"
               name="recipientName"
+              value={profileRecipientName}
               variant="outlined"
               margin="dense"
               component={renderTextField}
@@ -236,7 +241,9 @@ let InitializeFromStateForm = props => {
             margin: '5px'
           }} >
 
-            <Field name="typeAgreement" component={radioButton}>
+            <Field name="typeAgreement"
+                    typeAgreement={typeAgreement}
+                    component={radioButton}>
               <Radio value="0" label="Без согласования" />
               <Radio value="1" label="Параллельное" />
               <Radio value="2" label="Последовательное" />
@@ -264,11 +271,18 @@ InitializeFromStateForm = reduxForm({
   asyncValidateEmail
 })(InitializeFromStateForm)
 
+const selector = formValueSelector('InternalForm')
+
 InitializeFromStateForm = connect(
 
   state => ({
     initialValues: state.internal, // pull initial values from reducer
-  }), { setUpdateRecipient }
+    typeAgreement: selector(state, 'typeAgreement'),
+    profileRecipientName: selector(state, 'profileRecipient.name'),
+    profileRecipientUserName: selector(state, 'profileRecipient.user.username'),
+  }), { 
+    setUpdateRecipient
+   }
   //{ load: loadAccount }               // bind account loading action creator
 )(InitializeFromStateForm)
 

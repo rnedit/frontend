@@ -1,5 +1,5 @@
 import { setAccessProfile } from '../reduxactions/actions';
-
+import {nameStorageJWTField} from '../api/Conf'
 const initialState = {
     data:[
         {id:0,
@@ -36,6 +36,7 @@ export const setAccessProfiles = (data) => {
 
 export const setDefaultProfiles = () => {
     return (dispatch) => {
+        localStorage.setItem(nameStorageJWTField, "")
         dispatch(setAccessProfile(initialState.data));
     }
    

@@ -1,5 +1,6 @@
 // @ts-ignore
-import React, { useCallback } from 'react';
+import React from 'react';
+import { Redirect } from 'react-router-dom';
 import MaterialTable from 'material-table';
 import { TableState } from './ITableState';
 import { connect } from 'react-redux';
@@ -10,10 +11,12 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { ROLES } from '../../../security/ERules'
 import { useWindowResize } from "../../UseWindowResize";
-import { internalsApi } from "../../../../api/Internals"
 import RequestInternal from "./RequestInternal"
-import {setInternal} from "../../../../reducers/internal";
+import { setInternal } from "../../../../reducers/internal";
 import InternalDocument from "../../workflowForm/Internal/MainDocument"
+import { useGetInternalsQuery } from "../../generated/graphql"
+import { Row } from './Row';
+
 
 function Alert(props: any) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -35,34 +38,38 @@ function MaterialTableStruct(props: any) {
     const { height } = useWindowResize();
     const roles: string[] = props.roles;
     const userId: string = props.userId;
-    const adminModerRoles = [ROLES.MODERATOR , ROLES.ADMIN]
-    const roleAccess: boolean = roles.some((r:any) => adminModerRoles.includes(r) );
+    const adminModerRoles = [ROLES.MODERATOR, ROLES.ADMIN]
+    const roleAccess: boolean = roles.some((r: any) => adminModerRoles.includes(r));
     const roleAccessAdmin: boolean = roles.includes(ROLES.ADMIN);
     const roleAccessModerator: boolean = roles.includes(ROLES.MODERATOR);
-    const {t}=props;
-
-    const [query, setQuery] = React.useState(false);
-
-    const [openInternal, setOpenInternal] = React.useState(false);
-    const [loading, setLoading] = React.useState(true);
-
-    const handleCallBackClose = () => {
-        setOpenInternal(false)
-      }
-
-    //const [open, setOpen] = React.useState(false);
-    const [openMsg, setOpenMsg] = React.useState(false);
-    
-    const [alertMSG, setAlertMSG] = React.useState<AlertMSG>({
-        text: "",
-        typeSeverity: "error",
-        openMsg: false,
-    })
+    const { t } = props;
 
     const [queryPage, setQueryPage] = React.useState<QueryPage>({
         page: 1,
         pageSize: 15,
     });
+
+    const [dataRequest, setDataRequest] = React.useState<RequestInternal>({
+        userId,
+        page: queryPage.page,
+        perPage: queryPage.pageSize,
+        countExec: 0
+    })
+
+    const [openInternal, setOpenInternal] = React.useState(false);
+
+    const handleCallBackClose = () => {
+        setOpenInternal(false)
+    }
+
+    //const [open, setOpen] = React.useState(false);
+    const [openMsg, setOpenMsg] = React.useState(false);
+
+    const [alertMSG, setAlertMSG] = React.useState<AlertMSG>({
+        text: "",
+        typeSeverity: "error",
+        openMsg: false,
+    })
 
     const [selectedRow, setSelectedRow] = React.useState("null");
 
@@ -78,115 +85,104 @@ function MaterialTableStruct(props: any) {
 
     const [state, setState] = React.useState<TableState>(
 
-            {
-                columns: [
-                    {
-                        title: "id",
-                        hidden: true,
-                        field: 'id',
-                        editable: "never",
-                    },
-                    {
-                        title: "version",
-                        hidden: true,
-                        field: 'version',
-                        editable: "never",
-                    },
+        {
+            columns: [
+                {
+                    title: "id",
+                    hidden: true,
+                    field: 'id',
+                    editable: "never",
+                },
+                {
+                    title: "version",
+                    hidden: true,
+                    field: 'version',
+                    editable: "never",
+                },
 
-                    {
-                        title: t("Таблица.40"),
-                        field: 'number',
-                        
-                        render: rowData => {
-                            const { number } = rowData;
-                            return (
-                                <Typography component="div">
-                                    <Box fontWeight="fontWeightMedium" fontSize="fontSize">
-                                        {number}
-                                    </Box>
-                                </Typography> 
-                               
-                               
-                            )
-                        },
-                    },
-                    
-                    {
-                        title: t("Таблица.39"),
-                        field: 'name',
-                        render: rowData => {
-                            const { subject } = rowData;
-                            return (
-                                <Typography component="div">
-                                    <Box fontWeight="fontWeightNormal" fontSize="fontSize">
-                                        {subject}
-                                    </Box>
-                                </Typography> 
-                               
-                               
-                            )
-                        },
-                    },
-                    {
-                        title: t("Таблица.0"),
-                        field: 'creationDate',
-                        editable: "never",
-                        defaultSort: "desc",
-                        sorting: true,
-                        render: rowData => {
-                            let stringDate: string = "";
-                            if (rowData !== null && rowData !== undefined) {
-                                const { creationDate } = rowData;
-                                Moment.locale('ru');
-                                stringDate = Moment(creationDate).format('HH:mm DD/MM/YYYY')
-                            }
-                            return (
-                                <Typography component="div">
-                                    <Box fontWeight="fontWeightRegular" fontSize="fontSize">
-                                        {stringDate}
-                                    </Box>
-                                </Typography> 
-                                
-                            )
-                        },
-                    },
+                {
+                    title: t("Таблица.40"),
+                    field: 'number',
 
-                ],
+                    render: rowData => {
+                        const { number } = rowData;
+                        return (
+                            <Typography component="div">
+                                <Box fontWeight="fontWeightMedium" fontSize="fontSize">
+                                    {number}
+                                </Box>
+                            </Typography>
 
-                data: [],
-            }
+
+                        )
+                    },
+                },
+
+                {
+                    title: t("Таблица.39"),
+                    field: 'name',
+                    render: rowData => {
+                        const { subject } = rowData;
+                        return (
+                            <Typography component="div">
+                                <Box fontWeight="fontWeightNormal" fontSize="fontSize">
+                                    {subject}
+                                </Box>
+                            </Typography>
+
+
+                        )
+                    },
+                },
+                {
+                    title: t("Таблица.0"),
+                    field: 'creationDate',
+                    editable: "never",
+                    defaultSort: "desc",
+                    sorting: true,
+                    render: rowData => {
+                        let stringDate: string = "";
+                        if (rowData !== null && rowData !== undefined) {
+                            const { creationDate } = rowData;
+                            Moment.locale('ru');
+                            stringDate = Moment(creationDate).format('HH:mm DD/MM/YYYY')
+                        }
+                        return (
+                            <Typography component="div">
+                                <Box fontWeight="fontWeightRegular" fontSize="fontSize">
+                                    {stringDate}
+                                </Box>
+                            </Typography>
+
+                        )
+                    },
+                },
+
+            ],
+
+            data: [],
+        }
     );
 
-    const dataPost = useCallback(
-        () => {
-            const data: RequestInternal = {
-                userId,
-                page:queryPage.page,
-                perPage:queryPage.pageSize,
-            }
-            internalsApi.getInternals(data)
-            .then((r:any)=>{
-                if (r!==undefined && Number(r.status)===200) {
-                    //console.log(r)
-                    setState((prevState) => {
-                        const data = r.data.internals;
-                        return { ...prevState, data };
-    
-                    });
-                    setLoading(false)
-                }
-               
-            })
-            setQuery(false)
+    const { data, loading, error, networkStatus } = useGetInternalsQuery({
+        variables: {
+            query: dataRequest
         },
-        [userId, queryPage],
-    )
+    });
 
     React.useEffect(() => {
-        setTimeout(() => {
-            setQuery(true);
-        }, 500);
-    }, []);
+        if (loading === false) {
+            const rows: Row[] | undefined = data?.getInternals?.map((o: any) => ({ ...o } as Row));
+
+            if (rows !== undefined) {
+                if (rows.length > 0) {
+                    setState((prevState) => {
+                        return { ...prevState, data: rows };
+                    });
+                }
+            }
+        }
+    }, [data, loading]);
 
     React.useEffect(() => {
         if (alertMSG.text !== "")
@@ -194,29 +190,29 @@ function MaterialTableStruct(props: any) {
 
     }, [alertMSG]);
 
-    React.useEffect(() => {
-        if (query) dataPost()
-    }, [query, dataPost]);
-  
     const tableRef: any = React.createRef();
 
     const drawer = (
-    
-        <div>
-            <InternalDocument propsOpen={openInternal} callBackClose={handleCallBackClose}/>
-        </div>
-        
-        );
 
+        <div>
+            <InternalDocument propsOpen={openInternal} callBackClose={handleCallBackClose} />
+        </div>
+
+    );
+    //Apollo error connection useGetInternalsQuery
+    if (error) {
+        console.log("Apollo Error", error)
+        console.log("Apollo NetworkStatus", networkStatus)
+        return <Redirect to='/signin' />;
+    }
     return (
         <>
-        {drawer}
+            {drawer}
             <MaterialTable
                 title={t("ТаблицаВнутренниеДокументы.0")}
                 tableRef={tableRef}
                 columns={state.columns}
                 data={state.data}
-                //isLoading={state.data.length === 0}.
                 isLoading={loading}
                 onChangeRowsPerPage={(pageSize: number) => {
                     setQueryPage((prevState) => {
@@ -236,7 +232,9 @@ function MaterialTableStruct(props: any) {
                         icon: 'refresh',
                         tooltip: t("Таблица.7"),
                         isFreeAction: true,
-                        onClick: () => setQuery(true)
+                        onClick: () => setDataRequest((prevState) => {
+                            return { ...prevState, countExec: dataRequest.countExec + 1 }
+                        })
                     },
 
                 ]}
@@ -327,4 +325,4 @@ const mapStateToProps = function (state: any) {
         userId: state.currentUser.user.id
     }
 }
-export default connect(mapStateToProps,{setInternal})(MaterialTableStruct);
+export default connect(mapStateToProps, { setInternal })(MaterialTableStruct);

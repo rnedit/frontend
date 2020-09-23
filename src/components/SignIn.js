@@ -19,8 +19,8 @@ import {editCurrentUser} from "../reducers/currentUser";
 import { useTranslation } from 'react-i18next';
 import LngSelect from './LngSelect'
 import Copyright from './Copyright'
-import { reduxForm } from 'redux-form';
 import {usersApi} from '../api/Users'
+import {nameStorageJWTField} from '../api/Conf'
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -87,11 +87,11 @@ function SignIn(props) {
 
     const { t } = useTranslation();
 
-    const SignIn = () => {     
+    const SignIn = () => {
  
         usersApi.signin(form).then(res =>{
             props.editCurrentUser(res.data)
-            //console.log(res)
+            localStorage.setItem(nameStorageJWTField, res.data.jwtID)
             history.push('/workflow')
         })
         .catch(error => {
