@@ -2,9 +2,11 @@ import { setInternalData, setUpdateInternalData,
      setUpdateRecipientData, setUpdateAttachmentNames, setUpdateAttachmentIds } from '../reduxactions/actions';
 import { internalsApi } from "../api/Internals"
 
+
 const initialState = {
     draft: false,
     subject: "",
+    typeAgreement: 0,
 };
 
 export default function internal(state = initialState, action) {
@@ -55,6 +57,13 @@ export const setInternal = (data) => {
             })
 
     }
+}
+
+export const setInternalApollo = (data) => {
+    return (dispatch) => {
+                        dispatch(setInternalData(data));
+                }
+
 }
 
 export const setUpdateInternal = (data) => {

@@ -3,9 +3,9 @@ export default interface InternalInterface {
     recipient: string; //id
     typeAgreement: number;
     draft:boolean;
-    сreatorProfileId:string;
+    creatorProfileId:string;
     сreatorRolesId:string;
-    сreatorUserId:string;
+    creatorUserId:string;
     fileName:string;
     file: Object;
   }

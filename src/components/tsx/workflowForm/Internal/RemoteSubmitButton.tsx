@@ -8,15 +8,18 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { uploadFilesApi } from '../../../../api/UploadFiles'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {setUpdateAttachmentIds} from '../../../../reduxactions/actions'
+import { setUpdateAttachmentIds } from '../../../../reduxactions/actions'
+import { AddInternalMutation, Exact, InternalSaveRequest, useAddInternalMutation } from '../../generated/graphql'
+import { getFormValues, hasSubmitSucceeded, isSubmitting, hasSubmitFailed } from 'redux-form'
+import { MutationFunctionOptions } from '@apollo/client';
 
 const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    backdrop: {
-      zIndex: theme.zIndex.drawer + 1,
-      color: '#fff',
-    },
-  }),
+    createStyles({
+        backdrop: {
+            zIndex: theme.zIndex.drawer + 1,
+            color: '#fff',
+        },
+    }),
 );
 
 const RemoteSubmitButton = (props: any) => {
@@ -24,45 +27,74 @@ const RemoteSubmitButton = (props: any) => {
     function Alert(props: any) {
         return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
+
+    const [addInternalMutation, { data, loading, error }] = useAddInternalMutation({
+        variables: {
+            internalSaveRequest: props.values
+        },
+    });
+   
     const classes = useStyles();
-    const { selectedFiles, callBackClose, onclick, setUpdateAttachmentId } = props;
+    const { selectedFiles, callBackClose, submit, setUpdateAttachmentId, submitSucceeded, submitFailed } = props;
     const [uploading, seUploading] = React.useState(false);
     const [text, setTextAlert] = React.useState('null');
     const [typeSeverity, setTypeSeverity] = React.useState('error');
     const [open, setOpen] = React.useState(false);
-    const onClick = () => {
-        
-        if (selectedFiles !== null && selectedFiles !== undefined) {
-            seUploading(true);
-        
-            dopost(selectedFiles).then(r=>{
-                setUpdateAttachmentId({ids:r})
-                setTextAlert("Регистрация и загрузка файлов прошла успешно!")
+
+    React.useEffect(() => {
+        const processAddInternal = () => {
+            if (selectedFiles !== null && selectedFiles !== undefined) {
+                seUploading(true);
+    
+                dopost(selectedFiles).then(r => {
+                    setUpdateAttachmentId({ ids: r })
+                    setTextAlert("Регистрация и загрузка файлов прошла успешно!")
+                })
+    
+            } else {
+                setTextAlert("Регистрация прошла успешно!")
+            }
+          //  console.log(values,'values')
+            // {
+            //     variables: {
+            //         internalSaveRequest: values
+            //     },
+            // }
+            addInternalMutation().then(()=>{
                 setTypeSeverity("success")
                 setOpen(true);
-                onclick()
                 setTimeout(() => {
                     seUploading(false);
                     callBackClose()
-
+    
                 }, 2000);
-               
-            })
-            
- 
-        } else {
-           
-        
-            seUploading(false);
-            onclick()
-            callBackClose()
+            }).catch(e=>{
+                setTextAlert("Ошибка в регистрации!")
+                setTypeSeverity("error")
+                setOpen(true);
+                console.log(e);
+            });
         }
+        if (submitFailed) {
+            setTextAlert("Форма не отправлена ошибка! Проверьте обязательные поля и повторите попытку.")
+            setTypeSeverity("error")
+            setOpen(true);
+        }
+        if (submitSucceeded) {
+            processAddInternal()
+        }
+
+    }, [submitSucceeded, submitFailed])
+
+
+    const onClick = () => {
+        submit()
     }
-    async function dopost(selectedFiles:any) {
+    async function dopost(selectedFiles: any) {
         let promise = new Promise((resolve, reject) => {
             uploadFilesApi.upload(selectedFiles).then(r => {
                 if (r !== null && r !== undefined)
-                    if (r?.status === 200) {                            
+                    if (r?.status === 200) {
                         resolve(r.data)
                     }
 
@@ -70,7 +102,7 @@ const RemoteSubmitButton = (props: any) => {
                 setTextAlert("Error Uploading!")
                 setTypeSeverity("error")
                 setOpen(true);
-                
+
                 console.log(error)
                 console.log(error.response)
                 resolve(null)
@@ -92,9 +124,9 @@ const RemoteSubmitButton = (props: any) => {
             <Backdrop className={classes.backdrop} open={uploading} >
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <Snackbar 
-            anchorOrigin={{ vertical:'bottom', horizontal:'left' }}
-            open={open} autoHideDuration={4000} onClose={handleClose}>
+            <Snackbar
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                open={open} autoHideDuration={4000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity={typeSeverity}>
                     {text}
                 </Alert>
@@ -107,8 +139,14 @@ const RemoteSubmitButton = (props: any) => {
     )
 }
 const mapDispatchToProps = (dispatch: any) => ({
-    setUpdateAttachmentId: (data:any) => dispatch(setUpdateAttachmentIds(data)),
-    onclick: () => dispatch(submit('InternalForm')),
-    
+    setUpdateAttachmentId: (data: any) => dispatch(setUpdateAttachmentIds(data)),
+    submit: () => dispatch(submit('InternalForm')),
+
 })
-export default connect(null, mapDispatchToProps)(RemoteSubmitButton)
+const mapStateToProps = (state: any) => ({
+    values: getFormValues('InternalForm')(state),
+    submitSucceeded: hasSubmitSucceeded('InternalForm')(state),
+    submitFailed: hasSubmitFailed('InternalForm')(state),
+    submitting: isSubmitting('InternalForm')(state),
+})
+export default connect(mapStateToProps, mapDispatchToProps)(RemoteSubmitButton)

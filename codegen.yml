@@ -11,5 +11,6 @@ generates:
     plugins:
       - "introspection"
 
-    config:
-      withHOC: true
+    # config:
+      
+    #   withHOC: true

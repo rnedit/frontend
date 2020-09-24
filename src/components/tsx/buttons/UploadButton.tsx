@@ -84,7 +84,9 @@ function UploadButton(props:any) {
 
   return (
     <div className={classes.root}>
-      <input multiple accept="*/*" className={classes.input} name="file" id="icon-button-file" type="file" onChange={selectFiles} />
+      <input multiple 
+      accept = ".docx" 
+      className={classes.input} name="file" id="icon-button-file" type="file" onChange={selectFiles} />
       <label htmlFor="icon-button-file">
         <IconButton className={classes.inputb} aria-label="upload" component="span">
           <AttachFileIcon />

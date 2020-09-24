@@ -5,7 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Add from '@material-ui/icons/Add';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {setUpdateInternal, setCreateNewInternal} from "../../../reducers/internal";
-import InternalDocument from "../workflowForm/Internal/MainDocument"
+import CreateDocument from "../workflowForm/Internal/CreateDocument"
 import { connect } from 'react-redux';
 
 const options = [
@@ -41,7 +41,7 @@ function LongMenu(props: any) {
     setCreateInternal(false)
   }
 
-  const {сreatorProfileId, сreatorProfileName, сreatorRolesId, сreatorUserId} = props;
+  const {creatorProfileId,  creatorRolesId, creatorUserId} = props;
   const handleClickMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(null);
     const indexAttr: number = Number(event.currentTarget.getAttribute("index-attr"));
@@ -49,10 +49,14 @@ function LongMenu(props: any) {
       props.setCreateNewInternal( {
         draft: false,
         subject: "",
-        сreatorUserId,
-        сreatorProfileId,
-        сreatorProfileName,
-        сreatorRolesId
+        typeAgreement: 0,
+        creatorUserId,
+        creatorProfileId,
+       // creatorProfileName,
+        creatorRolesId,
+        isAttachments:false,
+        isAnotherAttachments: false,
+
     } );
       setCreateInternal(true)
     }
@@ -62,7 +66,7 @@ function LongMenu(props: any) {
 const drawer = (
     
         <div>
-            <InternalDocument propsOpen={createInternal} callBackClose={handleCallBackClose} />
+            <CreateDocument propsOpen={createInternal} callBackClose={handleCallBackClose} />
         </div>
         
         );
@@ -104,10 +108,10 @@ const drawer = (
 }
 const mapStateToProps = function (state: any) {
   return {
-    сreatorUserId:  state.currentUser.user.id,
-    сreatorProfileId: state.currentUser.user.profile.id,
-    сreatorProfileName: state.currentUser.user.profile.name,
-    сreatorRolesId: state.currentUser.user.rolesId
+    creatorUserId:  state.currentUser.user.id,
+    creatorProfileId: state.currentUser.user.profile.id,
+   // creatorProfileName: state.currentUser.user.profile.name,
+    creatorRolesId: state.currentUser.user.rolesId
   }
 }
 export default connect(mapStateToProps,{setCreateNewInternal})(LongMenu);

@@ -19,14 +19,14 @@ import DialogListAddProfile from '../../dialog/DialogListAddProfile'
 import { setUpdateRecipient } from "../../../../reducers/internal"
 import submit from './submit'
 
+import SubmitApollo from './SubmitApollo'
+
 const validate = values => {
   const errors = {}
   const requiredFields = [
-    'firstName',
-    'lastName',
-    'email',
-    'favoriteColor',
-    'notes'
+    'subject',
+    'recipient',
+
   ]
 
   requiredFields.forEach(field => {
@@ -83,12 +83,12 @@ const renderCheckbox = ({ input, label }) => (
   </div>
 )
 
-const radioButton = ({ input, typeAgreement, ...rest }) => (
+const radioButton = ({ input, typeAgreement, disabled, ...rest }) => (
   <FormControl>
     <RadioGroup {...input} {...rest}>
-      <FormControlLabel checked={Number(typeAgreement) === 0} value="0" control={<Radio />} label="Без согласования" />
-      <FormControlLabel checked={Number(typeAgreement) === 1} value="1" control={<Radio />} label="Параллельное" />
-      <FormControlLabel checked={Number(typeAgreement) === 2} value="2" control={<Radio />} label="Последовательное" />
+      <FormControlLabel disabled={disabled} checked={Number(typeAgreement) === 0 || typeAgreement===undefined} value={Number(0)} control={<Radio />} label="Без согласования" />
+      <FormControlLabel disabled={disabled} checked={Number(typeAgreement) === 1} value={Number(1)} control={<Radio />} label="Параллельное" />
+      <FormControlLabel disabled={disabled} checked={Number(typeAgreement) === 2} value={Number(2)} control={<Radio />} label="Последовательное" />
     </RadioGroup>
   </FormControl>
 )
@@ -128,21 +128,27 @@ const renderSelectField = ({
   const HiddenFileds = [
     "id",
     "draft",
-    "сreatorUserId",
-    "сreatorProfileId",
-    "сreatorRolesId",
+    "recipient",
+    "creatorUserId",
+    "creatorProfileId",
+    "creatorRolesId",
     "attachmentNames",
     "attachments",
     "version",
+    "isAttachments",
+    "isAnotherAttachments"
   ]
 
     
   
 let InitializeFromStateForm = props => {
+  //handleSubmit
   const { handleSubmit, pristine, reset, submitting, classes,
     typeAgreement,
-    profileRecipientUserName,
-    profileRecipientName} = props
+    profileRecipient,
+    editDocument
+  } = props
+
 
   const callBackInternal = (data) => {
     if (data.length > 0)
@@ -173,7 +179,7 @@ let InitializeFromStateForm = props => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+     <form onSubmit={handleSubmit}>
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
@@ -189,6 +195,8 @@ let InitializeFromStateForm = props => {
               component={renderTextField}
               label="Краткое содержание"
               fullWidth
+              disabled={!editDocument}
+              
             />
 
           </Typography>
@@ -200,13 +208,16 @@ let InitializeFromStateForm = props => {
           <Typography component="div" style={{
             margin: '5px'
           }} >
+            {editDocument?
             <Box display="flex" justifyContent="right">
               <DialogListAddProfile type="Internal" multiple={false} callBackInternal={callBackInternal} />
             </Box>
+            :""
+          }
+            
             <Field
               id="recipientName"
               name="recipientName"
-              value={profileRecipientName}
               variant="outlined"
               margin="dense"
               component={renderTextField}
@@ -219,22 +230,6 @@ let InitializeFromStateForm = props => {
         </Grid>
       </Grid>
 
-      <Typography component="div" hidden style={{
-        margin: '5px'
-      }} >
-
-        <Field
-          name="recipient"
-          id="recipient"
-          variant="outlined"
-          margin="dense"
-          component={renderTextField}
-          label="Получатель ID"
-          disabled
-          fullWidth
-        />
-
-      </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <Typography component="div" style={{
@@ -243,10 +238,11 @@ let InitializeFromStateForm = props => {
 
             <Field name="typeAgreement"
                     typeAgreement={typeAgreement}
-                    component={radioButton}>
-              <Radio value="0" label="Без согласования" />
-              <Radio value="1" label="Параллельное" />
-              <Radio value="2" label="Последовательное" />
+                    component={radioButton}
+                    disabled={!editDocument}>
+              <Radio value={Number(0)} label="Без согласования" />
+              <Radio value={Number(1)} label="Параллельное" />
+              <Radio value={Number(2)} label="Последовательное" />
             </Field>
 
           </Typography>
@@ -266,9 +262,9 @@ InitializeFromStateForm = reduxForm({
   form: 'InternalForm',  // a unique identifier for this form
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
-  onSubmit: submit,
+  onSubmit: ()=>{ return new Promise(resolve => setTimeout(resolve, 200)).then(()=>{console.log("submit!")}) },
   validate,
-  asyncValidateEmail
+ // asyncValidateEmail
 })(InitializeFromStateForm)
 
 const selector = formValueSelector('InternalForm')
@@ -278,8 +274,8 @@ InitializeFromStateForm = connect(
   state => ({
     initialValues: state.internal, // pull initial values from reducer
     typeAgreement: selector(state, 'typeAgreement'),
-    profileRecipientName: selector(state, 'profileRecipient.name'),
-    profileRecipientUserName: selector(state, 'profileRecipient.user.username'),
+    profileRecipient: selector(state, 'profileRecipient'),
+  
   }), { 
     setUpdateRecipient
    }

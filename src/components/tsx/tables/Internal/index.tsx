@@ -12,9 +12,9 @@ import Box from '@material-ui/core/Box';
 import { ROLES } from '../../../security/ERules'
 import { useWindowResize } from "../../UseWindowResize";
 import RequestInternal from "./RequestInternal"
-import { setInternal } from "../../../../reducers/internal";
-import InternalDocument from "../../workflowForm/Internal/MainDocument"
-import { useGetInternalsQuery } from "../../generated/graphql"
+//import { setInternal, setInternalApollo } from "../../../../reducers/internal";
+import OpenDocument from "../../workflowForm/Internal/OpenDocument"
+import { useGetInternalsQuery} from "../../generated/graphql"
 import { Row } from './Row';
 
 
@@ -44,15 +44,15 @@ function MaterialTableStruct(props: any) {
     const roleAccessModerator: boolean = roles.includes(ROLES.MODERATOR);
     const { t } = props;
 
-    const [queryPage, setQueryPage] = React.useState<QueryPage>({
-        page: 1,
-        pageSize: 15,
-    });
+    // const [queryPage, setQueryPage] = React.useState<QueryPage>({
+    //     page: 0,
+    //     pageSize: 15,
+    // });
 
     const [dataRequest, setDataRequest] = React.useState<RequestInternal>({
         userId,
-        page: queryPage.page,
-        perPage: queryPage.pageSize,
+        page: 0,
+        pageSize: 15,
         countExec: 0
     })
 
@@ -71,7 +71,9 @@ function MaterialTableStruct(props: any) {
         openMsg: false,
     })
 
-    const [selectedRow, setSelectedRow] = React.useState("null");
+    const [selectedRow, setSelectedRow] = React.useState("0");
+
+    const [selectedDocument, setSelectedDocument] = React.useState("");
 
     const handleClose = () => {
         // setOpen(false);
@@ -79,7 +81,7 @@ function MaterialTableStruct(props: any) {
 
     const handleOnClickRow = (event: any, rowData: any) => {
         setSelectedRow(rowData.tableData.id);
-        props.setInternal(rowData.id);
+        setSelectedDocument(rowData.id);
         setOpenInternal(true);
     }
 
@@ -172,7 +174,7 @@ function MaterialTableStruct(props: any) {
 
     React.useEffect(() => {
         if (loading === false) {
-            const rows: Row[] | undefined = data?.getInternals?.map((o: any) => ({ ...o } as Row));
+            const rows: Row[] | undefined = data?.getInternals?.internalList?.map((o: any) => ({ ...o } as Row));
 
             if (rows !== undefined) {
                 if (rows.length > 0) {
@@ -192,13 +194,14 @@ function MaterialTableStruct(props: any) {
 
     const tableRef: any = React.createRef();
 
-    const drawer = (
-
-        <div>
-            <InternalDocument propsOpen={openInternal} callBackClose={handleCallBackClose} />
-        </div>
-
-    );
+    const Drawer = (props:any) => {
+    const {id} = props;
+        return (
+            <div>
+                <OpenDocument idDocument={id} propsOpen={openInternal} callBackClose={handleCallBackClose} />
+            </div>
+        )
+    }
     //Apollo error connection useGetInternalsQuery
     if (error) {
         console.log("Apollo Error", error)
@@ -207,21 +210,25 @@ function MaterialTableStruct(props: any) {
     }
     return (
         <>
-            {drawer}
+            {(selectedDocument.length > 0)?
+                <Drawer id={selectedDocument}/> : ""
+            }
             <MaterialTable
                 title={t("ТаблицаВнутренниеДокументы.0")}
                 tableRef={tableRef}
                 columns={state.columns}
                 data={state.data}
                 isLoading={loading}
+                totalCount={data?.getInternals?.totalCount?data?.getInternals?.totalCount:undefined}
+                page={dataRequest.page}
                 onChangeRowsPerPage={(pageSize: number) => {
-                    setQueryPage((prevState) => {
+                    setDataRequest((prevState) => {
                         return { ...prevState, pageSize };
                     });
 
                 }}
                 onChangePage={(page: number) => {
-                    setQueryPage((prevState) => {
+                    setDataRequest((prevState) => {
                         return { ...prevState, page };
                     });
 
@@ -300,7 +307,7 @@ function MaterialTableStruct(props: any) {
                     maxBodyHeight: height - 48,
                     actionsColumnIndex: -1,
                     exportButton: true,
-                    pageSize: 15,
+                    pageSize: dataRequest.pageSize,
                     pageSizeOptions: [5, 10, 15, 20, 100, 200, 500],
                     rowStyle: rowData => ({
                         backgroundColor: (selectedRow === rowData.tableData.id) ? '#EEE' : '#FFF'
@@ -325,4 +332,4 @@ const mapStateToProps = function (state: any) {
         userId: state.currentUser.user.id
     }
 }
-export default connect(mapStateToProps, { setInternal })(MaterialTableStruct);
+export default connect(mapStateToProps)(MaterialTableStruct);

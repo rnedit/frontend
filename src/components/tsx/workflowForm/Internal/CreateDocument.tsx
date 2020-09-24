@@ -2,7 +2,6 @@ import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import Divider from '@material-ui/core/Divider';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -15,9 +14,7 @@ import { connect } from 'react-redux';
 import Moment from 'moment';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
-
 import RemoteSubmitButton from "./RemoteSubmitButton"
-import SaveButton from "../../buttons/SaveButton"
 import UploadButton from "../../buttons/UploadButton"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,8 +37,11 @@ const Transition = React.forwardRef(function Transition(
 });
 
 function FullScreenDialog(props: any) {
-  const {propsOpen, callBackClose, internal} = props;
+
+  const { propsOpen, callBackClose} = props;
+
   Moment.locale('ru');
+
 
   const classes = useStyles();
   const [open, setOpen] = React.useState(propsOpen);
@@ -53,14 +53,10 @@ function FullScreenDialog(props: any) {
   };
 
   React.useEffect(() => {
-      if (propsOpen)
-        setOpen(propsOpen)
-     }, [propsOpen]);
+    if (propsOpen)
+      setOpen(propsOpen)
+  }, [propsOpen]);
 
-    //  React.useEffect(() => {
-    //   if (selectedFiles!==null)
-    //     console.log(selectedFiles)
-    //  }, [selectedFiles]);
 
   return (
     <div>
@@ -73,44 +69,34 @@ function FullScreenDialog(props: any) {
             </IconButton>
 
             <Typography variant="h6" className={classes.title}>
-              {!props.id?"Создание внутреннего документа":"Внутренний документ № "+
-              props.number+" от "+
-              Moment(props.creationDate).format('DD.MM.YYYY')}
+              Создание внутреннего документа
             </Typography>
 
-            {!props.id?
-              <UploadButton callBackSelectedFiles={setSelectedFiles}/>
-            :null}
+            <UploadButton callBackSelectedFiles={setSelectedFiles} />
 
-            {props.id?
-             <SaveButton callBackClose={handleClose}/>
-            :null}
+            <RemoteSubmitButton selectedFiles={selectedFiles} callBackClose={handleClose} />
             
-            {!props.id?
-             <RemoteSubmitButton selectedFiles={selectedFiles} callBackClose={handleClose}/>
-            :null}
-        
-            {!props.id?
-             <Button autoFocus color="inherit" onClick={handleClose}>
-             Сохранить как черновик
+            <Button autoFocus color="inherit" onClick={handleClose}>
+                Сохранить как черновик
            </Button>
-            :null}
            
+
 
           </Toolbar>
         </AppBar>
         <React.Fragment>
-      <CssBaseline />
-      <Container fixed>
-        <Typography component="div" style={{
-           backgroundColor: 'white',
-            //height: '100vh',
-            padding:'20px' }} >
-           <Internal />
-          </Typography>
-      </Container>
-    </React.Fragment>
-       
+          <CssBaseline />
+          <Container fixed>
+            <Typography component="div" style={{
+              backgroundColor: 'white',
+              //height: '100vh',
+              padding: '20px'
+            }} >
+              <Internal editDocument={true} />
+            </Typography>
+          </Container>
+        </React.Fragment>
+
       </Dialog>
     </div>
   );

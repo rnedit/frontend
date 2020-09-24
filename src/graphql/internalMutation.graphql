@@ -1,0 +1,5 @@
+mutation addInternal($internalSaveRequest: InternalSaveRequest!){
+  addInternal(internalSaveRequest:$internalSaveRequest) {
+    id
+  }
+}

@@ -1,0 +1,89 @@
+query GetInternals($query: InternalTableRequest!){
+  getInternals(internalRequest:$query) {
+   ...internalsTable
+  }
+}
+
+query GetInternal($id: ID!){
+  getInternal(id:$id) {
+  ...internalFromMainDocumentFields
+  }
+}
+
+fragment internalsTable on Internals {
+  internalList {
+      ...internalFromTableFields
+    }
+  totalCount
+}
+
+
+fragment internalFromTableFields on Internal {
+    id
+    draft
+    number
+    recipientName
+    version
+    subject
+    creationDate
+}
+
+fragment profile on Profile {
+      name
+      parentName
+        access {
+          name
+          info
+        }
+        user {
+          username
+          firstName
+          lastName
+        }
+}
+
+fragment user on User {
+          username
+          firstName
+          lastName
+          email
+            roles {
+              name
+            }
+}
+
+fragment internalFromMainDocumentFields on Internal {
+    id
+    draft
+    number
+    version
+    subject
+    recipientName
+    creationDate
+    typeAgreement
+    isAttachments
+    attachments
+    attachmentNames
+    isAnotherAttachments
+    anotherAttachments
+    anotherAttachmentNames
+    profilesAllReaders{
+      ...profile
+    }
+    
+    profileRecipient {
+      ...profile
+    }
+
+    updateProfile {
+      ...profile
+    }
+
+    creatorProfile {
+      ...profile
+    }
+    
+    creatorUser {
+      ...user
+    }
+}
