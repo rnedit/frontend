@@ -29,38 +29,30 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const Transition = React.forwardRef(function Transition(
+const TransitionCreate = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
   ref: React.Ref<unknown>,
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function FullScreenDialog(props: any) {
+function CreateScreenDialog(props: any) {
 
   const { propsOpen, callBackClose} = props;
-
   Moment.locale('ru');
 
-
   const classes = useStyles();
-  const [open, setOpen] = React.useState(propsOpen);
+  //const [createOpen, setCreateOpen] = React.useState(propsOpen);
   const [selectedFiles, setSelectedFiles] = React.useState(null);
 
   const handleClose = () => {
-    setOpen(false);
+    //setCreateOpen(false);
     callBackClose(false);
   };
 
-  React.useEffect(() => {
-    if (propsOpen)
-      setOpen(propsOpen)
-  }, [propsOpen]);
-
-
   return (
     <div>
-      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+      <Dialog id="CreateDialog" fullScreen open={propsOpen} onClose={handleClose} TransitionComponent={TransitionCreate}>
         <AppBar className={classes.appBar}>
           <Toolbar>
 
@@ -109,4 +101,4 @@ const mapStateToProps = function (state: any) {
     creationDate: state.internal.creationDate
   }
 }
-export default connect(mapStateToProps)(FullScreenDialog);
+export default connect(mapStateToProps)(CreateScreenDialog);

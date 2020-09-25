@@ -45,19 +45,19 @@ export default function internal(state = initialState, action) {
 
 }
 
-export const setInternal = (data) => {
-    return (dispatch) => {
-        internalsApi.getInternal({ id: data })
-            .then(r => {
-                if (r !== undefined && Number(r.status) === 200) {
-                    if (r.data !== null && r.data !== undefined)
-                        dispatch(setInternalData(r.data));
-                }
+// export const setInternal = (data) => {
+//     return (dispatch) => {
+//         internalsApi.getInternal({ id: data })
+//             .then(r => {
+//                 if (r !== undefined && Number(r.status) === 200) {
+//                     if (r.data !== null && r.data !== undefined)
+//                         dispatch(setInternalData(r.data));
+//                 }
 
-            })
+//             })
 
-    }
-}
+//     }
+// }
 
 export const setInternalApollo = (data) => {
     return (dispatch) => {

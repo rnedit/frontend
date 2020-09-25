@@ -270,7 +270,6 @@ InitializeFromStateForm = reduxForm({
 const selector = formValueSelector('InternalForm')
 
 InitializeFromStateForm = connect(
-
   state => ({
     initialValues: state.internal, // pull initial values from reducer
     typeAgreement: selector(state, 'typeAgreement'),

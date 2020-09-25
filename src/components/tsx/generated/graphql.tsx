@@ -19,6 +19,7 @@ export type Query = {
   getInternal?: Maybe<Internal>;
   internals?: Maybe<Array<Maybe<Internal>>>;
   getInternals?: Maybe<Internals>;
+  searchInternals?: Maybe<Internals>;
   getProfile?: Maybe<Profile>;
 };
 
@@ -31,6 +32,12 @@ export type QueryGetInternalArgs = {
 
 /** Root */
 export type QueryGetInternalsArgs = {
+  internalRequest?: Maybe<InternalTableRequest>;
+};
+
+
+/** Root */
+export type QuerySearchInternalsArgs = {
   internalRequest?: Maybe<InternalTableRequest>;
 };
 
@@ -111,6 +118,7 @@ export type Role = {
 
 export type InternalTableRequest = {
   userId: Scalars['String'];
+  searchText?: Maybe<Scalars['String']>;
   page?: Maybe<Scalars['Int']>;
   pageSize?: Maybe<Scalars['Int']>;
   countExec?: Maybe<Scalars['Int']>;
@@ -147,6 +155,19 @@ export type AddInternalMutation = (
   & { addInternal?: Maybe<(
     { __typename?: 'Internal' }
     & Pick<Internal, 'id'>
+  )> }
+);
+
+export type SearchInternalsQueryVariables = Exact<{
+  query: InternalTableRequest;
+}>;
+
+
+export type SearchInternalsQuery = (
+  { __typename?: 'Query' }
+  & { searchInternals?: Maybe<(
+    { __typename?: 'Internals' }
+    & InternalsTableFragment
   )> }
 );
 
@@ -343,6 +364,39 @@ export function useAddInternalMutation(baseOptions?: Apollo.MutationHookOptions<
 export type AddInternalMutationHookResult = ReturnType<typeof useAddInternalMutation>;
 export type AddInternalMutationResult = Apollo.MutationResult<AddInternalMutation>;
 export type AddInternalMutationOptions = Apollo.BaseMutationOptions<AddInternalMutation, AddInternalMutationVariables>;
+export const SearchInternalsDocument = gql`
+    query SearchInternals($query: InternalTableRequest!) {
+  searchInternals(internalRequest: $query) {
+    ...internalsTable
+  }
+}
+    ${InternalsTableFragmentDoc}`;
+
+/**
+ * __useSearchInternalsQuery__
+ *
+ * To run a query within a React component, call `useSearchInternalsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchInternalsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchInternalsQuery({
+ *   variables: {
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useSearchInternalsQuery(baseOptions?: Apollo.QueryHookOptions<SearchInternalsQuery, SearchInternalsQueryVariables>) {
+        return Apollo.useQuery<SearchInternalsQuery, SearchInternalsQueryVariables>(SearchInternalsDocument, baseOptions);
+      }
+export function useSearchInternalsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchInternalsQuery, SearchInternalsQueryVariables>) {
+          return Apollo.useLazyQuery<SearchInternalsQuery, SearchInternalsQueryVariables>(SearchInternalsDocument, baseOptions);
+        }
+export type SearchInternalsQueryHookResult = ReturnType<typeof useSearchInternalsQuery>;
+export type SearchInternalsLazyQueryHookResult = ReturnType<typeof useSearchInternalsLazyQuery>;
+export type SearchInternalsQueryResult = Apollo.QueryResult<SearchInternalsQuery, SearchInternalsQueryVariables>;
 export const GetInternalsDocument = gql`
     query GetInternals($query: InternalTableRequest!) {
   getInternals(internalRequest: $query) {

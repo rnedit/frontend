@@ -112,7 +112,8 @@
           "37": "Cancel",
           "38": "Save",
           "39": "Summary",
-          "40": "№"
+          "40": "№",
+          "41": "Export as PDF"
     },
     "ТаблицаПрофайлы": {
         "0":"Title",
@@ -137,6 +138,7 @@
     },
 
     "ТаблицаВнутренниеДокументы":{
-        "0":"Internal documents"
+        "0":"Internal documents",
+        "1":"Recipient"
     }
 }

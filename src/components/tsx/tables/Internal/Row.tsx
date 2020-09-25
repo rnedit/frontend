@@ -5,4 +5,5 @@ export interface Row {
     number: string;
     draft: boolean;
     version: number;
+    recipientName: string;
 }

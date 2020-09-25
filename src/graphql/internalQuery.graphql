@@ -1,3 +1,9 @@
+query SearchInternals($query: InternalTableRequest!){
+  searchInternals(internalRequest:$query) {
+   ...internalsTable
+  }
+}
+
 query GetInternals($query: InternalTableRequest!){
   getInternals(internalRequest:$query) {
    ...internalsTable

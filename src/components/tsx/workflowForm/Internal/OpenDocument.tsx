@@ -1,9 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import Divider from '@material-ui/core/Divider';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -18,9 +16,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import RemoteSubmitButton from "./RemoteSubmitButton"
 import SaveButton from "../../buttons/SaveButton"
-import UploadButton from "../../buttons/UploadButton"
 import EditButton from "../../buttons/EditDocumentButton"
 
 import {setInternalApollo} from "../../../../reducers/internal"
@@ -42,14 +38,14 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const Transition = React.forwardRef(function Transition(
+const TransitionOpen = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
   ref: React.Ref<unknown>,
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function FullScreenDialog(props: any) {
+function OpenDialogScreenDialog(props: any) {
 
   const { propsOpen, callBackClose, editDocument, idDocument} = props;
 
@@ -67,24 +63,18 @@ function FullScreenDialog(props: any) {
   });
 
   const classes = useStyles();
-  const [open, setOpen] = React.useState(propsOpen);
+  //const [open, setOpen] = React.useState(propsOpen);
   const [selectedFiles, setSelectedFiles] = React.useState(null);
 
   const [edit, setEdit] = React.useState(editMainDocument)
 
   const handleClose = () => {
-    setOpen(false);
+   // setOpen(false);
     callBackClose(false);
   };
   const handleBackEdit = (edit: boolean) => {
     setEdit(edit)
   }
-
-  React.useEffect(() => {
-    if (propsOpen)
-      setOpen(propsOpen)
-  }, [propsOpen]);
-
 
   React.useEffect(() => {
     if (loading===false)
@@ -96,9 +86,10 @@ function FullScreenDialog(props: any) {
     console.log("Apollo NetworkStatus useGetInternalQuery", networkStatus)
     return <Redirect to='/signin' />;
 }
+
   return (
     <div>
-      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+      <Dialog id="OpenDialog" fullScreen open={propsOpen} onClose={handleClose} TransitionComponent={TransitionOpen}>
       <Backdrop className={classes.backdrop} open={loading} >
                 <CircularProgress color="inherit" />
       </Backdrop>
@@ -157,4 +148,4 @@ const mapStateToProps = function (state: any) {
     creationDate: state.internal.creationDate
   }
 }
-export default connect(mapStateToProps,{ setInternalApollo })(FullScreenDialog);
+export default connect(mapStateToProps,{ setInternalApollo })(OpenDialogScreenDialog);

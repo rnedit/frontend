@@ -14,7 +14,7 @@ import { useWindowResize } from "../../UseWindowResize";
 import RequestInternal from "./RequestInternal"
 //import { setInternal, setInternalApollo } from "../../../../reducers/internal";
 import OpenDocument from "../../workflowForm/Internal/OpenDocument"
-import { useGetInternalsQuery} from "../../generated/graphql"
+import { useGetInternalsQuery, useSearchInternalsQuery} from "../../generated/graphql"
 import { Row } from './Row';
 
 
@@ -44,13 +44,9 @@ function MaterialTableStruct(props: any) {
     const roleAccessModerator: boolean = roles.includes(ROLES.MODERATOR);
     const { t } = props;
 
-    // const [queryPage, setQueryPage] = React.useState<QueryPage>({
-    //     page: 0,
-    //     pageSize: 15,
-    // });
-
     const [dataRequest, setDataRequest] = React.useState<RequestInternal>({
         userId,
+        searchText: "",
         page: 0,
         pageSize: 15,
         countExec: 0
@@ -61,8 +57,6 @@ function MaterialTableStruct(props: any) {
     const handleCallBackClose = () => {
         setOpenInternal(false)
     }
-
-    //const [open, setOpen] = React.useState(false);
     const [openMsg, setOpenMsg] = React.useState(false);
 
     const [alertMSG, setAlertMSG] = React.useState<AlertMSG>({
@@ -105,7 +99,10 @@ function MaterialTableStruct(props: any) {
                 {
                     title: t("Таблица.40"),
                     field: 'number',
-
+                    width: 50,
+                   customFilterAndSearch : (value, rowData)=>{
+                    return true;
+                },
                     render: rowData => {
                         const { number } = rowData;
                         return (
@@ -119,10 +116,32 @@ function MaterialTableStruct(props: any) {
                         )
                     },
                 },
+                {
+                    title: t("ТаблицаВнутренниеДокументы.1"),
+                    field: 'recipientName',
+                    width: 300,
+                   customFilterAndSearch : (value, rowData)=>{
+                    return true;
+                },
+                    render: rowData => {
+                        const { recipientName } = rowData;
+                        return (
+                            <Typography component="div">
+                                <Box fontWeight="fontWeightMedium" fontSize="fontSize">
+                                    {recipientName}
+                                </Box>
+                            </Typography>
 
+
+                        )
+                    },
+                },
                 {
                     title: t("Таблица.39"),
-                    field: 'name',
+                    field: 'subject',
+                  customFilterAndSearch : (value, rowData)=>{
+                    return true;
+                },
                     render: rowData => {
                         const { subject } = rowData;
                         return (
@@ -138,7 +157,7 @@ function MaterialTableStruct(props: any) {
                 },
                 {
                     title: t("Таблица.0"),
-                    field: 'creationDate',
+                    field: 'creationDate',                  
                     editable: "never",
                     defaultSort: "desc",
                     sorting: true,
@@ -166,7 +185,7 @@ function MaterialTableStruct(props: any) {
         }
     );
 
-    const { data, loading, error, networkStatus } = useGetInternalsQuery({
+    const { data, loading, error, networkStatus } = useSearchInternalsQuery({
         variables: {
             query: dataRequest
         },
@@ -174,8 +193,7 @@ function MaterialTableStruct(props: any) {
 
     React.useEffect(() => {
         if (loading === false) {
-            const rows: Row[] | undefined = data?.getInternals?.internalList?.map((o: any) => ({ ...o } as Row));
-
+            const rows: Row[] | undefined = data?.searchInternals?.internalList?.map(o=>({...o} as Row));
             if (rows !== undefined) {
                 if (rows.length > 0) {
                     setState((prevState) => {
@@ -208,6 +226,7 @@ function MaterialTableStruct(props: any) {
         console.log("Apollo NetworkStatus", networkStatus)
         return <Redirect to='/signin' />;
     }
+    let timeoutOnSearchChange: any = null;
     return (
         <>
             {(selectedDocument.length > 0)?
@@ -219,8 +238,20 @@ function MaterialTableStruct(props: any) {
                 columns={state.columns}
                 data={state.data}
                 isLoading={loading}
-                totalCount={data?.getInternals?.totalCount?data?.getInternals?.totalCount:undefined}
+                totalCount={data?.searchInternals?.totalCount?data?.searchInternals?.totalCount:undefined}
                 page={dataRequest.page}
+                onSearchChange={(searchText: string) => {
+                    clearTimeout(timeoutOnSearchChange);
+                    timeoutOnSearchChange = setTimeout(function () {
+                        setDataRequest((prevState) => {
+                            return { 
+                                ...prevState,
+                                page: 0,
+                                searchText, 
+                                countExec: dataRequest.countExec + 1 }
+                        })
+                    }, 1000);
+                }}
                 onChangeRowsPerPage={(pageSize: number) => {
                     setDataRequest((prevState) => {
                         return { ...prevState, pageSize };
@@ -272,6 +303,8 @@ function MaterialTableStruct(props: any) {
                         searchPlaceholder: t("Таблица.21"),
                         exportTitle: t("Таблица.22"),
                         exportAriaLabel: t("Таблица.23"),
+                       // exportCSVName: t("Таблица.24"),
+                      //  exportPDFName: t("Таблица.41"),
                         exportName: t("Таблица.24"),
                         showColumnsAriaLabel: t("Таблица.25"),
                         showColumnsTitle: t("Таблица.26"),
@@ -302,6 +335,8 @@ function MaterialTableStruct(props: any) {
                 }}
 
                 options={{
+                    filtering:false,
+                    //search:false,
                     addRowPosition: 'first',
                     headerStyle: { position: 'sticky', top: 0 },
                     maxBodyHeight: height - 48,

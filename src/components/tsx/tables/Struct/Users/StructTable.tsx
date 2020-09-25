@@ -164,6 +164,7 @@ function MaterialTableStruct(props: any) {
                     {
                         title: "id",
                         hidden: true,
+                        searchable:false,
                         field: 'id',
                         editable: "never",
                     },
@@ -702,6 +703,8 @@ function MaterialTableStruct(props: any) {
                         searchPlaceholder: t("Таблица.21"),
                         exportTitle: t("Таблица.22"),
                         exportAriaLabel: t("Таблица.23"),
+                        // exportCSVName: t("Таблица.24"),
+                        // exportPDFName: t("Таблица.41"),
                         exportName: t("Таблица.24"),
                         showColumnsAriaLabel: t("Таблица.25"),
                         showColumnsTitle: t("Таблица.26"),
