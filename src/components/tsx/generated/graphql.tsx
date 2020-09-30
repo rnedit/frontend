@@ -21,6 +21,7 @@ export type Query = {
   getInternals?: Maybe<Internals>;
   searchInternals?: Maybe<Internals>;
   getProfile?: Maybe<Profile>;
+  getProfilesByParentIdNotNull?: Maybe<Array<Maybe<Profile>>>;
 };
 
 
@@ -63,8 +64,11 @@ export type Internal = {
   version?: Maybe<Scalars['Int']>;
   number?: Maybe<Scalars['String']>;
   recipientName?: Maybe<Scalars['String']>;
+  recipient?: Maybe<Scalars['String']>;
   creatorProfile?: Maybe<Profile>;
   creatorUser?: Maybe<User>;
+  creatorUserId?: Maybe<Scalars['String']>;
+  creatorProfileId?: Maybe<Scalars['String']>;
   updateProfile?: Maybe<Profile>;
   profilesAllReaders?: Maybe<Array<Maybe<Profile>>>;
   subject: Scalars['String'];
@@ -89,6 +93,7 @@ export type Internals = {
 
 export type Profile = {
   __typename?: 'Profile';
+  id: Scalars['String'];
   name: Scalars['String'];
   parentName?: Maybe<Scalars['String']>;
   access?: Maybe<Array<Maybe<Access>>>;
@@ -134,7 +139,6 @@ export type InternalSaveRequest = {
   creatorUserId: Scalars['String'];
   updateUserId?: Maybe<Scalars['String']>;
   updateProfileId?: Maybe<Scalars['String']>;
-  creatorRolesId: Array<Maybe<Scalars['String']>>;
   isAttachments: Scalars['Boolean'];
   attachmentIds?: Maybe<Array<Maybe<Scalars['String']>>>;
   attachmentNames?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -213,7 +217,7 @@ export type InternalFromTableFieldsFragment = (
 
 export type ProfileFragment = (
   { __typename?: 'Profile' }
-  & Pick<Profile, 'name' | 'parentName'>
+  & Pick<Profile, 'id' | 'name' | 'parentName'>
   & { access?: Maybe<Array<Maybe<(
     { __typename?: 'Access' }
     & Pick<Access, 'name' | 'info'>
@@ -234,7 +238,7 @@ export type UserFragment = (
 
 export type InternalFromMainDocumentFieldsFragment = (
   { __typename?: 'Internal' }
-  & Pick<Internal, 'id' | 'draft' | 'number' | 'version' | 'subject' | 'recipientName' | 'creationDate' | 'typeAgreement' | 'isAttachments' | 'attachments' | 'attachmentNames' | 'isAnotherAttachments' | 'anotherAttachments' | 'anotherAttachmentNames'>
+  & Pick<Internal, 'id' | 'draft' | 'number' | 'version' | 'subject' | 'recipientName' | 'recipient' | 'creationDate' | 'creatorUserId' | 'creatorProfileId' | 'typeAgreement' | 'isAttachments' | 'attachments' | 'attachmentNames' | 'isAnotherAttachments' | 'anotherAttachments' | 'anotherAttachmentNames'>
   & { profilesAllReaders?: Maybe<Array<Maybe<(
     { __typename?: 'Profile' }
     & ProfileFragment
@@ -251,6 +255,17 @@ export type InternalFromMainDocumentFieldsFragment = (
     { __typename?: 'User' }
     & UserFragment
   )> }
+);
+
+export type GetProfilesByParentIdNotNullQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProfilesByParentIdNotNullQuery = (
+  { __typename?: 'Query' }
+  & { getProfilesByParentIdNotNull?: Maybe<Array<Maybe<(
+    { __typename?: 'Profile' }
+    & ProfileFragment
+  )>>> }
 );
 
 export const InternalFromTableFieldsFragmentDoc = gql`
@@ -274,6 +289,7 @@ export const InternalsTableFragmentDoc = gql`
     ${InternalFromTableFieldsFragmentDoc}`;
 export const ProfileFragmentDoc = gql`
     fragment profile on Profile {
+  id
   name
   parentName
   access {
@@ -306,7 +322,10 @@ export const InternalFromMainDocumentFieldsFragmentDoc = gql`
   version
   subject
   recipientName
+  recipient
   creationDate
+  creatorUserId
+  creatorProfileId
   typeAgreement
   isAttachments
   attachments
@@ -463,3 +482,35 @@ export function useGetInternalLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetInternalQueryHookResult = ReturnType<typeof useGetInternalQuery>;
 export type GetInternalLazyQueryHookResult = ReturnType<typeof useGetInternalLazyQuery>;
 export type GetInternalQueryResult = Apollo.QueryResult<GetInternalQuery, GetInternalQueryVariables>;
+export const GetProfilesByParentIdNotNullDocument = gql`
+    query GetProfilesByParentIdNotNull {
+  getProfilesByParentIdNotNull {
+    ...profile
+  }
+}
+    ${ProfileFragmentDoc}`;
+
+/**
+ * __useGetProfilesByParentIdNotNullQuery__
+ *
+ * To run a query within a React component, call `useGetProfilesByParentIdNotNullQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProfilesByParentIdNotNullQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProfilesByParentIdNotNullQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetProfilesByParentIdNotNullQuery(baseOptions?: Apollo.QueryHookOptions<GetProfilesByParentIdNotNullQuery, GetProfilesByParentIdNotNullQueryVariables>) {
+        return Apollo.useQuery<GetProfilesByParentIdNotNullQuery, GetProfilesByParentIdNotNullQueryVariables>(GetProfilesByParentIdNotNullDocument, baseOptions);
+      }
+export function useGetProfilesByParentIdNotNullLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProfilesByParentIdNotNullQuery, GetProfilesByParentIdNotNullQueryVariables>) {
+          return Apollo.useLazyQuery<GetProfilesByParentIdNotNullQuery, GetProfilesByParentIdNotNullQueryVariables>(GetProfilesByParentIdNotNullDocument, baseOptions);
+        }
+export type GetProfilesByParentIdNotNullQueryHookResult = ReturnType<typeof useGetProfilesByParentIdNotNullQuery>;
+export type GetProfilesByParentIdNotNullLazyQueryHookResult = ReturnType<typeof useGetProfilesByParentIdNotNullLazyQuery>;
+export type GetProfilesByParentIdNotNullQueryResult = Apollo.QueryResult<GetProfilesByParentIdNotNullQuery, GetProfilesByParentIdNotNullQueryVariables>;

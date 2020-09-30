@@ -14,7 +14,7 @@ import Profile from './InterfaceProfile';
 import Tooltip from '@material-ui/core/Tooltip';
 import { orgunitsApi } from "../../../api/Orgunits"
 import { profilesApi } from "../../../api/Profiles"
-
+import { GetProfilesByParentIdNotNullQuery } from "../generated/graphql"
 const styles = (theme: Theme) =>
     createStyles({
         root: {
@@ -68,7 +68,7 @@ const DialogActions = withStyles((theme: Theme) => ({
 }))(MuiDialogActions);
 
 export default function CustomizedDialogs(props: any) {
-    const { type, id } = props;
+    const { type, id, data} = props;
     const {callBackInternal, multiple} = props;
     const [open, setOpen] = React.useState(false);
 
@@ -80,9 +80,9 @@ export default function CustomizedDialogs(props: any) {
     };
         
     const [profiles, setProfiles] = React.useState<Profile[]>([]);
-    const [profilesParentIdIsNull, setProfilesParentIdIsNull] = React.useState<Profile[]>([]);
+    const [profilesParentIdIsNull, setProfilesParentIdIsNull] = React.useState<Profile[] | undefined>([]);
     const [profilesSelectUser, setProfilesSelectUser] = React.useState<Profile[]>([]);
-    const loading = open && profilesParentIdIsNull.length === 0;
+    const loading = open && profilesParentIdIsNull?.length === 0;
 
     React.useEffect(() => {
 
@@ -103,14 +103,10 @@ export default function CustomizedDialogs(props: any) {
                         user: { username: prof.user.username }  })))
                 })
                 break;
-            case "Internal":
-                profilesApi.getProfilesByParentIdNotNull()
-                .then((r:any)=>{
-                    const p: Array<Profile> = r.data;
-                    setProfilesParentIdIsNull(p.map(prof => ({ id: prof.id, name: prof.name,
-                        user: { username: prof.user.username } })))
-                })
-                
+            case "CreateInternal":
+                const upData:GetProfilesByParentIdNotNullQuery | undefined = data;
+                const p: Profile[] | undefined = upData?.getProfilesByParentIdNotNull?.map(o=>({...o} as Profile));
+                setProfilesParentIdIsNull(p)
                 break;
             default:
                 break;
@@ -128,7 +124,7 @@ export default function CustomizedDialogs(props: any) {
                 Save(profilesSelectUser)
                 break;
 
-            case "Internal":
+            case "CreateInternal":
                    callBackInternal(profilesSelectUser)
                 break;
 
@@ -169,14 +165,15 @@ export default function CustomizedDialogs(props: any) {
                     </div>
                 </DialogTitle>
                 <DialogContent dividers>
-                    <TransferList p={profiles}
+                    <TransferList
+                    p={profiles}
                     multiple={multiple}
                     pIsNull={profilesParentIdIsNull} 
                     CallBack={profilesSelectUserCallBack} />
                 </DialogContent>
                 <DialogActions>
                     <Button autoFocus onClick={handleSave} color="primary">
-                        Сохранить
+                        Ok
                     </Button>
                 </DialogActions>
             </Dialog>

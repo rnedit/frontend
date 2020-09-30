@@ -1,0 +1,21 @@
+
+query GetProfilesByParentIdNotNull{
+  getProfilesByParentIdNotNull {
+  ...profile
+  }
+}
+
+fragment profile on Profile {
+      id
+      name
+      parentName
+        access {
+          name
+          info
+        }
+        user {
+          username
+          firstName
+          lastName
+        }
+}

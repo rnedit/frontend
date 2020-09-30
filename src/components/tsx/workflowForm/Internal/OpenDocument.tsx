@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
-import Internal from "./ReduxFormMainDoc"
+import Internal from "./ReduxFormMainDocOpenDocument"
 import { connect } from 'react-redux';
 import Moment from 'moment';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -24,9 +24,9 @@ import { useGetInternalQuery } from "../../generated/graphql"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    appBar: {
-      position: 'relative',
-    },
+    // appBar: {
+    //   position: 'relative',
+    // },
     title: {
       marginLeft: theme.spacing(2),
       flex: 1,
@@ -61,15 +61,13 @@ function OpenDialogScreenDialog(props: any) {
        id:idDocument
    },
   });
-
+  
   const classes = useStyles();
-  //const [open, setOpen] = React.useState(propsOpen);
   const [selectedFiles, setSelectedFiles] = React.useState(null);
 
   const [edit, setEdit] = React.useState(editMainDocument)
 
   const handleClose = () => {
-   // setOpen(false);
     callBackClose(false);
   };
   const handleBackEdit = (edit: boolean) => {
@@ -93,7 +91,8 @@ function OpenDialogScreenDialog(props: any) {
       <Backdrop className={classes.backdrop} open={loading} >
                 <CircularProgress color="inherit" />
       </Backdrop>
-        <AppBar className={classes.appBar}>
+      {/* className={classes.appBar} */}
+        <AppBar position="sticky" >
           <Toolbar>
 
             <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">

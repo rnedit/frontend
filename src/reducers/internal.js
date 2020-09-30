@@ -24,7 +24,7 @@ export default function internal(state = initialState, action) {
         case "UPDATE_RECIPIENT_INTERNAL":
             return {
                 ...state,
-                recipientName: action.data.name + " ( " + action.data.user.username + " )",
+                recipientName: action.data.name,
                 recipient: action.data.id
             };
 
@@ -72,12 +72,6 @@ export const setUpdateInternal = (data) => {
     }
 }
 
-export const setCreateNewInternal = (data) => {
-    return (dispatch) => {
-        dispatch(setUpdateInternalData(data));
-    }
-}
-
 export const setUpdateRecipient = (data) => {
     return (dispatch) => {
         dispatch(setUpdateRecipientData(data));
@@ -87,6 +81,12 @@ export const setUpdateRecipient = (data) => {
 export const setUpdateAttachmentName = (data) => {
     return (dispatch) => {
         dispatch(setUpdateAttachmentNames(data));
+    }
+}
+
+export const setUpdateAttachmentId = (data) => {
+    return (dispatch) => {
+        dispatch(setUpdateAttachmentIds(data));
     }
 }
 

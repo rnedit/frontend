@@ -34,6 +34,11 @@ export const setInternalData = (data) => ({
     type: 'SET_INTERNAL'
 });
 
+export const setCreateInternalData = (data) => ({
+    data: data,
+    type: 'SET_CREATEINTERNAL'
+});
+
 export const setUpdateInternalData = (data) => ({
     data: data,
     type: 'UPDATE_INTERNAL'
@@ -42,6 +47,11 @@ export const setUpdateInternalData = (data) => ({
 export const setUpdateRecipientData = (data) => ({
     data: data,
     type: 'UPDATE_RECIPIENT_INTERNAL'
+});
+
+export const setUpdateRecipientCreateInternalData = (data) => ({
+    data: data,
+    type: 'UPDATE_RECIPIENT_CREATEINTERNAL'
 });
 
 export const setUpdateAttachmentNames = (data) => ({

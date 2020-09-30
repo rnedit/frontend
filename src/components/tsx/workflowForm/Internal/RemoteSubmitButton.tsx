@@ -9,9 +9,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { uploadFilesApi } from '../../../../api/UploadFiles'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { setUpdateAttachmentIds } from '../../../../reduxactions/actions'
-import { AddInternalMutation, Exact, InternalSaveRequest, useAddInternalMutation } from '../../generated/graphql'
+import {  useAddInternalMutation } from '../../generated/graphql'
 import { getFormValues, hasSubmitSucceeded, isSubmitting, hasSubmitFailed } from 'redux-form'
-import { MutationFunctionOptions } from '@apollo/client';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

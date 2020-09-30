@@ -35,6 +35,7 @@ fragment internalFromTableFields on Internal {
 }
 
 fragment profile on Profile {
+      id
       name
       parentName
         access {
@@ -65,7 +66,10 @@ fragment internalFromMainDocumentFields on Internal {
     version
     subject
     recipientName
+    recipient
     creationDate
+    creatorUserId
+    creatorProfileId
     typeAgreement
     isAttachments
     attachments

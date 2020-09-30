@@ -2,6 +2,8 @@ import React from 'react'
 import { Field, reduxForm, formValueSelector} from 'redux-form'
 import TextField from '@material-ui/core/TextField'
 import Checkbox from '@material-ui/core/Checkbox'
+import Link from '@material-ui/core/Link';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
@@ -17,9 +19,7 @@ import Divider from '@material-ui/core/Divider';
 import Box from '@material-ui/core/Box';
 import DialogListAddProfile from '../../dialog/DialogListAddProfile'
 import { setUpdateRecipient } from "../../../../reducers/internal"
-import submit from './submit'
 
-import SubmitApollo from './SubmitApollo'
 
 const validate = values => {
   const errors = {}
@@ -43,6 +43,15 @@ const validate = values => {
   return errors
 }
 
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    root: {
+      '& > * + *': {
+        marginLeft: theme.spacing(2),
+      },
+    },
+  }),
+);
 
 
 const renderTextField = ({
@@ -131,7 +140,6 @@ const renderSelectField = ({
     "recipient",
     "creatorUserId",
     "creatorProfileId",
-    "creatorRolesId",
     "attachmentNames",
     "attachments",
     "version",
@@ -142,11 +150,16 @@ const renderSelectField = ({
     
   
 let InitializeFromStateForm = props => {
+  const classes = useStyles();
   //handleSubmit
-  const { handleSubmit, pristine, reset, submitting, classes,
+  const { handleSubmit, pristine, reset, submitting, 
     typeAgreement,
     profileRecipient,
-    editDocument
+    editDocument,
+    isAttachments,
+    isAnotherAttachments,
+    attachmentIds,
+    attachmentNames
   } = props
 
 
@@ -157,7 +170,6 @@ let InitializeFromStateForm = props => {
 
   
   const DrawHiddenFields =()=> {
-      
     return (
       HiddenFileds.map((oName, i) => (
         <div key={oName}>
@@ -175,7 +187,21 @@ let InitializeFromStateForm = props => {
         )
       )
     )
+  }
+  const preventDefault = (event) => event.preventDefault();
 
+  const DrawAttachmentsFields =()=> {
+    return (
+      <Typography component="div" className={classes.root}>
+      {isAttachments?attachmentIds.map((o, i)=>{
+        return (
+        <Link href={o} onClick={preventDefault}>
+          {attachmentNames[i]}
+        </Link>
+        )
+      }):""}
+      </Typography>
+    )
   }
 
   return (
@@ -248,12 +274,8 @@ let InitializeFromStateForm = props => {
           </Typography>
         </Grid>
       </Grid>
-
-   
+        <DrawAttachmentsFields/>
         <DrawHiddenFields/>
-
-    
-
     </form>
   )
 }
@@ -274,6 +296,13 @@ InitializeFromStateForm = connect(
     initialValues: state.internal, // pull initial values from reducer
     typeAgreement: selector(state, 'typeAgreement'),
     profileRecipient: selector(state, 'profileRecipient'),
+    creatorUser: selector(state, 'creatorUser'),
+    isAttachments: selector(state, 'isAttachments'),
+    isAnotherAttachments: selector(state, 'isAnotherAttachments'),
+    attachmentIds: selector(state, 'attachmentIds'),
+    attachmentNames: selector(state, 'attachmentNames'),
+    anotherAttachmentIds: selector(state, 'anotherAttachmentIds'),
+    anotherAttachmentNames: selector(state, 'anotherAttachmentNames'),
   
   }), { 
     setUpdateRecipient

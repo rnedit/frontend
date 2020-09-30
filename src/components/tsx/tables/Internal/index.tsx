@@ -12,9 +12,8 @@ import Box from '@material-ui/core/Box';
 import { ROLES } from '../../../security/ERules'
 import { useWindowResize } from "../../UseWindowResize";
 import RequestInternal from "./RequestInternal"
-//import { setInternal, setInternalApollo } from "../../../../reducers/internal";
 import OpenDocument from "../../workflowForm/Internal/OpenDocument"
-import { useGetInternalsQuery, useSearchInternalsQuery} from "../../generated/graphql"
+import { useSearchInternalsQuery} from "../../generated/graphql"
 import { Row } from './Row';
 
 
